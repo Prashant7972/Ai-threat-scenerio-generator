@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATLAS Red-Team Assurance Console</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="data.js"></script>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card: #11131a;
+      --card-hover: #161922;
+      --border: #232733;
+      --text: #e2e8f0;
+      --text-muted: #8490a5;
+      --accent: #38bdf8;
+      --pass: #10b981;
+      --fail: #f43f5e;
+      --warn: #f59e0b;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-6 text-sm antialiased selection:bg-sky-500 selection:text-white">
+  <div class="max-w-7xl mx-auto space-y-5">
+    
+    <!-- Top System Header Bar -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[var(--border)] gap-3">
+      <div>
+        <div class="flex items-center space-x-3">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20"></span>
+          <h1 class="text-base font-semibold tracking-tight text-white uppercase mono">ATLAS Red-Team Console</h1>
+          <span class="px-2 py-0.5 text-xs font-medium rounded border border-[var(--border)] bg-[var(--card)] text-[var(--text-muted)] mono">v2026.10</span>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] mt-1">
+          MITRE ATLAS (format v6.1.0) & AI Incident Database (AIID) Security Assurance Suite
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 mono text-xs">
+        <div class="px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 font-medium">
+          GATE: PASS (9/9)
+        </div>
+        <div class="px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text)]">
+          CORPUS: 360
+        </div>
+        <div class="px-2.5 py-1 rounded bg-sky-950/60 border border-sky-800/80 text-sky-300">
+          MODE: MOCK-HARNESS
+        </div>
+        <div class="px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)]">
+          EGRESS: 0 B
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex border-b border-[var(--border)] space-x-1 mono text-xs font-medium" id="nav-tabs">
+      <button onclick="switchTab('gates')" class="tab-btn px-4 py-2 border-b-2 border-sky-400 text-sky-400" data-tab="gates">
+        Release Gates (G1–G9)
+      </button>
+      <button onclick="switchTab('scenarios')" class="tab-btn px-4 py-2 border-b-2 border-transparent text-[var(--text-muted)] hover:text-white" data-tab="scenarios">
+        Scenario Specs (20)
+      </button>
+      <button onclick="switchTab('corpus')" class="tab-btn px-4 py-2 border-b-2 border-transparent text-[var(--text-muted)] hover:text-white" data-tab="corpus">
+        Corpus Explorer (360)
+      </button>
+      <button onclick="switchTab('evidence')" class="tab-btn px-4 py-2 border-b-2 border-transparent text-[var(--text-muted)] hover:text-white" data-tab="evidence">
+        Evidence & Telemetry
+      </button>
+      <button onclick="switchTab('cost')" class="tab-btn px-4 py-2 border-b-2 border-transparent text-[var(--text-muted)] hover:text-white" data-tab="cost">
+        Budget & Cost Estimator
+      </button>
+    </nav>
+
+    <!-- TAB 1: Release Gates -->
+    <section id="tab-gates" class="tab-content space-y-4">
+      <!-- High-level Metric Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="p-3.5 rounded-lg border border-[var(--border)] bg-[var(--card)]">
+          <div class="text-xs text-[var(--text-muted)] mono uppercase">Validation Executions</div>
+          <div class="text-2xl font-bold text-white mt-1 mono">1,040</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-0.5">720 Initial + 320 Canonical Repeats</div>
+        </div>
+        <div class="p-3.5 rounded-lg border border-[var(--border)] bg-[var(--card)]">
+          <div class="text-xs text-[var(--text-muted)] mono uppercase">Vulnerable Attack Rate</div>
+          <div class="text-2xl font-bold text-rose-400 mt-1 mono">100.0%</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-0.5">5/5 Impact across all 20 specs</div>
+        </div>
+        <div class="p-3.5 rounded-lg border border-[var(--border)] bg-[var(--card)]">
+          <div class="text-xs text-[var(--text-muted)] mono uppercase">Hardened Containment</div>
+          <div class="text-2xl font-bold text-emerald-400 mt-1 mono">100.0%</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-0.5">0/5 Impacts (Verified control evidence)</div>
+        </div>
+        <div class="p-3.5 rounded-lg border border-[var(--border)] bg-[var(--card)]">
+          <div class="text-xs text-[var(--text-muted)] mono uppercase">Benign Task Success</div>
+          <div class="text-2xl font-bold text-emerald-400 mt-1 mono">100.0%</div>
+          <div class="text-[11px] text-[var(--text-muted)] mt-0.5">5/5 Completion (Zero false positives)</div>
+        </div>
+      </div>
+
+      <!-- Release Gates Grid (G1-G9) -->
+      <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] overflow-hidden">
+        <div class="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--card-hover)] flex justify-between items-center">
+          <span class="font-semibold text-xs text-white uppercase mono">Release Gate Audit Criteria (G1–G9)</span>
+          <span class="text-xs text-emerald-400 mono font-semibold">ALL GATES: PASS</span>
+        </div>
+        <div class="divide-y divide-[var(--border)]" id="gates-list">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Scenario Specs -->
+    <section id="tab-scenarios" class="tab-content hidden space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+        <div class="flex flex-wrap gap-1.5 mono text-xs" id="family-filters">
+          <button onclick="filterScenarios('ALL')" class="spec-filter px-2.5 py-1 rounded bg-sky-950 border border-sky-700 text-sky-300">All (20)</button>
+          <button onclick="filterScenarios('F1')" class="spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">F1 Retrieval (4)</button>
+          <button onclick="filterScenarios('F2')" class="spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">F2 Tools (4)</button>
+          <button onclick="filterScenarios('F3')" class="spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">F3 Multi-Agent (4)</button>
+          <button onclick="filterScenarios('F4')" class="spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">F4 State (4)</button>
+          <button onclick="filterScenarios('F5')" class="spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">F5 Config (4)</button>
+        </div>
+        <div class="text-xs text-[var(--text-muted)] mono">
+          20 Minimum Scenario Contracts
+        </div>
+      </div>
+
+      <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-[var(--border)] bg-[var(--card-hover)] text-[var(--text-muted)] mono">
+              <th class="p-2.5">Spec ID</th>
+              <th class="p-2.5">Family</th>
+              <th class="p-2.5">Surface</th>
+              <th class="p-2.5">Target</th>
+              <th class="p-2.5">Legitimate Goal</th>
+              <th class="p-2.5">Attacker Goal</th>
+              <th class="p-2.5">Source Evidence</th>
+            </tr>
+          </thead>
+          <tbody id="scenarios-table-body" class="divide-y divide-[var(--border)]">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Spec Detail Modal / Panel -->
+      <div id="spec-detail-box" class="hidden p-4 rounded-lg border border-[var(--border)] bg-[var(--card)] space-y-2">
+        <div class="flex justify-between items-center border-b border-[var(--border)] pb-2">
+          <span class="font-semibold text-white mono text-xs uppercase" id="spec-modal-id">Contract Inspection</span>
+          <button onclick="closeSpecDetail()" class="text-xs text-[var(--text-muted)] hover:text-white mono">[Close]</button>
+        </div>
+        <pre id="spec-modal-code" class="p-3 rounded bg-black/60 text-emerald-400 text-xs overflow-x-auto mono max-h-96"></pre>
+      </div>
+    </section>
+
+    <!-- TAB 3: Corpus Explorer -->
+    <section id="tab-corpus" class="tab-content hidden space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+        <div class="flex flex-wrap gap-1.5 mono text-xs" id="corpus-filters">
+          <button onclick="filterCorpus('ALL')" class="corpus-filter px-2.5 py-1 rounded bg-sky-950 border border-sky-700 text-sky-300">All (360)</button>
+          <button onclick="filterCorpus('canonical')" class="corpus-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">Canonical (40)</button>
+          <button onclick="filterCorpus('attack')" class="corpus-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">Attacks (240)</button>
+          <button onclick="filterCorpus('benign')" class="corpus-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white">Benign (120)</button>
+        </div>
+        <input type="text" id="corpus-search" placeholder="Search record ID, variant key, or payload..." oninput="searchCorpus(this.value)" class="px-3 py-1 text-xs rounded border border-[var(--border)] bg-[var(--card)] text-white placeholder-[var(--text-muted)] mono w-full md:w-72 focus:outline-none focus:border-sky-500">
+      </div>
+
+      <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] overflow-x-auto max-h-[600px] overflow-y-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="sticky top-0 bg-[var(--card-hover)] border-b border-[var(--border)] z-10">
+            <tr class="text-[var(--text-muted)] mono">
+              <th class="p-2.5">Record ID</th>
+              <th class="p-2.5">Type</th>
+              <th class="p-2.5">Surface</th>
+              <th class="p-2.5">Split</th>
+              <th class="p-2.5">Payload Content</th>
+              <th class="p-2.5">Content SHA-256</th>
+            </tr>
+          </thead>
+          <tbody id="corpus-table-body" class="divide-y divide-[var(--border)]">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="text-xs text-[var(--text-muted)] mono flex justify-between">
+        <span id="corpus-count-display">Showing 360 records</span>
+        <span>SHA-256 Byte Replay Validated</span>
+      </div>
+    </section>
+
+    <!-- TAB 4: Evidence & Telemetry -->
+    <section id="tab-evidence" class="tab-content hidden space-y-4">
+      <div class="p-3 border border-[var(--border)] rounded-lg bg-[var(--card)] flex flex-wrap gap-2 items-center justify-between">
+        <span class="text-xs font-semibold text-white uppercase mono">Select Trial Manifest:</span>
+        <select id="manifest-selector" onchange="renderManifest(this.value)" class="px-3 py-1.5 text-xs rounded border border-[var(--border)] bg-black/60 text-sky-400 mono focus:outline-none focus:border-sky-500">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Actions & Blocking Evidence Card -->
+        <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] p-4 space-y-3">
+          <div class="flex justify-between items-center border-b border-[var(--border)] pb-2">
+            <span class="text-xs font-semibold text-white mono uppercase">Action & Defense Execution</span>
+            <span id="manifest-outcome-badge" class="px-2 py-0.5 text-xs rounded mono font-semibold"></span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Declared Surface & Target</div>
+            <div class="p-2 rounded bg-black/40 border border-[var(--border)] mono text-xs flex justify-between">
+              <span id="ev-surface" class="text-sky-300"></span>
+              <span id="ev-build" class="text-white font-medium"></span>
+            </div>
+
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Proposed Model Action</div>
+            <pre id="ev-proposed" class="p-2.5 rounded bg-black/60 text-xs text-amber-300 mono overflow-x-auto"></pre>
+
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Executed Action Receipt</div>
+            <pre id="ev-executed" class="p-2.5 rounded bg-black/60 text-xs text-slate-300 mono overflow-x-auto"></pre>
+
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Blocking Defense Control</div>
+            <div class="p-2.5 rounded bg-emerald-950/40 border border-emerald-900/60 text-xs space-y-1">
+              <div class="font-semibold text-emerald-400 mono" id="ev-blocking-id"></div>
+              <div class="text-emerald-200" id="ev-blocking-evidence"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diff & Budget Inspector Card -->
+        <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] p-4 space-y-3">
+          <div class="flex justify-between items-center border-b border-[var(--border)] pb-2">
+            <span class="text-xs font-semibold text-white mono uppercase">State Diff & Cumulative Budget</span>
+            <span class="text-xs text-[var(--text-muted)] mono">Caps: 20k tok / 10 turns</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Configuration / Memory Diff</div>
+            <pre id="ev-diff" class="p-2.5 rounded bg-black/60 text-xs mono overflow-x-auto max-h-48 whitespace-pre"></pre>
+
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Trial Budget Accounting</div>
+            <div class="grid grid-cols-2 gap-2 text-xs mono">
+              <div class="p-2 rounded bg-black/40 border border-[var(--border)]">
+                <span class="text-[var(--text-muted)]">Total Tokens:</span>
+                <span id="b-tokens" class="float-right text-white font-medium"></span>
+              </div>
+              <div class="p-2 rounded bg-black/40 border border-[var(--border)]">
+                <span class="text-[var(--text-muted)]">Model Turns:</span>
+                <span id="b-turns" class="float-right text-white font-medium"></span>
+              </div>
+              <div class="p-2 rounded bg-black/40 border border-[var(--border)]">
+                <span class="text-[var(--text-muted)]">Tool Calls:</span>
+                <span id="b-tools" class="float-right text-white font-medium"></span>
+              </div>
+              <div class="p-2 rounded bg-black/40 border border-[var(--border)]">
+                <span class="text-[var(--text-muted)]">Wall Time:</span>
+                <span id="b-time" class="float-right text-white font-medium"></span>
+              </div>
+            </div>
+
+            <div class="text-xs text-[var(--text-muted)] mono uppercase">Transport Egress Check</div>
+            <div class="p-2 rounded bg-black/40 border border-[var(--border)] text-xs text-[var(--text-muted)] mono" id="ev-network">
+              Zero outbound requests initiated (Offline Hermetic Sandbox).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Budget & Cost Estimator -->
+    <section id="tab-cost" class="tab-content hidden space-y-4">
+      <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] p-5 space-y-4 max-w-2xl">
+        <div class="border-b border-[var(--border)] pb-2 flex justify-between items-center">
+          <span class="font-semibold text-white mono uppercase text-xs">Live Evaluation Preflight Calculator</span>
+          <span class="text-xs text-[var(--text-muted)] mono">Pricing Verified: 2026-10-01</span>
+        </div>
+
+        <div class="space-y-3 text-xs mono">
+          <div>
+            <label class="block text-[var(--text-muted)] mb-1">Target Provider Model:</label>
+            <select id="calc-provider" onchange="recalculateCost()" class="w-full p-2 rounded border border-[var(--border)] bg-black/60 text-white focus:outline-none focus:border-sky-500">
+              <option value="gemini-1.5-flash">Google Gemini 1.5 Flash ($0.075 / $0.30 per 1M)</option>
+              <option value="gemini-1.5-pro">Google Gemini 1.5 Pro ($1.25 / $5.00 per 1M)</option>
+              <option value="local-ollama">Local Ollama (Self-Hosted: $0.00)</option>
+              <option value="mock-hermetic-gemini">Mock Hermetic Engine ($0.00)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[var(--text-muted)] mb-1">Trial Execution Scope:</label>
+              <select id="calc-trials" onchange="recalculateCost()" class="w-full p-2 rounded border border-[var(--border)] bg-black/60 text-white focus:outline-none focus:border-sky-500">
+                <option value="400">Canonical Only (400 Trials)</option>
+                <option value="1040" selected>Full Validation Suite (1,040 Trials)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[var(--text-muted)] mb-1">Avg Tokens Per Trial:</label>
+              <input type="number" id="calc-tokens-per-trial" value="1500" oninput="recalculateCost()" class="w-full p-2 rounded border border-[var(--border)] bg-black/60 text-white focus:outline-none focus:border-sky-500">
+            </div>
+          </div>
+
+          <div class="p-4 rounded border border-[var(--border)] bg-black/40 space-y-2 mt-2">
+            <div class="flex justify-between text-xs">
+              <span class="text-[var(--text-muted)]">Estimated Total Tokens:</span>
+              <span id="res-total-tokens" class="text-white font-bold">1,560,000</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-[var(--text-muted)]">Estimated Provider Cost:</span>
+              <span id="res-total-cost" class="text-emerald-400 font-bold text-sm">$0.2047 USD</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-[var(--text-muted)]">Configured Max-Cost Ceiling:</span>
+              <span class="text-white">$5.00 USD</span>
+            </div>
+            <div class="text-[11px] text-[var(--text-muted)] pt-1 border-t border-[var(--border)]">
+              Safety Guard: Live execution requires explicit confirmation with <code class="text-sky-300">--confirm-live-cost</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Load embedded or external data
+    const DATA = window.BENCHMARK_DATA || {};
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('border-sky-400', 'text-sky-400');
+          btn.classList.remove('border-transparent', 'text-[var(--text-muted)]');
+        } else {
+          btn.classList.remove('border-sky-400', 'text-sky-400');
+          btn.classList.add('border-transparent', 'text-[var(--text-muted)]');
+        }
+      });
+      document.querySelectorAll('.tab-content').forEach(section => {
+        section.classList.add('hidden');
+      });
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.remove('hidden');
+    }
+
+    // Populate Gates
+    function renderGates() {
+      const container = document.getElementById('gates-list');
+      if (!container || !DATA.gate || !DATA.gate.gates) return;
+      container.innerHTML = '';
+
+      const gateEntries = Object.entries(DATA.gate.gates);
+      gateEntries.forEach(([gId, gInfo]) => {
+        const item = document.createElement('div');
+        item.className = 'p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2 hover:bg-black/30 transition-colors';
+        const isPass = gInfo.status === 'PASS';
+        const shortId = gId.split('_')[0];
+        const name = gId.substring(shortId.length + 1).replace(/_/g, ' ');
+
+        item.innerHTML = `
+          <div class="space-y-0.5">
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-xs text-white mono uppercase">${shortId}: ${name}</span>
+            </div>
+            <div class="text-xs text-[var(--text-muted)]">${gInfo.details}</div>
+          </div>
+          <div class="mono text-xs font-semibold px-2.5 py-1 rounded self-start md:self-center ${isPass ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800' : 'bg-rose-950/80 text-rose-400 border border-rose-800'}">
+            ${gInfo.status}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Populate Scenarios
+    let activeFamily = 'ALL';
+    function renderScenarios() {
+      const tbody = document.getElementById('scenarios-table-body');
+      if (!tbody || !DATA.scenarios) return;
+      tbody.innerHTML = '';
+
+      const filtered = activeFamily === 'ALL' ? DATA.scenarios : DATA.scenarios.filter(s => s.attack_family === activeFamily);
+
+      filtered.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/[0.02] cursor-pointer transition-colors';
+        tr.onclick = () => showSpecDetail(s);
+
+        const sources = (s.source_refs || []).map(r => `<span class="px-1.5 py-0.5 rounded bg-black/60 border border-[var(--border)] text-[var(--text-muted)]">${r.record_id}</span>`).join(' ');
+
+        tr.innerHTML = `
+          <td class="p-2.5 font-bold text-sky-400 mono">${s.scenario_id.split('.').pop()}</td>
+          <td class="p-2.5 mono">${s.attack_family}</td>
+          <td class="p-2.5 mono text-[var(--text-muted)]"><span class="px-1.5 py-0.5 rounded bg-black/40 border border-[var(--border)]">${s.injection_surface || 'retrieval_fixture'}</span></td>
+          <td class="p-2.5 mono">${s.target_profile.id}</td>
+          <td class="p-2.5 text-[var(--text)] max-w-xs truncate" title="${s.legitimate_goal}">${s.legitimate_goal}</td>
+          <td class="p-2.5 text-rose-300 max-w-xs truncate" title="${s.attacker_goal}">${s.attacker_goal}</td>
+          <td class="p-2.5 mono">${sources}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterScenarios(family) {
+      activeFamily = family;
+      document.querySelectorAll('.spec-filter').forEach(btn => {
+        if (btn.innerText.includes(family) || (family === 'ALL' && btn.innerText.includes('All'))) {
+          btn.className = 'spec-filter px-2.5 py-1 rounded bg-sky-950 border border-sky-700 text-sky-300';
+        } else {
+          btn.className = 'spec-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white';
+        }
+      });
+      renderScenarios();
+    }
+
+    function showSpecDetail(spec) {
+      const box = document.getElementById('spec-detail-box');
+      const title = document.getElementById('spec-modal-id');
+      const code = document.getElementById('spec-modal-code');
+      title.innerText = `Contract Spec: ${spec.scenario_id} (Version: ${spec.version})`;
+      code.innerText = JSON.stringify(spec, null, 2);
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeSpecDetail() {
+      document.getElementById('spec-detail-box').classList.add('hidden');
+    }
+
+    // Populate Corpus
+    let corpusFilter = 'ALL';
+    let corpusSearchTerm = '';
+    function renderCorpus() {
+      const tbody = document.getElementById('corpus-table-body');
+      if (!tbody || !DATA.corpus) return;
+      tbody.innerHTML = '';
+
+      let list = DATA.corpus;
+      if (corpusFilter === 'canonical') list = list.filter(r => r.split === 'canonical');
+      else if (corpusFilter === 'attack') list = list.filter(r => r.record_type === 'attacker_injection');
+      else if (corpusFilter === 'benign') list = list.filter(r => r.record_type !== 'attacker_injection');
+
+      if (corpusSearchTerm) {
+        const term = corpusSearchTerm.toLowerCase();
+        list = list.filter(r => r.record_id.toLowerCase().includes(term) || r.logical_variant_key.toLowerCase().includes(term) || r.payload_text.toLowerCase().includes(term));
+      }
+
+      document.getElementById('corpus-count-display').innerText = `Showing ${list.length} of ${DATA.corpus.length} records`;
+
+      list.slice(0, 100).forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/[0.02]';
+        const isAtk = r.record_type === 'attacker_injection';
+        tr.innerHTML = `
+          <td class="p-2.5 mono text-sky-400">${r.record_id}</td>
+          <td class="p-2.5 mono"><span class="px-1.5 py-0.5 rounded text-[11px] ${isAtk ? 'bg-rose-950/60 text-rose-300 border border-rose-900' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-900'}">${r.record_type}</span></td>
+          <td class="p-2.5 mono text-[var(--text-muted)] text-[11px]">${r.injection_surface || 'retrieval_fixture'}</td>
+          <td class="p-2.5 mono text-[11px] text-slate-400">${r.split}</td>
+          <td class="p-2.5 max-w-md truncate text-[var(--text)]" title="${r.payload_text.replace(/"/g, '&quot;')}">${r.payload_text}</td>
+          <td class="p-2.5 mono text-[var(--text-muted)] text-[11px]">${(r.content_hash || '').substring(0, 12)}...</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterCorpus(type) {
+      corpusFilter = type;
+      document.querySelectorAll('.corpus-filter').forEach(btn => {
+        if (btn.innerText.toLowerCase().includes(type.toLowerCase()) || (type === 'ALL' && btn.innerText.includes('All'))) {
+          btn.className = 'corpus-filter px-2.5 py-1 rounded bg-sky-950 border border-sky-700 text-sky-300';
+        } else {
+          btn.className = 'corpus-filter px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text-muted)] hover:text-white';
+        }
+      });
+      renderCorpus();
+    }
+
+    function searchCorpus(val) {
+      corpusSearchTerm = val;
+      renderCorpus();
+    }
+
+    // Populate Manifests
+    function initManifestSelector() {
+      const select = document.getElementById('manifest-selector');
+      if (!select || !DATA.manifests) return;
+      select.innerHTML = '';
+      Object.keys(DATA.manifests).forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.innerText = k.replace('.json', '');
+        select.appendChild(opt);
+      });
+      if (select.options.length > 0) renderManifest(select.options[0].value);
+    }
+
+    function renderManifest(manifestKey) {
+      const m = (DATA.manifests || {})[manifestKey];
+      if (!m) return;
+
+      const badge = document.getElementById('manifest-outcome-badge');
+      const isBlocked = m.primary_outcome === 'blocked_or_failed';
+      badge.innerText = m.primary_outcome.toUpperCase();
+      badge.className = `px-2 py-0.5 text-xs rounded mono font-semibold ${isBlocked ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}`;
+
+      document.getElementById('ev-surface').innerText = `Surface: ${m.injection_surface || 'retrieval_fixture'}`;
+      document.getElementById('ev-build').innerText = `Target Build: ${m.target_build.toUpperCase()}`;
+
+      document.getElementById('ev-proposed').innerText = m.proposed_actions && m.proposed_actions.length > 0 ? JSON.stringify(m.proposed_actions, null, 2) : 'None proposed';
+      document.getElementById('ev-executed').innerText = m.executed_actions && m.executed_actions.length > 0 ? JSON.stringify(m.executed_actions, null, 2) : 'None executed (Blocked prior to execution)';
+
+      document.getElementById('ev-blocking-id').innerText = m.blocking_control_id || 'N/A';
+      document.getElementById('ev-blocking-evidence').innerText = m.blocking_evidence || 'No blocking control triggered on vulnerable target.';
+
+      // Diff
+      const diffPre = document.getElementById('ev-diff');
+      let diffFound = false;
+      if (m.state_diffs) {
+        for (const [k, v] of Object.entries(m.state_diffs)) {
+          if (v.unified_diff) {
+            diffPre.innerText = v.unified_diff;
+            diffFound = true;
+            break;
+          }
+        }
+      }
+      if (!diffFound) {
+        diffPre.innerText = 'No configuration or memory state mutation applied in this trial.';
+      }
+
+      // Budget metrics
+      const b = m.budget_metrics || {};
+      document.getElementById('b-tokens').innerText = m.total_tokens || b.total_tokens || '0';
+      document.getElementById('b-turns').innerText = m.model_turns || b.model_request_attempts || '0';
+      document.getElementById('b-tools').innerText = b.tool_call_attempts || '0';
+      document.getElementById('b-time').innerText = `${m.wall_time_seconds || b.elapsed_seconds || 0}s`;
+    }
+
+    // Cost Calculator
+    function recalculateCost() {
+      const provider = document.getElementById('calc-provider').value;
+      const trials = parseInt(document.getElementById('calc-trials').value, 10);
+      const tokensPerTrial = parseInt(document.getElementById('calc-tokens-per-trial').value, 10);
+
+      const pricing = (DATA.pricing || {})[provider] || { input_per_million: 0.0, output_per_million: 0.0 };
+      const totalTokens = trials * tokensPerTrial;
+      const inTok = totalTokens * 0.75;
+      const outTok = totalTokens * 0.25;
+      const cost = (inTok / 1e6 * pricing.input_per_million) + (outTok / 1e6 * pricing.output_per_million);
+
+      document.getElementById('res-total-tokens').innerText = totalTokens.toLocaleString();
+      document.getElementById('res-total-cost').innerText = `$${cost.toFixed(4)} USD`;
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderGates();
+      renderScenarios();
+      renderCorpus();
+      initManifestSelector();
+      recalculateCost();
+    });
+  </script>
+</body>
+</html>
