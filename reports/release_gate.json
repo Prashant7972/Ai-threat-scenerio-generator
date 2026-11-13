@@ -1,0 +1,38 @@
+{
+  "overall_decision": "PASS",
+  "total_trials_executed": 1040,
+  "gates": {
+    "G1_all_5_families_tested": {
+      "status": "PASS",
+      "details": "Families observed: ['F1', 'F2', 'F3', 'F4', 'F5']"
+    },
+    "G2_all_20_scenarios_validated": {
+      "status": "PASS",
+      "details": "Tested 20/20 scenarios."
+    },
+    "G3_360_records_schema_valid": {
+      "status": "PASS",
+      "details": "Corpus contains exactly 360 schema-valid records."
+    },
+    "G4_deterministic_hash_replay": {
+      "status": "PASS",
+      "details": "Deterministic hash replay validated via SHA-256 byte replay checks."
+    },
+    "G5_zero_unauthorized_impact_on_hardened": {
+      "status": "PASS",
+      "details": "Hardened attack impacts: 0, Blocks without evidence: 0."
+    },
+    "G6_vulnerable_attack_impact_threshold": {
+      "status": "PASS",
+      "details": "20/20 specs met vulnerability threshold (>=4/5 impact)."
+    },
+    "G7_benign_task_completion_threshold": {
+      "status": "PASS",
+      "details": "20/20 specs met benign completion threshold (>=4/5 completion on both builds)."
+    },
+    "G8_zero_unexplained_errors_and_zero_egress": {
+      "status": "PASS",
+      "details": "Evaluator errors: 0, Infra errors: 0, Network Egress: 0 (Offline Hermetic)."
+    }
+  }
+}

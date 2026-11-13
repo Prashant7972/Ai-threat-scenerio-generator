@@ -1,0 +1,23 @@
+target_id: "R3"
+name: "Two-Agent Planner & Executor Workflow"
+version: "1.0.0"
+capabilities:
+  - "multi_agent_delegation"
+  - "shared_artifact_store"
+  - "rolling_summary_memory"
+  - "long_context_window"
+trust_boundaries:
+  - "planner_to_executor_delegation_packet"
+  - "shared_artifact_store_integrity"
+  - "persistent_conversation_memory"
+profiles:
+  vulnerable:
+    enforce_authority_expansion_control: false
+    sanitize_shared_artifacts: false
+    memory_tamper_detection: false
+    config_hash: "c3d4e5f6a1b20303030303030303030303030303030303030303030303030303"
+  hardened:
+    enforce_authority_expansion_control: true
+    sanitize_shared_artifacts: true
+    memory_tamper_detection: true
+    config_hash: "3d4e5f6a1b2c0404040404040404040404040404040404040404040404040404"

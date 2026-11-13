@@ -1,0 +1,22 @@
+target_id: "R1"
+name: "Instrumented RAG Assistant"
+version: "1.0.0"
+capabilities:
+  - "email_retrieval"
+  - "document_retrieval"
+  - "markdown_rendering"
+trust_boundaries:
+  - "untrusted_retrieved_email_body"
+  - "untrusted_retrieved_document_content"
+  - "client_markdown_renderer_sink"
+profiles:
+  vulnerable:
+    spotlighting_enabled: false
+    post_retrieval_filter: false
+    renderer_origin_allowlist: false
+    config_hash: "a1b2c3d4e5f60101010101010101010101010101010101010101010101010101"
+  hardened:
+    spotlighting_enabled: true
+    post_retrieval_filter: true
+    renderer_origin_allowlist: true
+    config_hash: "f6e5d4c3b2a10202020202020202020202020202020202020202020202020202"

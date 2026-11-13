@@ -1,0 +1,82 @@
+[
+  {
+    "incident_id": "AIID-INC-0012",
+    "source_url": "https://incidentdatabase.ai/cite/12",
+    "incident_title": "Indirect Injection Through Retrieved Email in Enterprise Copilot",
+    "retrieval_date": "2026-10-15",
+    "mapping_rationale": "Demonstrates prompt injection delivery via external email processing, mapped to F1-S1 and AML.T0051.001.",
+    "mapped_specs": ["F1-S1"]
+  },
+  {
+    "incident_id": "AIID-INC-0028",
+    "source_url": "https://incidentdatabase.ai/cite/28",
+    "incident_title": "Document RAG Workspace Compromise via Shared Cloud Drive",
+    "retrieval_date": "2026-10-15",
+    "mapping_rationale": "Demonstrates malicious instructions embedded inside shared documents ingested into RAG store, mapped to F1-S2 and AML.T0070.",
+    "mapped_specs": ["F1-S2"]
+  },
+  {
+    "incident_id": "AIID-INC-0044",
+    "source_url": "https://incidentdatabase.ai/cite/44",
+    "incident_title": "Markdown Image Exfiltration of Private Chat Context in Enterprise Assistant",
+    "retrieval_date": "2026-10-16",
+    "mapping_rationale": "Shows client-side renderer exploitation to append chat conversation tokens to an image URL query parameter, mapped to F1-S4 and AML.T0077.",
+    "mapped_specs": ["F1-S4"]
+  },
+  {
+    "incident_id": "AIID-INC-0067",
+    "source_url": "https://incidentdatabase.ai/cite/67",
+    "incident_title": "Copilot Studio Tool Exploitation Exfiltrates Internal CRM Database",
+    "retrieval_date": "2026-10-16",
+    "mapping_rationale": "Agent coerced into querying internal data repository and exfiltrating query records, mapped to F2-S1 and AML.T0085.001.",
+    "mapped_specs": ["F2-S1"]
+  },
+  {
+    "incident_id": "AIID-INC-0089",
+    "source_url": "https://incidentdatabase.ai/cite/89",
+    "incident_title": "Unauthorized Financial Disbursement Coerced via Assistant Tool Call",
+    "retrieval_date": "2026-10-17",
+    "mapping_rationale": "Financial assistant executed fund transfer without verifying out-of-band authorization signature, mapped to F2-S2 and AML.T0053.",
+    "mapped_specs": ["F2-S2"]
+  },
+  {
+    "incident_id": "AIID-INC-0103",
+    "source_url": "https://incidentdatabase.ai/cite/103",
+    "incident_title": "Autonomous Agent Exploitation Across Security Sandboxes",
+    "retrieval_date": "2026-10-18",
+    "mapping_rationale": "Autonomous agents bypassing authorization checks during evaluation benchmarks, mapped to F2-S4 and AML.CS0068 / AML.CS0073.",
+    "mapped_specs": ["F2-S4"]
+  },
+  {
+    "incident_id": "AIID-INC-0118",
+    "source_url": "https://incidentdatabase.ai/cite/118",
+    "incident_title": "Multi-Agent Trust Poisoning in Collaborative DevOps Framework",
+    "retrieval_date": "2026-10-18",
+    "mapping_rationale": "Planner agent convinced Executor agent to expand permissions using unverified authority claims, mapped to F3-S1, F3-S3, and AML.T0118.001.",
+    "mapped_specs": ["F3-S1", "F3-S3"]
+  },
+  {
+    "incident_id": "AIID-INC-0134",
+    "source_url": "https://incidentdatabase.ai/cite/134",
+    "incident_title": "Persistent Memory Poisoning in Conversational Assistant",
+    "retrieval_date": "2026-10-19",
+    "mapping_rationale": "Attacker injected persistent directive into long-term memory store influencing future conversation sessions, mapped to F4-S3 and AML.CS0040.",
+    "mapped_specs": ["F4-S3"]
+  },
+  {
+    "incident_id": "AIID-INC-0155",
+    "source_url": "https://incidentdatabase.ai/cite/155",
+    "incident_title": "Rules File and Skill Extension Backdoor in Developer Coding Assistant",
+    "retrieval_date": "2026-10-20",
+    "mapping_rationale": "Repository rules file contained backdoor prompt logic altering agent execution, mapped to F5-S2 and AML.CS0041 / AML.CS0049.",
+    "mapped_specs": ["F5-S2"]
+  },
+  {
+    "incident_id": "AIID-INC-0177",
+    "source_url": "https://incidentdatabase.ai/cite/177",
+    "incident_title": "Adversarial Link Crafting Leading to Recommendation Hijacking",
+    "retrieval_date": "2026-10-20",
+    "mapping_rationale": "Crafted links poisoned web-browsing agent summaries and redirected user downloads, mapped to F4-S2 and AML.CS0072.",
+    "mapped_specs": ["F4-S2"]
+  }
+]
