@@ -24,6 +24,7 @@ from .contract import (
     ReviewContract,
     AttackFamily,
     TargetSurface,
+    InjectionSurface,
     OriginType,
     LitmusRecord
 )
@@ -524,9 +525,34 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
     }
 ]
 
+SURFACE_MAP = {
+    "f1_s1": InjectionSurface.RETRIEVAL_FIXTURE,
+    "f1_s2": InjectionSurface.RETRIEVAL_FIXTURE,
+    "f1_s3": InjectionSurface.RETRIEVAL_FIXTURE,
+    "f1_s4": InjectionSurface.RETRIEVAL_FIXTURE,
+    "f2_s1": InjectionSurface.TOOL_ARGUMENTS,
+    "f2_s2": InjectionSurface.APPROVAL_STATE,
+    "f2_s3": InjectionSurface.TOOL_ARGUMENTS,
+    "f2_s4": InjectionSurface.TOOL_RESPONSE,
+    "f3_s1": InjectionSurface.PEER_AGENT_MESSAGE,
+    "f3_s2": InjectionSurface.SHARED_ARTIFACT,
+    "f3_s3": InjectionSurface.PEER_AGENT_MESSAGE,
+    "f3_s4": InjectionSurface.PEER_AGENT_MESSAGE,
+    "f4_s1": InjectionSurface.LONG_CONTEXT,
+    "f4_s2": InjectionSurface.MEMORY_SUMMARY,
+    "f4_s3": InjectionSurface.MEMORY_SUMMARY,
+    "f4_s4": InjectionSurface.LONG_CONTEXT,
+    "f5_s1": InjectionSurface.CHAT_TEMPLATE,
+    "f5_s2": InjectionSurface.CONFIGURATION,
+    "f5_s3": InjectionSurface.CONFIGURATION,
+    "f5_s4": InjectionSurface.CONFIGURATION,
+}
+
 def compile_all_scenarios() -> List[MinimumScenarioContract]:
     contracts: List[MinimumScenarioContract] = []
     for raw in RAW_SCENARIO_DEFINITIONS:
+        spec_id = raw["scenario_id"].split(".")[-1]
+        surface = raw.get("injection_surface") or SURFACE_MAP.get(spec_id, InjectionSurface.RETRIEVAL_FIXTURE)
         contract = MinimumScenarioContract(
             scenario_id=raw["scenario_id"],
             version="1.0.0",
@@ -547,6 +573,7 @@ def compile_all_scenarios() -> List[MinimumScenarioContract]:
             budgets=BudgetsContract(turns=10, tool_calls=20, tokens=20000, seconds=300),
             review=ReviewContract(status="approved", reviewer="security-analyst@prompt-halo.internal", timestamp="2026-11-12T10:00:00Z"),
             attack_family=AttackFamily(raw["attack_family"]),
+            injection_surface=surface,
             origin_type=OriginType(raw["origin_type"]),
             canonical_attack_prompt=raw["canonical_attack_prompt"],
             canonical_benign_prompt=raw["canonical_benign_prompt"],

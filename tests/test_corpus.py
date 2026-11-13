@@ -3,7 +3,7 @@ Unit tests for the 360-record Litmus corpus.
 """
 from pathlib import Path
 import pytest
-from src.generator.contract import LitmusRecord, RecordType
+from src.generator.contract import LitmusRecord, RecordType, InjectionSurface
 from src.generator.auto_generator import generate_litmus_corpus, LITMUS_OUTPUT
 
 def test_corpus_exists_and_has_360_records():
@@ -22,6 +22,10 @@ def test_corpus_exists_and_has_360_records():
     assert len(attacks) == 240
     assert len(benigns) == 120
     assert len(quotes) == 20
+
+    # Verify injection surfaces are distributed across valid types
+    surfaces = {r.injection_surface for r in records}
+    assert len(surfaces) >= 7
 
 def test_corpus_content_hashes_and_determinism(tmp_path):
     records = []

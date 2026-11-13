@@ -29,6 +29,23 @@ class TargetSurface(str, Enum):
     R2 = "R2"  # Tool-using assistant
     R3 = "R3"  # Two-agent planner/executor
 
+class InjectionSurface(str, Enum):
+    # F1: Retrieved content
+    RETRIEVAL_FIXTURE = "retrieval_fixture"
+    # F2: Tool misuse & approvals
+    TOOL_ARGUMENTS = "tool_arguments"
+    TOOL_RESPONSE = "tool_response"
+    APPROVAL_STATE = "approval_state"
+    # F3: Multi-agent coordination
+    PEER_AGENT_MESSAGE = "peer_agent_message"
+    SHARED_ARTIFACT = "shared_artifact"
+    # F4: State & context
+    MEMORY_SUMMARY = "memory_summary"
+    LONG_CONTEXT = "long_context"
+    # F5: Bundled prompts & configurations
+    CHAT_TEMPLATE = "chat_template"
+    CONFIGURATION = "configuration"
+
 class Disposition(str, Enum):
     PROVIDER_REFUSAL = "provider_refusal"
     APPLICATION_REJECTION = "application_rejection"
@@ -147,6 +164,7 @@ class MinimumScenarioContract(BaseModel):
 
     # Operational prompt fields for concrete test materialization
     attack_family: AttackFamily
+    injection_surface: InjectionSurface = InjectionSurface.RETRIEVAL_FIXTURE
     origin_type: OriginType
     canonical_attack_prompt: str
     canonical_benign_prompt: str
@@ -178,6 +196,7 @@ class LitmusRecord(BaseModel):
     record_type: RecordType
     attack_family: AttackFamily
     target_surface: TargetSurface
+    injection_surface: InjectionSurface = InjectionSurface.RETRIEVAL_FIXTURE
     source_ids: List[str]
     assumptions: str
     severity_rationale: str
@@ -201,6 +220,16 @@ class LitmusRecord(BaseModel):
             raise ValueError(f"Content hash mismatch: {self.content_hash} != {calculated_hash}")
         return self
 
+class NetworkRequestRecord(BaseModel):
+    destination_host: str
+    destination_port: int
+    method: str
+    status_code: Optional[int] = None
+    latency_ms: float = 0.0
+    request_bytes: int = 0
+    response_bytes: int = 0
+    sanitized_url: str
+
 class ToolEvent(BaseModel):
     parent_task: str
     actor_agent: str
@@ -209,6 +238,8 @@ class ToolEvent(BaseModel):
     tool_arguments: Dict[str, Any]
     policy_decision: Literal["allow", "deny", "flag"]
     attempted_action: str
+    proposed_action: Optional[Dict[str, Any]] = None
+    executed_action: Optional[Dict[str, Any]] = None
     execution_receipt: Optional[Dict[str, Any]] = None
     result: Optional[Any] = None
     blocking_control_id: Optional[str] = None
@@ -220,10 +251,15 @@ class TelemetryRecord(BaseModel):
     logical_variant_key: str
     target_build: Literal["vulnerable", "hardened"]
     seed: int
+    injection_surface: Optional[str] = None
+    proposed_actions: List[Dict[str, Any]] = Field(default_factory=list)
+    executed_actions: List[Dict[str, Any]] = Field(default_factory=list)
     tool_events: List[ToolEvent] = Field(default_factory=list)
     renderer_requests: List[Dict[str, Any]] = Field(default_factory=list)
     canary_hits: List[str] = Field(default_factory=list)
     state_diffs: Dict[str, Any] = Field(default_factory=dict)
+    network_requests: List[NetworkRequestRecord] = Field(default_factory=list)
+    budget_metrics: Dict[str, Any] = Field(default_factory=dict)
     model_turns: int = 0
     total_tokens: int = 0
     wall_time_seconds: float = 0.0
