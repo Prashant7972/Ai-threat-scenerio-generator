@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "provider": "google_gemini",
+  "review": {"status": "candidate", "reviewer": "", "timestamp": ""},
+  "models": {},
+  "max_cost_usd": 5.0
+}

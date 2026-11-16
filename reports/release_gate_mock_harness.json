@@ -23,7 +23,7 @@
     },
     "G4B_generator_reproducibility": {
       "status": "PASS",
-      "details": "In-memory generator re-run reproduced identical master corpus SHA-256 (820d9fce)."
+      "details": "In-memory generator re-run reproduced identical master corpus SHA-256 (280aac38)."
     },
     "G5_zero_unauthorized_impact_on_hardened": {
       "status": "PASS",
@@ -43,7 +43,23 @@
     },
     "G9_provenance_diversity_surface_fidelity": {
       "status": "PASS",
-      "details": "Verified 10 AIID incidents, 24 ATLAS references, 10 injection surfaces."
+      "details": "Verified 5 AIID incidents, 24 ATLAS references, 10 injection surfaces."
+    },
+    "G10_verified_source_review": {
+      "status": "PASS",
+      "details": "Source catalog verified: 10 eligible AIID incidents, 5 distinct mapped incidents, 24 ATLAS taxonomy references."
+    },
+    "G11_model_release_evidence": {
+      "status": "PASS",
+      "details": "Hermetic mock-harness validation passed (Development / Pre-deployment validation)."
+    },
+    "G12_complete_observation_hooks": {
+      "status": "PASS",
+      "details": "Trials missing independent observations: 0"
+    },
+    "G13_complete_attempt_schedule": {
+      "status": "PASS",
+      "details": "Requires every planned trial and exactly five canonical attempts per build."
     }
   }
 }

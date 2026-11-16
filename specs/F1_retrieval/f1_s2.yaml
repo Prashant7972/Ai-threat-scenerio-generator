@@ -4,9 +4,9 @@ source_refs:
 - record_id: AML.CS0035
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0035
-- record_id: AIID-INC-0028
+- record_id: AIID-INC-1497
   revision: '2026-10-15'
-  locator: https://incidentdatabase.ai/cite/28
+  locator: https://incidentdatabase.ai/cite/1497/
 source_facts:
 - claim_id: Slack AI prompt injection from shared knowledge channels
 generated_assumptions:
@@ -57,9 +57,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F1
 injection_surface: retrieval_fixture
 origin_type: observed

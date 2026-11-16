@@ -6,6 +6,8 @@ from typing import Dict, Any
 from pathlib import Path
 import json
 import hashlib
+import re
+from datetime import datetime, timezone
 from src.generator.contract import TelemetryRecord, LitmusRecord
 from .assertions import AssertionResults
 
@@ -13,7 +15,8 @@ def create_trial_manifest(
     telemetry: Any,
     record: LitmusRecord,
     assertions: AssertionResults,
-    manifest_dir: Path
+    manifest_dir: Path,
+    context: dict | None = None
 ) -> Path:
     """
     Creates an immutable JSON trial manifest file with complete independent evidence:
@@ -26,6 +29,13 @@ def create_trial_manifest(
 
     manifest_data: Dict[str, Any] = {
         "trial_id": t_rec.trial_id,
+        "started_at": getattr(telemetry, "started_at", None),
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "materialized_record": record.model_dump(mode="json"),
+        "model_requests": t_rec.model_requests,
+        "human_interventions": [],
+        "execution_context": context or {},
+        "coverage_gaps": ["Target container image pin not yet implemented", "Provider cost verification pending"] if not context else context.get("coverage_gaps", []),
         "spec_id": t_rec.spec_id,
         "logical_variant_key": t_rec.logical_variant_key,
         "record_id": record.record_id,
@@ -58,8 +68,10 @@ def create_trial_manifest(
     manifest_data["manifest_sha256"] = manifest_hash
 
     manifest_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path = manifest_dir / f"{telemetry.trial_id}.json"
-    with open(manifest_path, "w", encoding="utf-8") as f:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", t_rec.trial_id):
+        raise ValueError("Invalid trial id for manifest path")
+    manifest_path = manifest_dir / f"{t_rec.trial_id}.json"
+    with open(manifest_path, "x", encoding="utf-8") as f:
         json.dump(manifest_data, f, indent=2, sort_keys=True)
 
     return manifest_path

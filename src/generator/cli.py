@@ -2,6 +2,7 @@
 CLI Interface for the Scenario Generator & Compiler.
 """
 import argparse
+import json
 from pathlib import Path
 from src.generator.auto_generator import export_all_scenario_yamls, generate_litmus_corpus, LITMUS_OUTPUT, SPECS_DIR
 from src.generator.contract import LitmusRecord, RecordType
@@ -36,9 +37,23 @@ def main():
     parser.add_argument("--compile-specs", action="store_true", help="Compile the 20 scenario contract YAMLs into specs/")
     parser.add_argument("--generate", action="store_true", help="Compile specs and materialize 360-record Litmus corpus")
     parser.add_argument("--verify", action="store_true", help="Verify 360-record Litmus corpus")
+    parser.add_argument("--pattern", type=Path, help="Explicit approved pattern JSON")
+    parser.add_argument("--target-profile", type=Path, help="Versioned target profile JSON")
+    parser.add_argument("--output", type=Path, help="Content-addressed package output directory")
     args = parser.parse_args()
 
-    if args.compile_specs:
+    if args.pattern or args.target_profile or args.output:
+        if not all((args.pattern, args.target_profile, args.output)):
+            parser.error("--pattern, --target-profile and --output must be supplied together")
+        if args.generate or args.compile_specs or args.verify:
+            parser.error("Explicit compilation cannot be combined with legacy catalog commands")
+        from .compiler import build_package
+        destination = build_package(json.loads(args.pattern.read_text()),
+                                    json.loads(args.target_profile.read_text()),
+                                    args.pattern.parent, args.output)
+        print(f"Compiled candidate package: {destination}")
+        print("Compilation is not source verification or release acceptance.")
+    elif args.compile_specs:
         export_all_scenario_yamls(SPECS_DIR)
         print(f"Compiled 20 MinimumScenarioContract YAMLs into {SPECS_DIR}")
     elif args.verify:

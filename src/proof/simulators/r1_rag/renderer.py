@@ -24,7 +24,8 @@ class OutputRenderer:
         
         rendered_images = []
         for alt, url in matches:
-            req = {"type": "image", "alt": alt, "url": url}
+            req = {"type": "image", "alt": alt, "url": url,
+                   "unauthorized": (urlparse(url).hostname or "") not in ALLOWED_RENDERER_ORIGINS}
             telemetry.record_renderer_request(req)
             
             parsed = urlparse(url)

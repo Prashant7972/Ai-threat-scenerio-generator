@@ -44,7 +44,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "source_refs": [
             {"record_id": "AML.CS0024", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0024"},
             {"record_id": "AML.CS0059", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0059"},
-            {"record_id": "AIID-INC-0012", "revision": "2026-10-15", "locator": "https://incidentdatabase.ai/cite/12"}
+            {"record_id": "AIID-INC-0352", "revision": "2026-10-15", "locator": "https://incidentdatabase.ai/cite/352/"}
         ],
         "source_facts": [{"claim_id": "Morris II RAG worm infected assistant context via retrieved emails"}],
         "generated_assumptions": ["Incoming external email is parsed directly into retrieval store"],
@@ -68,7 +68,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R1",
         "source_refs": [
             {"record_id": "AML.CS0035", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0035"},
-            {"record_id": "AIID-INC-0028", "revision": "2026-10-15", "locator": "https://incidentdatabase.ai/cite/28"}
+            {"record_id": "AIID-INC-1497", "revision": "2026-10-15", "locator": "https://incidentdatabase.ai/cite/1497/"}
         ],
         "source_facts": [{"claim_id": "Slack AI prompt injection from shared knowledge channels"}],
         "generated_assumptions": ["Shared documents indexed without chunk-level injection sanitization"],
@@ -115,7 +115,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R1",
         "source_refs": [
             {"record_id": "AML.CS0029", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0029"},
-            {"record_id": "AIID-INC-0044", "revision": "2026-10-16", "locator": "https://incidentdatabase.ai/cite/44"}
+            {"record_id": "AIID-INC-0473", "revision": "2026-10-16", "locator": "https://incidentdatabase.ai/cite/473/"}
         ],
         "source_facts": [{"claim_id": "Markdown image renderer exploited to leak conversation context"}],
         "generated_assumptions": ["Client UI renders arbitrary markdown image tags without host verification"],
@@ -141,7 +141,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R2",
         "source_refs": [
             {"record_id": "AML.CS0037", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0037"},
-            {"record_id": "AIID-INC-0067", "revision": "2026-10-16", "locator": "https://incidentdatabase.ai/cite/67"}
+            {"record_id": "AIID-INC-1680", "revision": "2026-10-16", "locator": "https://incidentdatabase.ai/cite/1680/"}
         ],
         "source_facts": [{"claim_id": "Copilot Studio agent coerced to extract CRM database"}],
         "generated_assumptions": ["Database tool lacks row-level scope authorization checks"],
@@ -165,7 +165,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R2",
         "source_refs": [
             {"record_id": "AML.CS0026", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0026"},
-            {"record_id": "AIID-INC-0089", "revision": "2026-10-17", "locator": "https://incidentdatabase.ai/cite/89"}
+            {"record_id": "AIID-INC-1680", "revision": "2026-10-17", "locator": "https://incidentdatabase.ai/cite/1680/"}
         ],
         "source_facts": [{"claim_id": "Financial transaction hijacking via unapproved tool invocation"}],
         "generated_assumptions": ["Tool executes financial disbursements without cryptographic authorization token"],
@@ -214,7 +214,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "source_refs": [
             {"record_id": "AML.CS0073", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0073"},
             {"record_id": "AML.CS0068", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0068"},
-            {"record_id": "AIID-INC-0103", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/103"}
+            {"record_id": "AIID-INC-0420", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/420/"}
         ],
         "source_facts": [{"claim_id": "Autonomous agents bypassing security evaluation sandboxes"}],
         "generated_assumptions": ["Natural language verbal claims in prompt can bypass state verification"],
@@ -240,7 +240,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R3",
         "source_refs": [
             {"record_id": "AML.CS0071", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0071"},
-            {"record_id": "AIID-INC-0118", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/118"}
+            {"record_id": "AIID-INC-1680", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/1680/"}
         ],
         "source_facts": [{"claim_id": "Multi-agent framework compromise via inter-agent communication"}],
         "generated_assumptions": ["Executor worker trusts planner recommendation packet without signature"],
@@ -287,7 +287,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R3",
         "source_refs": [
             {"record_id": "AML.CS0069", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0069"},
-            {"record_id": "AIID-INC-0118", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/118"}
+            {"record_id": "AIID-INC-1680", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/1680/"}
         ],
         "source_facts": [{"claim_id": "GTG-1002 Claude Code espionage campaign orchestration"}],
         "generated_assumptions": ["Agents lack cryptographic validation of delegation scope bounds"],
@@ -312,7 +312,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "source_refs": [
             {"record_id": "AML.CS0068", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0068"},
             {"record_id": "AML.CS0073", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0073"},
-            {"record_id": "AIID-INC-0103", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/103"}
+            {"record_id": "AIID-INC-0420", "revision": "2026-10-18", "locator": "https://incidentdatabase.ai/cite/420/"}
         ],
         "source_facts": [{"claim_id": "Agent permission boundary escalation during evaluation"}],
         "generated_assumptions": ["Planner dynamically requests worker permission expansions on demand"],
@@ -362,7 +362,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "target_surface": "R3",
         "source_refs": [
             {"record_id": "AML.CS0072", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0072"},
-            {"record_id": "AIID-INC-0177", "revision": "2026-10-20", "locator": "https://incidentdatabase.ai/cite/177"}
+            {"record_id": "AIID-INC-0352", "revision": "2026-10-20", "locator": "https://incidentdatabase.ai/cite/352/"}
         ],
         "source_facts": [{"claim_id": "Crafted links and summaries poison assistant recommendation memory"}],
         "generated_assumptions": ["Rolling session summaries concatenated into subsequent turns without filtering"],
@@ -387,7 +387,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "source_refs": [
             {"record_id": "AML.CS0040", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0040"},
             {"record_id": "AML.CS0066", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0066"},
-            {"record_id": "AIID-INC-0134", "revision": "2026-10-19", "locator": "https://incidentdatabase.ai/cite/134"}
+            {"record_id": "AIID-INC-0420", "revision": "2026-10-19", "locator": "https://incidentdatabase.ai/cite/420/"}
         ],
         "source_facts": [{"claim_id": "Hacking ChatGPT Memories with Prompt Injection & ZombieAgent"}],
         "generated_assumptions": ["Long term preference memory accepts arbitrary imperative commands"],
@@ -460,7 +460,7 @@ RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
         "source_refs": [
             {"record_id": "AML.CS0041", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0041"},
             {"record_id": "AML.CS0049", "revision": "v2026.10", "locator": "https://atlas.mitre.org/studies/AML.CS0049"},
-            {"record_id": "AIID-INC-0155", "revision": "2026-10-20", "locator": "https://incidentdatabase.ai/cite/155"}
+            {"record_id": "AIID-INC-1680", "revision": "2026-10-20", "locator": "https://incidentdatabase.ai/cite/1680/"}
         ],
         "source_facts": [{"claim_id": "Rules file backdoor in coding assistants & poisoned skills"}],
         "generated_assumptions": ["Workspace rules loaded directly from untrusted git repository root"],
@@ -571,7 +571,7 @@ def compile_all_scenarios() -> List[MinimumScenarioContract]:
             assertions=[AssertionContract(**a) for a in raw["assertions"]],
             benign_control=BenignControlContract(**raw["benign_control"]),
             budgets=BudgetsContract(turns=10, tool_calls=20, tokens=20000, seconds=300),
-            review=ReviewContract(status="approved", reviewer="security-analyst@prompt-halo.internal", timestamp="2026-11-12T10:00:00Z"),
+            review=ReviewContract(status="candidate"),
             attack_family=AttackFamily(raw["attack_family"]),
             injection_surface=surface,
             origin_type=OriginType(raw["origin_type"]),

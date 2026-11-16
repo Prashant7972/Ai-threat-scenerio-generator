@@ -7,9 +7,9 @@ source_refs:
 - record_id: AML.CS0049
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0049
-- record_id: AIID-INC-0155
+- record_id: AIID-INC-1680
   revision: '2026-10-20'
-  locator: https://incidentdatabase.ai/cite/155
+  locator: https://incidentdatabase.ai/cite/1680/
 source_facts:
 - claim_id: Rules file backdoor in coding assistants & poisoned skills
 generated_assumptions:
@@ -60,9 +60,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F5
 injection_surface: configuration
 origin_type: observed

@@ -57,8 +57,8 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2 mono text-xs">
-        <div class="px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 font-medium">
-          GATE: PASS (9/9)
+        <div id="top-gate-badge" class="px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 font-medium">
+          GATE: PASS (13/13)
         </div>
         <div class="px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--text)]">
           CORPUS: 360
@@ -75,7 +75,7 @@
     <!-- Navigation Tabs -->
     <nav class="flex border-b border-[var(--border)] space-x-1 mono text-xs font-medium" id="nav-tabs">
       <button onclick="switchTab('gates')" class="tab-btn px-4 py-2 border-b-2 border-sky-400 text-sky-400" data-tab="gates">
-        Release Gates (G1–G9)
+        Release Gates (G1–G13)
       </button>
       <button onclick="switchTab('scenarios')" class="tab-btn px-4 py-2 border-b-2 border-transparent text-[var(--text-muted)] hover:text-white" data-tab="scenarios">
         Scenario Specs (20)
@@ -120,7 +120,7 @@
       <!-- Release Gates Grid (G1-G9) -->
       <div class="border border-[var(--border)] rounded-lg bg-[var(--card)] overflow-hidden">
         <div class="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--card-hover)] flex justify-between items-center">
-          <span class="font-semibold text-xs text-white uppercase mono">Release Gate Audit Criteria (G1–G9)</span>
+          <span class="font-semibold text-xs text-white uppercase mono">Release Gate Audit Criteria (G1–G13)</span>
           <span class="text-xs text-emerald-400 mono font-semibold">ALL GATES: PASS</span>
         </div>
         <div class="divide-y divide-[var(--border)]" id="gates-list">
@@ -344,8 +344,8 @@
   </div>
 
   <script>
-    // Load embedded or external data
-    const DATA = window.BENCHMARK_DATA || {};
+    // Load embedded or external data (supports CONSOLE_DATA or BENCHMARK_DATA)
+    let DATA = window.CONSOLE_DATA || window.BENCHMARK_DATA || {};
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -371,6 +371,11 @@
       container.innerHTML = '';
 
       const gateEntries = Object.entries(DATA.gate.gates);
+      const total = gateEntries.length;
+      const passed = gateEntries.filter(([_, g]) => g.status === 'PASS').length;
+      const topBadge = document.getElementById('top-gate-badge');
+      if (topBadge) topBadge.innerText = `GATE: PASS (${passed}/${total})`;
+
       gateEntries.forEach(([gId, gInfo]) => {
         const item = document.createElement('div');
         item.className = 'p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2 hover:bg-black/30 transition-colors';
@@ -574,13 +579,25 @@
     }
 
     // Initialize on load
-    window.addEventListener('DOMContentLoaded', () => {
+    async function initDashboard() {
+      if (!DATA.gate || !DATA.scenarios) {
+        try {
+          const res = await fetch('data.json');
+          if (res.ok) {
+            DATA = await res.json();
+          }
+        } catch (err) {
+          console.warn('Fallback data.json fetch error:', err);
+        }
+      }
       renderGates();
       renderScenarios();
       renderCorpus();
       initManifestSelector();
       recalculateCost();
-    });
+    }
+
+    window.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 </html>

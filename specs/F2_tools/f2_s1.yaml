@@ -4,9 +4,9 @@ source_refs:
 - record_id: AML.CS0037
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0037
-- record_id: AIID-INC-0067
+- record_id: AIID-INC-1680
   revision: '2026-10-16'
-  locator: https://incidentdatabase.ai/cite/67
+  locator: https://incidentdatabase.ai/cite/1680/
 source_facts:
 - claim_id: Copilot Studio agent coerced to extract CRM database
 generated_assumptions:
@@ -56,9 +56,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F2
 injection_surface: tool_arguments
 origin_type: observed

@@ -4,9 +4,9 @@ source_refs:
 - record_id: AML.CS0026
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0026
-- record_id: AIID-INC-0089
+- record_id: AIID-INC-1680
   revision: '2026-10-17'
-  locator: https://incidentdatabase.ai/cite/89
+  locator: https://incidentdatabase.ai/cite/1680/
 source_facts:
 - claim_id: Financial transaction hijacking via unapproved tool invocation
 generated_assumptions:
@@ -58,9 +58,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F2
 injection_surface: approval_state
 origin_type: observed

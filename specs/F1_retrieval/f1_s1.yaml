@@ -7,9 +7,9 @@ source_refs:
 - record_id: AML.CS0059
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0059
-- record_id: AIID-INC-0012
+- record_id: AIID-INC-0352
   revision: '2026-10-15'
-  locator: https://incidentdatabase.ai/cite/12
+  locator: https://incidentdatabase.ai/cite/352/
 source_facts:
 - claim_id: Morris II RAG worm infected assistant context via retrieved emails
 generated_assumptions:
@@ -61,9 +61,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F1
 injection_surface: retrieval_fixture
 origin_type: observed

@@ -1,0 +1,40 @@
+services:
+  inference-proxy:
+    image: ${SCENARIO_IMAGE:?Supply the built image with its sha256 digest}
+    command: ["python", "-m", "src.proof.inference_gateway"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [trial_internal, provider_egress]
+    environment:
+      GATEWAY_POLICY: /config/policy.json
+      PROVIDER_KEY_FILE: /run/secrets/provider_key
+      GATEWAY_TOKEN_FILE: /run/secrets/gateway_token
+      GATEWAY_RECEIPTS: /receipts
+    volumes:
+      - ${GATEWAY_POLICY_PATH:?Provide reviewed policy}:/config/policy.json:ro
+      - ${GATEWAY_RECEIPTS_PATH:?Provide a fresh receipt directory}:/receipts
+    secrets: [provider_key, gateway_token]
+    tmpfs: [/tmp]
+  trial:
+    image: ${SCENARIO_IMAGE:?Supply the built image with its sha256 digest}
+    command: ["python", "-m", "src.proof.evaluator.package_runner", "--help"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [trial_internal]
+    volumes:
+      - ${PACKAGES_PATH:?Provide immutable packages}:/packages:ro
+      - ${GATEWAY_POLICY_PATH:?Provide reviewed policy}:/config/policy.json:ro
+      - ${TRIAL_OUTPUT_PATH:?Provide output directory}:/output
+    secrets: [gateway_token]
+    tmpfs: [/tmp]
+networks:
+  trial_internal:
+    internal: true
+  provider_egress: {}
+secrets:
+  provider_key:
+    file: ${PROVIDER_KEY_PATH:?Provide provider credential file}
+  gateway_token:
+    file: ${GATEWAY_TOKEN_PATH:?Provide gateway client token file}

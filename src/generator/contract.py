@@ -129,15 +129,15 @@ class BenignControlContract(BaseModel):
     expected_task_outcome: Dict[str, Any]
 
 class BudgetsContract(BaseModel):
-    turns: int = Field(default=10, le=10)
-    tool_calls: int = Field(default=20, le=20)
-    tokens: int = Field(default=20000, le=20000)
-    seconds: int = Field(default=300, le=300)
+    turns: int = Field(default=10, gt=0, le=10)
+    tool_calls: int = Field(default=20, gt=0, le=20)
+    tokens: int = Field(default=20000, gt=0, le=20000)
+    seconds: int = Field(default=300, gt=0, le=300)
 
 class ReviewContract(BaseModel):
-    status: str = "approved"
-    reviewer: str = "security-analyst@prompt-halo.internal"
-    timestamp: str = "2026-11-12T10:00:00Z"
+    status: str = "candidate"
+    reviewer: str = ""
+    timestamp: str = ""
 
 class MinimumScenarioContract(BaseModel):
     """
@@ -211,8 +211,10 @@ class LitmusRecord(BaseModel):
 
     @model_validator(mode="after")
     def compute_and_verify_hash(self) -> "LitmusRecord":
-        if not self.payload_bytes:
+        if self.payload_bytes is None:
             self.payload_bytes = self.payload_text.encode("utf-8").hex()
+        if bytes.fromhex(self.payload_bytes) != self.payload_text.encode("utf-8"):
+            raise ValueError("Stored payload bytes do not match payload_text")
         calculated_hash = hashlib.sha256(self.payload_text.encode("utf-8")).hexdigest()
         if not self.content_hash:
             self.content_hash = calculated_hash
@@ -252,6 +254,11 @@ class TelemetryRecord(BaseModel):
     target_build: Literal["vulnerable", "hardened"]
     seed: int
     injection_surface: Optional[str] = None
+    exposure_observed: Optional[bool] = None
+    task_completion_observed: Optional[bool] = None
+    redirection_observed: Optional[bool] = None
+    observation_evidence: Dict[str, Any] = Field(default_factory=dict)
+    model_requests: List[Dict[str, Any]] = Field(default_factory=list)
     proposed_actions: List[Dict[str, Any]] = Field(default_factory=list)
     executed_actions: List[Dict[str, Any]] = Field(default_factory=list)
     tool_events: List[ToolEvent] = Field(default_factory=list)

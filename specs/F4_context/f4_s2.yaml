@@ -4,9 +4,9 @@ source_refs:
 - record_id: AML.CS0072
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0072
-- record_id: AIID-INC-0177
+- record_id: AIID-INC-0352
   revision: '2026-10-20'
-  locator: https://incidentdatabase.ai/cite/177
+  locator: https://incidentdatabase.ai/cite/352/
 source_facts:
 - claim_id: Crafted links and summaries poison assistant recommendation memory
 generated_assumptions:
@@ -56,9 +56,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F4
 injection_surface: memory_summary
 origin_type: observed

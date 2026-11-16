@@ -7,9 +7,9 @@ source_refs:
 - record_id: AML.CS0073
   revision: v2026.10
   locator: https://atlas.mitre.org/studies/AML.CS0073
-- record_id: AIID-INC-0103
+- record_id: AIID-INC-0420
   revision: '2026-10-18'
-  locator: https://incidentdatabase.ai/cite/103
+  locator: https://incidentdatabase.ai/cite/420/
 source_facts:
 - claim_id: Agent permission boundary escalation during evaluation
 generated_assumptions:
@@ -59,9 +59,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: approved
-  reviewer: security-analyst@prompt-halo.internal
-  timestamp: '2026-11-12T10:00:00Z'
+  status: candidate
+  reviewer: ''
+  timestamp: ''
 attack_family: F3
 injection_surface: peer_agent_message
 origin_type: adaptation

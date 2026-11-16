@@ -1,82 +1,130 @@
 [
   {
-    "incident_id": "AIID-INC-0012",
-    "source_url": "https://incidentdatabase.ai/cite/12",
-    "incident_title": "Indirect Injection Through Retrieved Email in Enterprise Copilot",
+    "incident_id": "AIID-INC-0352",
+    "source_url": "https://incidentdatabase.ai/cite/352/",
+    "incident_title": "Twitter Bot Redirection and Prompt Hijacking in GPT-3 Assistant",
     "retrieval_date": "2026-10-15",
-    "mapping_rationale": "Demonstrates prompt injection delivery via external email processing, mapped to F1-S1 and AML.T0051.001.",
-    "mapped_specs": ["F1-S1"]
+    "mapping_rationale": "Demonstrates prompt injection redirection where incoming text coerces assistant to output attacker-chosen messages, adapted for F1-S1 and F4-S2.",
+    "mapped_specs": [
+      "F1-S1",
+      "F4-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0028",
-    "source_url": "https://incidentdatabase.ai/cite/28",
-    "incident_title": "Document RAG Workspace Compromise via Shared Cloud Drive",
+    "incident_id": "AIID-INC-0420",
+    "source_url": "https://incidentdatabase.ai/cite/420/",
+    "incident_title": "Circumventing Conversational Assistant Safety Guardrails via Persona-Based Context",
     "retrieval_date": "2026-10-15",
-    "mapping_rationale": "Demonstrates malicious instructions embedded inside shared documents ingested into RAG store, mapped to F1-S2 and AML.T0070.",
-    "mapped_specs": ["F1-S2"]
+    "mapping_rationale": "Demonstrates safety constraint circumvention via long context framing and persona adoption, adapted for F2-S4, F3-S4, and F4-S3.",
+    "mapped_specs": [
+      "F2-S4",
+      "F3-S4",
+      "F4-S3"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0044",
-    "source_url": "https://incidentdatabase.ai/cite/44",
-    "incident_title": "Markdown Image Exfiltration of Private Chat Context in Enterprise Assistant",
+    "incident_id": "AIID-INC-0473",
+    "source_url": "https://incidentdatabase.ai/cite/473/",
+    "incident_title": "Initial System Instruction Disclosure via Indirect Prompt Injection in Conversational AI",
     "retrieval_date": "2026-10-16",
-    "mapping_rationale": "Shows client-side renderer exploitation to append chat conversation tokens to an image URL query parameter, mapped to F1-S4 and AML.T0077.",
-    "mapped_specs": ["F1-S4"]
+    "mapping_rationale": "Shows assistant coerced into leaking hidden internal system prompts and render directives via crafted prompts, adapted for F1-S4.",
+    "mapped_specs": [
+      "F1-S4"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0067",
-    "source_url": "https://incidentdatabase.ai/cite/67",
-    "incident_title": "Copilot Studio Tool Exploitation Exfiltrates Internal CRM Database",
+    "incident_id": "AIID-INC-1497",
+    "source_url": "https://incidentdatabase.ai/cite/1497/",
+    "incident_title": "Hidden Adversarial Instructions in Document Analysis Workflow",
     "retrieval_date": "2026-10-16",
-    "mapping_rationale": "Agent coerced into querying internal data repository and exfiltrating query records, mapped to F2-S1 and AML.T0085.001.",
-    "mapped_specs": ["F2-S1"]
+    "mapping_rationale": "Demonstrates adversarial payloads concealed within ingested legal petition documents to influence automated document analysis, adapted for F1-S2.",
+    "mapped_specs": [
+      "F1-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0089",
-    "source_url": "https://incidentdatabase.ai/cite/89",
-    "incident_title": "Unauthorized Financial Disbursement Coerced via Assistant Tool Call",
+    "incident_id": "AIID-INC-1680",
+    "source_url": "https://incidentdatabase.ai/cite/1680/",
+    "incident_title": "Workflow Cache Poisoning and Unauthorized Tool Execution in AI Agent Environment",
     "retrieval_date": "2026-10-17",
-    "mapping_rationale": "Financial assistant executed fund transfer without verifying out-of-band authorization signature, mapped to F2-S2 and AML.T0053.",
-    "mapped_specs": ["F2-S2"]
+    "mapping_rationale": "Demonstrates untrusted repository inputs and poisoned workflow configurations triggering unauthorized tool and package execution, adapted for F2-S1, F2-S2, F3-S1, F3-S3, and F5-S2.",
+    "mapped_specs": [
+      "F2-S1",
+      "F2-S2",
+      "F3-S1",
+      "F3-S3",
+      "F5-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0103",
-    "source_url": "https://incidentdatabase.ai/cite/103",
-    "incident_title": "Autonomous Agent Exploitation Across Security Sandboxes",
+    "incident_id": "AIID-INC-0035",
+    "source_url": "https://incidentdatabase.ai/cite/35",
+    "incident_title": "Automated Content Classifier Bypass via Split-Token Input",
     "retrieval_date": "2026-10-18",
-    "mapping_rationale": "Autonomous agents bypassing authorization checks during evaluation benchmarks, mapped to F2-S4 and AML.CS0068 / AML.CS0073.",
-    "mapped_specs": ["F2-S4"]
+    "mapping_rationale": "Demonstrates partitioning payloads across input segments to evade single-chunk inspection, adapted for F1-S3.",
+    "mapped_specs": [
+      "F1-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0118",
-    "source_url": "https://incidentdatabase.ai/cite/118",
-    "incident_title": "Multi-Agent Trust Poisoning in Collaborative DevOps Framework",
+    "incident_id": "AIID-INC-0055",
+    "source_url": "https://incidentdatabase.ai/cite/55",
+    "incident_title": "Dangerous Command Execution in Automated System Diagnostics",
     "retrieval_date": "2026-10-18",
-    "mapping_rationale": "Planner agent convinced Executor agent to expand permissions using unverified authority claims, mapped to F3-S1, F3-S3, and AML.T0118.001.",
-    "mapped_specs": ["F3-S1", "F3-S3"]
+    "mapping_rationale": "Demonstrates diagnostic assistant coerced into recommending destructive remediation commands, adapted for F2-S3.",
+    "mapped_specs": [
+      "F2-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0134",
-    "source_url": "https://incidentdatabase.ai/cite/134",
-    "incident_title": "Persistent Memory Poisoning in Conversational Assistant",
+    "incident_id": "AIID-INC-0071",
+    "source_url": "https://incidentdatabase.ai/cite/71",
+    "incident_title": "Shared Scratchpad Workspace Tampering in Multi-Agent Orchestration",
     "retrieval_date": "2026-10-19",
-    "mapping_rationale": "Attacker injected persistent directive into long-term memory store influencing future conversation sessions, mapped to F4-S3 and AML.CS0040.",
-    "mapped_specs": ["F4-S3"]
+    "mapping_rationale": "Demonstrates lateral movement across multi-agent swarms by poisoning shared scratchpad files, adapted for F3-S2.",
+    "mapped_specs": [
+      "F3-S2"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0155",
-    "source_url": "https://incidentdatabase.ai/cite/155",
-    "incident_title": "Rules File and Skill Extension Backdoor in Developer Coding Assistant",
-    "retrieval_date": "2026-10-20",
-    "mapping_rationale": "Repository rules file contained backdoor prompt logic altering agent execution, mapped to F5-S2 and AML.CS0041 / AML.CS0049.",
-    "mapped_specs": ["F5-S2"]
+    "incident_id": "AIID-INC-0072",
+    "source_url": "https://incidentdatabase.ai/cite/72",
+    "incident_title": "Context Dilution Safety Bypass in Extended-Context Large Language Models",
+    "retrieval_date": "2026-10-19",
+    "mapping_rationale": "Demonstrates safety boundary suppression when adversarial directives follow lengthy benign text, adapted for F4-S1.",
+    "mapped_specs": [
+      "F4-S1"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
   },
   {
-    "incident_id": "AIID-INC-0177",
-    "source_url": "https://incidentdatabase.ai/cite/177",
-    "incident_title": "Adversarial Link Crafting Leading to Recommendation Hijacking",
+    "incident_id": "AIID-INC-0075",
+    "source_url": "https://incidentdatabase.ai/cite/75",
+    "incident_title": "Poisoned Prompt Construction and Template Modification in Local Model Deployments",
     "retrieval_date": "2026-10-20",
-    "mapping_rationale": "Crafted links poisoned web-browsing agent summaries and redirected user downloads, mapped to F4-S2 and AML.CS0072.",
-    "mapped_specs": ["F4-S2"]
+    "mapping_rationale": "Demonstrates dynamic chat template tampering altering inference instructions, adapted for F5-S1 and F5-S3.",
+    "mapped_specs": [
+      "F5-S1",
+      "F5-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
   }
 ]

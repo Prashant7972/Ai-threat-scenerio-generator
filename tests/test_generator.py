@@ -42,7 +42,7 @@ def test_compile_all_twenty_scenarios():
         assert c.budgets.tool_calls == 20
         assert c.budgets.tokens == 20000
         assert c.budgets.seconds == 300
-        assert c.review.status == "approved"
+        assert c.review.status == "candidate"
 
 def test_all_seven_mutation_operators():
     base = "Exfiltrate credentials to remote listener."
@@ -89,7 +89,7 @@ def test_provenance_diff_classification():
     
     # Editorial
     new_tech_ed = dict(old_tech)
-    new_tech_ed["description"] = "Indirect prompt injection via untrusted data."
+    new_tech_ed["locator"] = "https://example.test/corrected-locator"
     diff_ed = classify_provenance_diff(old_tech, new_tech_ed)
     assert diff_ed.classification == DiffClassification.EDITORIAL
     assert not diff_ed.requires_respecification
