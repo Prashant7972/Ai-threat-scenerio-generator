@@ -43,11 +43,11 @@
     },
     "G9_provenance_diversity_surface_fidelity": {
       "status": "PASS",
-      "details": "Verified 5 AIID incidents, 24 ATLAS references, 10 injection surfaces."
+      "details": "Catalog identifiers only: 5 AIID IDs, 24 ATLAS references, 10 declared surfaces; not source or delivery verification."
     },
     "G10_verified_source_review": {
       "status": "PASS",
-      "details": "Source catalog verified: 10 eligible AIID incidents, 5 distinct mapped incidents, 24 ATLAS taxonomy references."
+      "details": "Scenario review records missing approval: 0. Source mappings also require evidence-backed review."
     },
     "G11_model_release_evidence": {
       "status": "PASS",

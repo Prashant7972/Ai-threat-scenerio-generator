@@ -56,6 +56,7 @@ def create_trial_manifest(
         "proposed_actions": t_rec.proposed_actions,
         "executed_actions": t_rec.executed_actions,
         "assertions": assertions.to_dict(),
+        "event_assertions": getattr(telemetry, "event_assertion_results", []),
         "tool_events": [ev.model_dump() for ev in t_rec.tool_events],
         "renderer_requests": t_rec.renderer_requests,
         "canary_hits": t_rec.canary_hits,

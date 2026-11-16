@@ -76,8 +76,10 @@ class InferenceGateway:
             if not isinstance(tool, dict) or set(tool) != {'functionDeclarations'}:
                 raise GatewayRejected('Only client-side function declarations are accepted')
         config = payload.get('generationConfig', {})
-        if not isinstance(config, dict) or set(config) - {'temperature', 'maxOutputTokens', 'seed'}:
+        if not isinstance(config, dict) or set(config) - {'temperature', 'maxOutputTokens', 'seed', 'thinkingConfig'}:
             raise GatewayRejected('Unsupported generation configuration')
+        if 'thinkingConfig' in config and config['thinkingConfig'] != {'thinkingBudget': 0}:
+            raise GatewayRejected('Only explicitly disabled thinking is supported by this budget policy')
         output_cap = config.get('maxOutputTokens', 256)
         if type(output_cap) is not int or not 1 <= output_cap <= 20000:
             raise GatewayRejected('Invalid output token cap')

@@ -16,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from .contract import MinimumScenarioContract, InjectionSurface
 from .harness_generator import SafeHarnessPackage
 from .boundary_variants import materialize_boundary_records, PARAMETER_SCHEMA
+from .mechanisms import materialize_mechanism_records, PARAMETER_SCHEMA as MECHANISM_SCHEMA
 
 
 class TargetProfile(BaseModel):
@@ -132,7 +133,8 @@ def build_package(pattern: dict, profile: dict, root: Path, output: Path) -> Pat
     variants; boundary-coverage review and model trials are separate release gates.
     """
     spec, harness = compile_pattern(pattern, profile, root)
-    records = materialize_boundary_records(spec)
+    mechanism_generator = spec.generator.id == 'reviewed_mechanism_v1'
+    records = materialize_mechanism_records(spec) if mechanism_generator else materialize_boundary_records(spec)
     files = {
         "scenario.json": canonical_bytes(spec.model_dump(mode="json")),
         "target_profile.json": canonical_bytes(profile),
@@ -140,9 +142,9 @@ def build_package(pattern: dict, profile: dict, root: Path, output: Path) -> Pat
         "harness.json": canonical_bytes(harness),
         "corpus.jsonl": b"".join(canonical_bytes(r.model_dump(mode="json")).replace(b"\n", b"") + b"\n" for r in records),
     }
-    for name in ("compiler.py", "contract.py", "mutations.py", "snapshot.py", "harness_generator.py", "boundary_variants.py"):
+    for name in ("compiler.py", "contract.py", "mutations.py", "snapshot.py", "harness_generator.py", "boundary_variants.py", "mechanisms.py"):
         files["generator/" + name] = Path(__file__).with_name(name).read_bytes()
-    files["generator.parameters.schema.json"] = canonical_bytes(PARAMETER_SCHEMA)
+    files["generator.parameters.schema.json"] = canonical_bytes(MECHANISM_SCHEMA if mechanism_generator else PARAMETER_SCHEMA)
     files["scenario.schema.json"] = canonical_bytes(ScenarioSpec.model_json_schema())
     files["target_profile.schema.json"] = canonical_bytes(TargetProfile.model_json_schema())
     for uri in {f.uri for f in spec.fixtures} | {e["snapshot_uri"] for e in pattern["evidence"]}:

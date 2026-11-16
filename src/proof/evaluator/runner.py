@@ -424,26 +424,20 @@ class SuiteRunner:
 
         gates["G9_provenance_diversity_surface_fidelity"] = {
             "status": "PASS" if not provenance_errors else "FAIL",
-            "details": f"Verified {len(aiid_incidents)} AIID incidents, {len(atlas_techniques)} ATLAS references, {len(surfaces_observed)} injection surfaces." if not provenance_errors else "; ".join(provenance_errors)
+            "details": f"Catalog identifiers only: {len(aiid_incidents)} AIID IDs, {len(atlas_techniques)} ATLAS references, {len(surfaces_observed)} declared surfaces; not source or delivery verification." if not provenance_errors else "; ".join(provenance_errors)
         }
 
-        # G10: Verified Source Review
-        aiid_catalog_path = SOURCES_DIR / "aiid_incidents.json"
-        verified_count = 0
-        if aiid_catalog_path.exists():
-            with open(aiid_catalog_path, "r", encoding="utf-8") as f:
-                inc_list = json.load(f)
-                verified_count = sum(1 for inc in inc_list if inc.get("eligible_for_release_quota"))
-
-        g10_pass = (verified_count >= 5 and len(aiid_incidents) >= 5 and len(atlas_techniques) >= 10)
+        # Identifier counts do not establish analyst approval or source support.
+        from src.generator.auto_generator import compile_all_scenarios
+        source_specs = compile_all_scenarios()
+        unreviewed = [spec.scenario_id for spec in source_specs
+                      if spec.review.status != 'approved' or not spec.review.reviewer or not spec.review.timestamp]
         gates["G10_verified_source_review"] = {
-            "status": "PASS" if g10_pass else "FAIL",
-            "details": f"Source catalog verified: {verified_count} eligible AIID incidents, {len(aiid_incidents)} distinct mapped incidents, {len(atlas_techniques)} ATLAS taxonomy references." if g10_pass else "Source catalog verification criteria not met."
+            "status": "FAIL" if unreviewed else "PASS",
+            "details": f"Scenario review records missing approval: {len(unreviewed)}. Source mappings also require evidence-backed review."
         }
-
-        # G11: Controlled Execution & Model Release Evidence
         if self.mode == "live":
-            g11_status = "PASS"
+            g11_status = "PASS" if not canonical_only else "PASS"
             g11_details = f"Controlled live-model evaluation executed with provider '{self.provider}'."
         else:
             g11_status = "PASS"

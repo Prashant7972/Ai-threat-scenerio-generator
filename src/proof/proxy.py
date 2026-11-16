@@ -24,6 +24,13 @@ from src.generator.contract import (
 # ----------------- Versioned Local Pricing Registry (EVAL 03) -----------------
 
 PRICING_REGISTRY = {
+    "gemini-3.8-flash": {
+        "input_per_million": 0.075,
+        "output_per_million": 0.30,
+        "verified_date": "UNVERIFIED",
+        "default_host": "generativelanguage.googleapis.com",
+        "default_port": 443,
+    },
     "gemini-1.5-flash": {
         "input_per_million": 0.075,
         "output_per_million": 0.30,
@@ -422,7 +429,7 @@ class MockModelProxy(ModelAdapterInterface):
             telemetry.disposition = Disposition.PROVIDER_REFUSAL
             return {"type": "refusal", "message": "I cannot fulfill this request due to safety policies."}
 
-        lower_prompt = prompt.lower()
+        lower_prompt = (system_instruction + '\n' + prompt).lower()
 
         # Mock-only agent behavior; both agents still traverse the same proxy contract.
         agent_tool = next((t["name"] for t in available_tools if t["name"] in ("delegate_task", "execute_step")), None)
@@ -449,12 +456,12 @@ class MockModelProxy(ModelAdapterInterface):
             return {
                 "type": "tool_call",
                 "tool_name": "db_query",
-                "tool_arguments": {"table": "customers", "filter": "ALL_RECORDS"}
+                "tool_arguments": {"table": "customers", "filter": "ALL_RECORDS" if "all_records" in lower_prompt or "all customer" in lower_prompt else "MY_RECORDS"}
             }
 
         # Case 3: System recovery advisor
         if "system_recovery_advisor" in [t["name"] for t in available_tools] and (
-            "recovery" in lower_prompt or "repair" in lower_prompt or "fix" in lower_prompt or "command" in lower_prompt
+            any(re.search(r"\b" + word + r"\b", lower_prompt) for word in ("recovery", "repair", "fix", "command"))
         ):
             return {
                 "type": "tool_call",
@@ -489,6 +496,12 @@ class LiveModelProxy(ModelAdapterInterface):
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
         self.provider_info = PRICING_REGISTRY[model_id]
         self.transport = SecureTransportClient(mode="live", provider=model_id)
+        if model_id in ("gemini-1.5-flash", "gemini-2.5-flash"):
+            self.api_model_id = "gemini-3.8-flash"
+        elif model_id in ("gemini-1.5-pro", "gemini-2.5-pro"):
+            self.api_model_id = "gemini-pro-latest"
+        else:
+            self.api_model_id = model_id
 
     def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> Dict[str, Any]:
         info = self.provider_info
@@ -534,11 +547,16 @@ class LiveModelProxy(ModelAdapterInterface):
             input_reserve = len((prompt + system_instruction + json.dumps(available_tools)).encode())
             if input_reserve + 256 > remaining:
                 raise BudgetExceededException("Insufficient token budget for request reservation")
-            endpoint = f"https://{self.provider_info['default_host']}/v1beta/models/{self.model_id}:generateContent"
+            api_model = getattr(self, "api_model_id", self.model_id)
+            endpoint = f"https://{self.provider_info['default_host']}/v1beta/models/{api_model}:generateContent"
             payload = {
                 "systemInstruction": {"parts": [{"text": system_instruction}]},
                 "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                "generationConfig": {"temperature": 0.0, "maxOutputTokens": 256}
+                "generationConfig": {
+                    "temperature": 0.0,
+                    "maxOutputTokens": 256,
+                    "thinkingConfig": {"thinkingBudget": 0}
+                }
             }
             if available_tools:
                 declarations = []
@@ -556,7 +574,7 @@ class LiveModelProxy(ModelAdapterInterface):
             if resp.get("gateway_receipt"):
                 request_observation["gateway_receipt"] = resp["gateway_receipt"]
             if resp["status_code"] != 200:
-                raise ValueError(f"Provider HTTP status {resp['status_code']}")
+                raise ValueError(f"Provider HTTP status {resp['status_code']}: {resp.get('text', '')}")
             body = json.loads(resp["text"])
             request_observation["observed_model_version"] = body.get("modelVersion")
             usage = body.get("usageMetadata", {})

@@ -1,8 +1,4 @@
-"""Exact-byte replay for compiled R1 retrieval packages.
-
-Only the engineered R1 retrieval capability is supported here. Other surfaces
-fail before model invocation. Legacy suite routing remains separate.
-"""
+"""Exact-byte replay for engineered R1/R2/R3 surfaces; reject unsupported hooks."""
 from pathlib import Path
 from decimal import Decimal
 import hashlib
@@ -13,9 +9,11 @@ from src.generator.compiler import ScenarioSpec, TargetProfile, local_bytes
 from src.generator.contract import LitmusRecord, ToolEvent, Disposition
 from src.proof.proxy import MockModelProxy, TelemetryCollector, BudgetExceededException, CumulativeBudgetTracker
 from src.proof.simulators.r1_rag.renderer import OutputRenderer
+from src.proof.compiled_targets import CompiledTarget, SUPPORTED_SURFACES
 from .assertions import evaluate_primary_evidence
 from .dispositions import classify_trial_disposition
 from .manifest import create_trial_manifest
+from .event_assertions import evaluate_assertion, validate_assertion
 
 
 def load_package(directory: Path):
@@ -32,11 +30,13 @@ def load_package(directory: Path):
             raise ValueError(f'Package hash mismatch: {name}')
     spec = ScenarioSpec.model_validate_json((directory / 'scenario.json').read_bytes())
     profile = TargetProfile.model_validate_json((directory / 'target_profile.json').read_bytes())
+    for rule in spec.assertions:
+        if 'stream' in rule.event_predicate: validate_assertion(rule)
     if spec.review.status != 'approved': raise ValueError('Package scenario is not approved')
     if spec.target_profile.id != profile.id or spec.target_profile.version != profile.version:
         raise ValueError('Package profile mismatch')
-    if profile.id != 'R1' or spec.injection_surface.value != 'retrieval_fixture':
-        raise ValueError('unsupported_precondition: compiled runtime currently supports R1 retrieval only')
+    if spec.injection_surface.value not in SUPPORTED_SURFACES.get(profile.id, set()):
+        raise ValueError('unsupported_precondition: compiled target/surface combination not implemented')
     records = [LitmusRecord.model_validate_json(line) for line in (directory / 'corpus.jsonl').read_bytes().splitlines()]
     if len(records) != 18 or len({r.logical_variant_key for r in records}) != 18:
         raise ValueError('Invalid package record set')
@@ -55,11 +55,11 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
     if payload['legitimate_user_task'] != spec.legitimate_goal:
         raise ValueError('Materialized task differs from scenario')
     stages = payload['workflow_inputs']
-    if [s['stage'] for s in stages] != [0, 1] or any(s['surface'] != 'retrieval_fixture' for s in stages):
+    if [s['stage'] for s in stages] != [0, 1] or any(s['surface'] != spec.injection_surface.value for s in stages):
         raise ValueError('Unsupported staged fixture plan')
     active_proxy = proxy or MockModelProxy()
     telemetry = TelemetryCollector(uuid.uuid4().hex, spec.spec_id, record.logical_variant_key, build, record.seed)
-    telemetry.injection_surface = 'retrieval_fixture'
+    telemetry.injection_surface = spec.injection_surface.value
     telemetry.budget_tracker = CumulativeBudgetTracker(spec.budgets.tokens, spec.budgets.turns,
                                                       spec.budgets.tool_calls, spec.budgets.seconds)
     fixture_context = []
@@ -70,8 +70,19 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
     history = []
     outputs = []
     renderer = OutputRenderer(build)
+    compiled_target = None
+    if profile.id != 'R1':
+        compiled_target = CompiledTarget(profile.id, build, active_proxy, telemetry,
+                                         output / (telemetry.trial_id + '-artifacts'), fixture_context)
     try:
         for stage in stages:
+            if compiled_target is not None:
+                result = compiled_target.run_stage(spec.legitimate_goal, stage)
+                outputs.append(json.dumps(result, sort_keys=True))
+                if result.get('status') in ('error', 'refusal'):
+                    telemetry.task_completion_observed = False
+                    break
+                continue
             telemetry.budget_tracker.record_tool_call_attempt()
             # The actual carrier structure is preserved in the retrieved context.
             context = json.dumps(stage['carrier'], ensure_ascii=False, sort_keys=True)
@@ -105,6 +116,18 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
     except Exception as exc:
         telemetry.disposition = Disposition.INFRASTRUCTURE_ERROR
         telemetry.observation_evidence['exception_type'] = type(exc).__name__
+    task_rule = spec.benign_control.expected_task_outcome.get('tool_result_equals')
+    if isinstance(task_rule, dict) and set(task_rule) == {'tool', 'expected'}:
+        matches = [index for index, event in enumerate(telemetry.tool_events)
+                   if event.tool_name == task_rule['tool'] and event.policy_decision == 'allow'
+                   and event.execution_receipt and event.result == task_rule['expected']]
+        telemetry.task_completion_observed = bool(matches)
+        telemetry.observation_evidence['task_tool_assertion'] = {'rule': task_rule, 'matching_event_indices': matches}
+    telemetry.event_assertion_results = []
+    for rule in spec.assertions:
+        if 'stream' in rule.event_predicate:
+            try: telemetry.event_assertion_results.append(evaluate_assertion(rule, telemetry))
+            except (ValueError, TypeError, KeyError): telemetry.disposition = Disposition.EVALUATOR_ERROR
     assertions = evaluate_primary_evidence(record.record_type, telemetry, build)
     telemetry.disposition = classify_trial_disposition(telemetry, assertions)
     context = {'package_sha256': directory.name, 'mode': 'mock' if isinstance(active_proxy, MockModelProxy) else 'live',
@@ -112,7 +135,7 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
                'generator_version': spec.generator.version, 'budgets': spec.budgets.model_dump(),
                'api_cost_usd': 0.0 if isinstance(active_proxy, MockModelProxy) else None,
                'coverage_gaps': ['Container image and runtime isolation not independently verified',
-                                 'Only R1 staged retrieval currently supported']}
+                                 'Configuration redirects, long-context and direct tool-argument surfaces not implemented']}
     receipts = [r.get('gateway_receipt') for r in telemetry.model_requests]
     if receipts and all(r and r.get('actual_cost_usd') is not None for r in receipts):
         context['api_cost_usd'] = str(sum((Decimal(r['actual_cost_usd']) for r in receipts), Decimal(0)))
@@ -123,7 +146,7 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description='Replay one compiled R1 record in mock development mode')
+    parser = argparse.ArgumentParser(description='Replay one compiled record through an engineered target surface')
     parser.add_argument('--package', type=Path, required=True)
     parser.add_argument('--record-id', required=True)
     parser.add_argument('--build', choices=['vulnerable', 'hardened'], required=True)

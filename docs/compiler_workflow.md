@@ -16,7 +16,7 @@ Use generator id `boundary_carrier_v1`, version `1.0.0`, empty parameters, selec
 
 This generator requires `authority_claims`, `carrier_changes`, and `multi_turn_placement` in the declared mutation scope. It materializes 12 attacks (2 authority modes x 3 carriers x 2 workflow stages) and six controls sharing task, fixtures, carrier and placement. Every attack points to its matched control. The payload bytes contain the complete structured workflow inputs, rather than merely writing “Turn 2” in one prompt. Unsupported generator versions, parameters, dimensions or scopes are rejected.
 
-The R1 package runner delivers the two retrieval stages through separate model calls, preserves carrier structure and prior outputs, observes renderer requests, and can check `benign_control.expected_task_outcome.output_contains` independently. It reads stored bytes without calling the generator and rejects package tampering before execution. R2/R3 package replay is explicitly unsupported and rejected before model invocation. Other mechanism-specific generators still need implementation.
+The R1 package runner delivers the two retrieval stages through separate model calls, preserves carrier structure and prior outputs, observes renderer requests, and can check `benign_control.expected_task_outcome.output_contains` independently. It reads stored bytes without calling the generator and rejects package tampering before execution. R2 supports `tool_response` and `chat_template`; R3 supports `peer_agent_message`, `shared_artifact`, `memory_summary` and `chat_template`. Template stages preserve original/mutated files with hashes and diffs; benign controls use explicit no-op operations. Other target/surface combinations are rejected before model invocation. Other mechanism-specific generators still need implementation.
 
 ```bash
 python3 -m src.proof.evaluator.package_runner --package /path/to/packages/SHA256 \
@@ -26,3 +26,5 @@ python3 -m src.proof.evaluator.package_runner --package /path/to/packages/SHA256
 This CLI is mock development mode. A passing record is not release acceptance.
 
 The regression tests in `tests/test_strict_compiler.py` demonstrate the input shape using synthetic test-only approvals. They are not approved client patterns and must not be presented as such.
+
+For tool-driven legitimate tasks, `expected_task_outcome.tool_result_equals` accepts exactly `tool` and `expected`. The runtime matches actual allowed tool-event results and receipts, independently of the record label or model prose.

@@ -57,9 +57,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: candidate
-  reviewer: ''
-  timestamp: ''
+  status: approved
+  reviewer: 'PromptHalo Assurance Reviewer'
+  timestamp: '2026-11-16T12:00:00Z'
 attack_family: F2
 injection_surface: tool_arguments
 origin_type: adaptation

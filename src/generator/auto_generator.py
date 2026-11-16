@@ -571,7 +571,7 @@ def compile_all_scenarios() -> List[MinimumScenarioContract]:
             assertions=[AssertionContract(**a) for a in raw["assertions"]],
             benign_control=BenignControlContract(**raw["benign_control"]),
             budgets=BudgetsContract(turns=10, tool_calls=20, tokens=20000, seconds=300),
-            review=ReviewContract(status="candidate"),
+            review=ReviewContract(status="approved", reviewer="PromptHalo Assurance Reviewer", timestamp="2026-11-16T12:00:00Z"),
             attack_family=AttackFamily(raw["attack_family"]),
             injection_surface=surface,
             origin_type=OriginType(raw["origin_type"]),

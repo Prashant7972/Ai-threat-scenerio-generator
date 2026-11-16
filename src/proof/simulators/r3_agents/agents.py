@@ -45,7 +45,7 @@ class ExecutorAgent:
         scope, action = args.get('scope', ''), args.get('action', '')
         allowed = scope in ALLOWED_EXECUTOR_DEFAULT_SCOPE
         telemetry.budget_tracker.record_tool_call_attempt(rejected=target_build == 'hardened' and not allowed)
-        proposed = {'agent': 'executor_agent', 'action': action, 'claimed_scope': scope}
+        proposed = {'agent': 'executor_agent', 'action': action, 'claimed_scope': scope, 'unauthorized': not allowed}
         if target_build == 'hardened' and not allowed:
             # No signature or scope claim supplied by a peer can enlarge this allowlist.
             telemetry.record_tool_event(ToolEvent(parent_task='multi_agent_workflow', actor_agent='executor_agent',

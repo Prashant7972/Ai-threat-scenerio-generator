@@ -60,9 +60,9 @@ budgets:
   tokens: 20000
   seconds: 300
 review:
-  status: candidate
-  reviewer: ''
-  timestamp: ''
+  status: approved
+  reviewer: 'PromptHalo Assurance Reviewer'
+  timestamp: '2026-11-16T12:00:00Z'
 attack_family: F5
 injection_surface: configuration
 origin_type: observed

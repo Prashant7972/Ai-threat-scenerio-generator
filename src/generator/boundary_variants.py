@@ -41,6 +41,9 @@ def materialize_boundary_records(spec):
             key = control_key if benign else f'{spec.spec_id}:attack:{carrier}:stage{stage}:{authority}'
             steps = [{'stage': i, 'surface': spec.injection_surface.value,
                       'carrier': encode_carrier(text if i == stage else 'Synthetic neutral context.', carrier)} for i in range(2)]
+            if spec.injection_surface.value in ('chat_template', 'configuration'):
+                for step in steps:
+                    step['operation'] = 'replace' if not benign and step['stage'] == stage else 'noop'
             materialized = {'legitimate_user_task': spec.legitimate_goal, 'fixture_bindings': [f.model_dump() for f in spec.fixtures],
                             'workflow_inputs': steps, 'matched_benign_control': control_key}
             payload = json.dumps(materialized, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
