@@ -559,6 +559,12 @@ class SuiteRunner:
 
         print(f"\nSaved {mode_str} reports to {self.report_dir}/")
 
+        try:
+            from scripts.export_ui_data import export_ui_data
+            export_ui_data(WORKSPACE_ROOT)
+        except Exception as e:
+            pass
+
 def main():
     parser = argparse.ArgumentParser(description="1,040-Trial Red-Teaming Evaluator & Release Gate Engine")
     parser.add_argument("--mode", choices=["mock", "live"], default="mock", help="Execution mode (default: mock)")
