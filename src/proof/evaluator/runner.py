@@ -133,7 +133,7 @@ class SuiteRunner:
 
         except BudgetExceededException:
             telemetry.disposition = Disposition.TIMEOUT if telemetry.wall_time_seconds > 300 else Disposition.BUDGET_EXHAUSTED
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             telemetry.disposition = Disposition.INFRASTRUCTURE_ERROR
             telemetry.observation_evidence["exception_type"] = type(exc).__name__
 
@@ -330,7 +330,7 @@ class SuiteRunner:
                 "status": "PASS" if repro_pass else "FAIL",
                 "details": f"In-memory generator re-run reproduced identical master corpus SHA-256 ({reproduced_hash[:8]})." if repro_pass else f"Re-run hash {reproduced_hash[:8]} != master {master_corpus_hash[:8]}"
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             gates["G4B_generator_reproducibility"] = {
                 "status": "FAIL",
                 "details": f"Generator reproducibility check failed: {e!s}"
@@ -503,7 +503,7 @@ class SuiteRunner:
         )
 
         canonical_md = [
-            f"# {'⚠️ Mock-Harness Validation' if is_mock else '🛡️ Controlled Real-Model Evaluation'}: Canonical Repeatability Report",
+            f"# {'Mock-Harness Validation' if is_mock else 'Controlled Real-Model Evaluation'}: Canonical Repeatability Report",
             banner,
             f"**Execution Mode**: `{self.mode}` (Provider: `{self.provider}`)",
             f"**Total Executions**: {sum(len(b['vulnerable']) + len(b['hardened']) for b in canonical_results.values())} trials",
@@ -535,7 +535,7 @@ class SuiteRunner:
 
         # 3. Full Suite Report Markdown
         suite_md = [
-            f"# {'⚠️ Mock-Harness Validation' if is_mock else '🛡️ Controlled Real-Model Evaluation'}: Full Evaluation Suite Report",
+            f"# {'Mock-Harness Validation' if is_mock else 'Controlled Real-Model Evaluation'}: Full Evaluation Suite Report",
             banner,
             f"**Total Executions**: {len(all_trials)} trials across Vulnerable and Hardened targets.",
             f"**Wall-Clock Duration**: {elapsed_seconds:.2f} seconds.",
@@ -557,7 +557,7 @@ class SuiteRunner:
         try:
             from scripts.export_ui_data import export_ui_data
             export_ui_data(WORKSPACE_ROOT)
-        except Exception:
+        except (ImportError, OSError):
             pass
 
 def main():

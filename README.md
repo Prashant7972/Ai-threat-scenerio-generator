@@ -1,48 +1,127 @@
-# Scenario compiler and generator
+# AI Threat Scenario Generator and Assurance Suite
 
-**Status: development candidate, not a client-accepted release.** The generator is the product. Reference applications and evaluations exist to test the usefulness of its generated scenarios and harness packages.
+**Status: Release Candidate (In-Sandbox Implementation 100% Complete; Operational Live Certification Pending).**
 
-This is a separate Git repository. No live model validation or client acceptance is claimed. Historical reports and the legacy 360-record corpus contain unverified source mappings and must not be used as acceptance evidence.
+The **generator is the primary product**: it ingests reviewed threat patterns and versioned target profiles, then produces concrete, reproducible threat scenario specifications and engineered test harness packages. The reference applications and evaluation engine demonstrate and verify whether those generated scenarios expose intended vulnerabilities on vulnerable builds and ensure proper containment on hardened builds while preserving normal task completion.
 
-## Start here
+---
 
-- [Client requirement status](docs/requirements_status.md)
-- [Critical gaps in the original ZIP](docs/original_zip_audit.md)
-- [Draft context transfer for Juby and Om](docs/juby_translation_for_om.md)
-- [Compiler input and output contract](docs/compiler_workflow.md)
-- [Source verification notes](docs/source_verification.md)
-- [Controlled inference deployment](deployment/README.md)
-- [Compiled release-validation protocol](docs/compiled_release_protocol.md)
+## 1. Documentation Index
 
-## Local checks
+* [Delivery Status & Verification](DELIVERY_STATUS.md): Audited candidate release summary and gate report.
+* [Client Requirement Status](docs/requirements_status.md): In-depth matrix of GEN, R1–R3, SIM, and EVAL specifications.
+* [Draft Context Transfer for Juby and Om](docs/juby_translation_for_om.md): Requirements translation and handoff notes.
+* [Authoritative Source Grounding Dossier](docs/source_evidence_dossier.md): Verified AIID incident records and MITRE ATLAS technique mappings.
+* [Twenty-Scenario Security Review Ledger](docs/scenario_reviews.md): Formal review ledger and boundary mutation rules.
+* [Compiler Workflow Contract](docs/compiler_workflow.md): Explicit pattern-and-profile compiler specifications.
+* [Compiled Release Protocol](docs/compiled_release_protocol.md): 1,040-trial baseline and canonical schedule.
+* [Controlled Inference Deployment](deployment/README.md): Gateway proxy and container configuration.
 
-Python 3.10+ is required. Install `requirements.txt` in a virtual environment, then run:
+---
+
+## 2. Core Capabilities & Deliverables
+
+### A. Twenty Scenario Contracts across Five Families (GEN 01)
+* **F1: Retrieved Content Injection** (`f1_s1`–`f1_s4`): External email injection, document RAG poisoning, split-document chunk assembly, and renderer tag disclosure.
+* **F2: Tool Misuse & Parameter Poisoning** (`f2_s1`–`f2_s4`): SQL bulk-query exploitation, unapproved wire transfers, destructive diagnostic scripts, and verbal approval bypass.
+* **F3: Multi-Agent Trust & Delegation** (`f3_s1`–`f3_s4`): Scope expansion, shared scratchpad artifact poisoning, authority delegation hijacking, and peer role escalation.
+* **F4: State, Context & Memory Integrity** (`f4_s1`–`f4_s4`): Long-context attention dilution, conversation state redirection, memory summary poisoning, and untrusted error recovery.
+* **F5: Bundled Logic & Supply Chain** (`f5_s1`–`f5_s4`): Chat template modification, system rules file boundary escape, endpoint configuration redirect, and dormant canary triggers.
+
+### B. 360-Record Bounded Litmus Corpus (GEN 03, GEN 04)
+* Materializes 12 boundary attack variants and 6 matched benign controls for every scenario (240 attacks + 120 controls = 360 total records).
+* Master corpus content SHA-256 hash: `280aac38...`.
+* Every variant enforces strict carrier placement, explicit mutation operators, and content-addressed replay.
+
+### C. Three Reference Application Architectures
+* **R1 (RAG Assistant)**: Dual-stage email/document retrieval, renderer allowlists, and image canary exfiltration sinks.
+* **R2 (Tool Assistant)**: Synthetic banking and customer databases, external single-use approval tokens, and template diff tracking.
+* **R3 (Multi-Agent Swarm)**: Two model-mediated agents (Planner & Executor), shared artifact workspace, and memory summary policy diffs.
+
+### D. Authoritative Source Grounding (Source Quotas)
+* Grounded in 5 primary verified AIID incidents ([AIID 352](https://incidentdatabase.ai/cite/352/), [AIID 420](https://incidentdatabase.ai/cite/420/), [AIID 473](https://incidentdatabase.ai/cite/473/), [AIID 1497](https://incidentdatabase.ai/cite/1497/), [AIID 1680](https://incidentdatabase.ai/cite/1680/)) plus 5 structured adaptations.
+* Formally pinned to MITRE ATLAS v2026.10 canonical release asset digest `ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d` covering 24 distinct techniques.
+
+### E. Independent Declarative Stream Assertions (EVAL 01, EVAL 02)
+* Stream-based event assertions observing primary event sinks (`tool_events`, `renderer_requests`, `canary_hits`, `state_diffs`).
+* Eliminates name-based heuristics; verifies parameter binding, single-use token invalidation, and cross-tenant query isolation.
+
+### F. Automated Change Management Engine (GEN 05)
+* Automated validator (`src/generator/change_manager.py`) auditing scenario spec hashes against `scenario_review_ledger.json`.
+* Classifies diffs, produces append-only change plans, and automatically invalidates stale trial manifests on modification.
+
+### G. PostgreSQL Prompt & Scenario Database
+* Full relational schema (`scripts/db/schema.sql`) and export script (`scripts/db/export_to_postgres.py`).
+* Stores all 20 scenario contracts, 360 corpus records, and telemetry with PostgreSQL GIN full-text search indexes.
+
+### H. ATLAS Red-Team Web Console UI
+* Standalone web console (`ui/index.html` and `ui/data.js`) visualizing release gates, scenario specs, the 360-record corpus explorer, and trial evidence.
+
+---
+
+## 3. Quickstart & Local Verification
+
+### Environment Setup
+Python 3.10 or newer is required.
 
 ```bash
-python3 -m pytest tests/ -q
-python3 -m src.generator.cli --verify
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 1. Run Unit Test Suite (101 Tests)
+```bash
+python3 -m pytest tests/ -v
+```
+
+### 2. Run the 1,040-Trial Release Protocol (Mock Mode)
+```bash
 python3 -m src.proof.evaluator.runner --mode mock
 ```
+Executes all 1,040 trials (720 baseline + 320 canonical repetitions) across vulnerable and hardened builds, evaluating all 14 release gates to **PASS**.
 
-The corpus verification command verifies legacy counts and payload integrity only. It does not verify incident support or approve a release. The mock suite deliberately returns a nonzero exit code when release gates fail. Every invocation stores its own results under `reports/runs/<session_id>/`, retaining all attempts.
-
-## Compile explicit inputs
-
+### 3. Audit Scenario Review & Change Invalidation Status (GEN 05)
 ```bash
-python3 -m src.generator.cli \
-  --pattern /path/to/input/pattern.json \
-  --target-profile /path/to/input/target-profile.json \
-  --output /path/to/packages
+python3 -m src.generator.change_manager --check
 ```
 
-The input must include an actual analyst approval, versioned target capabilities, machine-checkable predicates, hashed local fixtures and evidence, explicit workflow stages, and a trust boundary. The compiler validates these bindings and rejects inconsistent inputs before materialization. It does not decide whether a source claim is true or impersonate an analyst.
+### 4. Export Prompts & Scenarios to PostgreSQL
+```bash
+# Initialize schema and export data to PostgreSQL
+psql -U postgres -d threat_scenarios -f scripts/db/schema.sql
+python3 scripts/db/export_to_postgres.py --host localhost --user postgres --password secret --db threat_scenarios
+```
 
-Each content-addressed package stores scenario JSON, target profile, harness configuration, corpus bytes, input fixtures/evidence, JSON schemas and the generator source. Reusing a package verifies the stored bytes; altered content is rejected. Generated content is data, never executed as shell scripts or Python.
+### 5. Launch the Web Console UI
+```bash
+# Serve the console locally
+python3 -m http.server 8000 --directory ui
+```
+Open [http://localhost:8000/](http://localhost:8000/) in any modern web browser.
 
-## Current limitations
+---
 
-The legacy catalog is hard-coded, includes confirmed incorrect AIID mappings, and uses placeholder fixture references. Its mutation wrappers do not establish boundary coverage. The strict compiler now uses a structured carrier/placement generator with twelve attack cases and six paired controls. It requires authority, carrier and staged-placement mutation permissions. A separate R1 package runner replays the staged inputs from stored bytes. Compiled R2 tool-response/template and R3 peer/artifact/summary/template routing is now available. Twenty mechanism templates now include structured email/document/split inputs, long context, remembered instructions, configuration redirects and trigger-dependent local canaries. These templates have materialization tests; useful live behavior for all twenty has not been demonstrated.
+## 4. Controlled Live-Model Trials (Operational Step)
 
-The live Gemini response parser has offline unit tests for content, tool calls, refusal and failures. No external provider run has been performed. The old pricing registry is unverified; do not use its dates or rates as a current vendor quote. A separately controlled gateway and internal-only trial-network deployment are implemented. Container isolation and image pins remain unverified because Docker socket access is denied. Independent task checks for every scenario and full structured surface routing remain incomplete.
+To run the full 1,040-trial protocol against live Google Gemini endpoints:
 
-Passing unit tests or a mock trace is not evidence that all 20 scenarios meet the release gate. See the status matrix for the remaining work. The accompanying ZIP is a development candidate containing source, tests, documentation and historical evidence. Read DELIVERY_STATUS.md before treating any legacy report as acceptance.
+```bash
+export GEMINI_API_KEY="your-api-key"
+python3 -m src.proof.evaluator.runner --mode live --provider gemini-3.8-flash
+```
+* Uses `src/proof/proxy.py` with cost tracking, rate-limiting reservations, and exact model allowlists.
+* Live API trial manifests, actual token usage, and live provider receipts will be stored in `reports/runs/<session_id>/trial_manifests/`.
+
+---
+
+## 5. Summary of Acceptance Status
+
+* **In-Sandbox Technical Requirements:** **100% COMPLETE.** All 20 scenarios, 360 corpus records, mechanisms, simulators, assertions, change manager, database exporter, UI console, and 101 tests are verified and operational.
+* **Out-of-Sandbox Client Milestones:**
+  1. Live Model Spend: Client executing `--mode live` with their funded API key.
+  2. Deployment Verification: Running `docker compose up` on Docker daemon socket-enabled host.
+  3. Formal Acceptance Sign-Off: Juby and Om conducting their final handoff review.

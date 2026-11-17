@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .provenance import DiffClassification, classify_provenance_diff, plan_source_change, save_change_plan
+from .provenance import plan_source_change, save_change_plan
 
 
 class ChangeManager:
@@ -85,6 +85,8 @@ def main():
     root = Path(__file__).resolve().parent.parent.parent
     manager = ChangeManager(root)
     result = manager.audit_change_status()
+    if args.check:
+        print(f"Audit Status: {result['status']} ({result['verified_specs']}/{result['total_specs']} verified)")
     print(json.dumps(result, indent=2))
 
 

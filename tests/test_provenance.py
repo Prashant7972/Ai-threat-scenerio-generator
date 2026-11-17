@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import yaml
+
 from src.generator.change_manager import ChangeManager
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
