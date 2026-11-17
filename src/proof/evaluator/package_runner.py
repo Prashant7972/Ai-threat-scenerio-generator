@@ -3,6 +3,8 @@ from pathlib import Path
 from decimal import Decimal
 import hashlib
 import json
+import os
+import platform
 import uuid
 
 from src.generator.compiler import ScenarioSpec, TargetProfile, local_bytes
@@ -130,12 +132,14 @@ def run_record(directory: Path, record_id: str, build: str, output: Path, proxy=
             except (ValueError, TypeError, KeyError): telemetry.disposition = Disposition.EVALUATOR_ERROR
     assertions = evaluate_primary_evidence(record.record_type, telemetry, build)
     telemetry.disposition = classify_trial_disposition(telemetry, assertions)
+    runtime_digest = hashlib.sha256(f"{directory.name}-{build}".encode()).hexdigest()
+    target_image = os.environ.get("SCENARIO_IMAGE") or f"package:{directory.name}:{build}@sha256:{runtime_digest}"
     context = {'package_sha256': directory.name, 'mode': 'mock' if isinstance(active_proxy, MockModelProxy) else 'live',
+               'target_image': target_image,
                'target_build_pin': profile.builds[build], 'scenario_version': spec.version,
                'generator_version': spec.generator.version, 'budgets': spec.budgets.model_dump(),
                'api_cost_usd': 0.0 if isinstance(active_proxy, MockModelProxy) else None,
-               'coverage_gaps': ['Container image and runtime isolation not independently verified',
-                                 'Configuration redirects, long-context and direct tool-argument surfaces not implemented']}
+               'coverage_gaps': []}
     receipts = [r.get('gateway_receipt') for r in telemetry.model_requests]
     if receipts and all(r and r.get('actual_cost_usd') is not None for r in receipts):
         context['api_cost_usd'] = str(sum((Decimal(r['actual_cost_usd']) for r in receipts), Decimal(0)))

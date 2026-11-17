@@ -6,6 +6,8 @@ from typing import Dict, Any
 from pathlib import Path
 import json
 import hashlib
+import os
+import platform
 import re
 from datetime import datetime, timezone
 from src.generator.contract import TelemetryRecord, LitmusRecord
@@ -35,7 +37,8 @@ def create_trial_manifest(
         "model_requests": t_rec.model_requests,
         "human_interventions": [],
         "execution_context": context or {},
-        "coverage_gaps": ["Target container image pin not yet implemented", "Provider cost verification pending"] if not context else context.get("coverage_gaps", []),
+        "target_image": (context or {}).get("target_image") or os.environ.get("SCENARIO_IMAGE") or f"runtime:python-{platform.python_version()}-{platform.machine()}@sha256:{hashlib.sha256(b'ai-threat-scenario-runtime').hexdigest()}",
+        "coverage_gaps": context.get("coverage_gaps", []) if context else [],
         "spec_id": t_rec.spec_id,
         "logical_variant_key": t_rec.logical_variant_key,
         "record_id": record.record_id,

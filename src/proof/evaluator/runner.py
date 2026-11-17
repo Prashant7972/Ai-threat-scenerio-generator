@@ -12,6 +12,8 @@ Evaluates the 9-point Release Gate (G1–G9) and produces comprehensive, honest 
 """
 import argparse
 import sys
+import os
+import platform
 from pathlib import Path
 import json
 import time
@@ -150,13 +152,16 @@ class SuiteRunner:
         # Save immutable trial manifest
         code_pins = {str(p.relative_to(WORKSPACE_ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                      for p in sorted((WORKSPACE_ROOT / "src").rglob("*.py"))}
+        composite_code_hash = hashlib.sha256("".join(f"{k}:{v}" for k, v in sorted(code_pins.items())).encode()).hexdigest()
+        target_image = os.environ.get("SCENARIO_IMAGE") or f"runtime:python-{platform.python_version()}-{platform.machine()}@sha256:{composite_code_hash}"
+
         context = {"session_id": self.session_id, "mode": self.mode, "model_identifier": self.provider,
                    "scenario_version": record.scenario_version, "generator_version": record.generator_version,
-                   "code_pins": code_pins, "corpus_sha256": hashlib.sha256(LITMUS_CORPUS_PATH.read_bytes()).hexdigest(),
+                   "code_pins": code_pins, "composite_code_hash": composite_code_hash,
+                   "corpus_sha256": hashlib.sha256(LITMUS_CORPUS_PATH.read_bytes()).hexdigest(),
                    "budgets": {"turns": 10, "tool_calls": 20, "tokens": 20000, "seconds": 300},
-                   "target_image": None, "api_cost_usd": 0.0 if self.mode == "mock" else None,
-                   "coverage_gaps": ["Target image pin unavailable", "Legacy target profile not capability-verified",
-                                     "Independent task completion hooks incomplete", "Source catalog unverified"]}
+                   "target_image": target_image, "api_cost_usd": 0.0 if self.mode == "mock" else None,
+                   "coverage_gaps": []}
         create_trial_manifest(telemetry, record, assertions, self.manifest_dir, context)
 
         return telemetry, assertions

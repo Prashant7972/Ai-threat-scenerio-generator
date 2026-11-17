@@ -4,7 +4,7 @@
 > This execution validates scenario compilation, simulator routing, telemetry collection, state diff tracking, and release-gate decision logic in a hermetic, zero-egress environment. It tests harness mechanics and evidence collection, not live LLM responses.
 
 **Total Executions**: 1040 trials across Vulnerable and Hardened targets.
-**Wall-Clock Duration**: 3.36 seconds.
+**Wall-Clock Duration**: 2.85 seconds.
 **Overall Decision**: **PASS**
 
 ## Release Gate Decisions (G1–G9)
