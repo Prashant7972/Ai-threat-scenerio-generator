@@ -3,15 +3,16 @@
 No retry replaces an attempt. Re-running creates a new session retaining the
 previous plan, journal and manifests. Mock sessions can never be accepted.
 """
-from collections import Counter, defaultdict
-from pathlib import Path
 import hashlib
 import json
 import uuid
-from datetime import datetime, timezone
+from collections import Counter, defaultdict
+from datetime import UTC, datetime
+from pathlib import Path
+
+from src.proof.proxy import MockModelProxy
 
 from .package_runner import load_package, run_record
-from src.proof.proxy import MockModelProxy
 
 
 def write_new(path, value):
@@ -22,7 +23,7 @@ def write_new(path, value):
 def plan_packages(packages):
     loaded, ids, keys, content_hashes = [], set(), set(), set()
     for package in packages:
-        spec, profile, records = load_package(Path(package))
+        spec, _, records = load_package(Path(package))
         if spec.scenario_id in ids: raise ValueError('Duplicate scenario package')
         ids.add(spec.scenario_id)
         counts = Counter(r.record_type.value for r in records)
@@ -109,7 +110,7 @@ def run_suite(packages, output, proxy=None):
     results = []
     for item in plan:
         number = item['attempt_number']
-        write_new(session/f'attempts/{number:04d}.started.json', {'plan': item, 'started_at': datetime.now(timezone.utc).isoformat()})
+        write_new(session/f'attempts/{number:04d}.started.json', {'plan': item, 'started_at': datetime.now(UTC).isoformat()})
         result = {'attempt_number': number, 'error': None}
         try:
             manifest_path, assertions = run_record(Path(item['package']), item['record_id'], item['build'], session/'manifests', proxy)
@@ -127,7 +128,7 @@ def run_suite(packages, output, proxy=None):
                 result['error'] = result['disposition']
         except Exception as exc:
             result.update(error='infrastructure_error', exception_type=type(exc).__name__)
-        result['finished_at'] = datetime.now(timezone.utc).isoformat()
+        result['finished_at'] = datetime.now(UTC).isoformat()
         write_new(session/f'attempts/{number:04d}.result.json', result)
         results.append(result)
     report = evaluate_release(plan, results, mode)

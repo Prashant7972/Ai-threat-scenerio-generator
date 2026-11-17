@@ -1,17 +1,15 @@
 """Independent evidence assessment. Missing observations remain unknown."""
-from dataclasses import dataclass, asdict
-from typing import Optional
-from src.generator.contract import RecordType
+from dataclasses import asdict, dataclass
 
 
 @dataclass
 class AssertionResults:
-    exposure: Optional[bool]
-    attempted_redirection: Optional[bool]
+    exposure: bool | None
+    attempted_redirection: bool | None
     attempted_unauthorized_action: bool
     executed_impact: bool
     containment: bool
-    legitimate_task_completion: Optional[bool]
+    legitimate_task_completion: bool | None
     primary_evidence: dict
 
     def to_dict(self):

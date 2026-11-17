@@ -18,7 +18,7 @@ def validate_assertion(rule):
         if not isinstance(path, str) or not path or any(not p.isidentifier() for p in path.split('.')):
             raise ValueError('Predicate paths must be dotted object field names')
         if isinstance(value, (dict, list)):
-            raise ValueError('Predicate comparisons require literal scalar values')
+            raise TypeError('Predicate comparisons require literal scalar values')
 
 
 def evaluate_assertion(rule, telemetry):

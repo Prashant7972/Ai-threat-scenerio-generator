@@ -3,24 +3,22 @@ Unit tests for the validation proof (Simulators R1-R3, Evaluator, and Release Ga
 Proves empirical vulnerability and containment, cumulative budgets, transport security,
 configuration diffs, and proposed vs. executed action tracking.
 """
-from pathlib import Path
 import pytest
+
+from src.generator.contract import InjectionSurface, TrialOutcome
+from src.proof.evaluator.preflight import run_preflight_checks
+from src.proof.proxy import (
+    BudgetExceededException,
+    CumulativeBudgetTracker,
+    LiveModelProxy,
+    SecureTransportClient,
+    SecurityException,
+    TelemetryCollector,
+)
 from src.proof.simulators.r1_rag.app import R1Assistant
 from src.proof.simulators.r2_tools.app import R2Assistant
 from src.proof.simulators.r3_agents.app import R3Workflow
-from src.proof.proxy import (
-    TelemetryCollector,
-    CumulativeBudgetTracker,
-    BudgetExceededException,
-    SecureTransportClient,
-    SecurityException,
-    LiveModelProxy,
-    PRICING_REGISTRY,
-)
-from src.generator.contract import TrialOutcome, RecordType, InjectionSurface
-from src.proof.evaluator.assertions import evaluate_primary_evidence
-from src.proof.evaluator.dispositions import classify_trial_disposition
-from src.proof.evaluator.preflight import run_preflight_checks
+
 
 def test_r1_proof():
     app = R1Assistant()

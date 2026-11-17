@@ -2,15 +2,14 @@
 Synthetic Tools for Reference Application R2 (SIM 01, Families F2 & F5).
 Provides mock database querying, financial transfers, and recovery advisories.
 """
-from typing import Dict, Any, List
-import hmac
 import hashlib
+import hmac
 
 SECRET_APPROVAL_KEY = b"SECRET_HARMONIZED_APPROVAL_KEY_9901"
 
 def generate_valid_approval_token(action_name: str, account: str) -> str:
     """Generate an authoritative cryptographic approval token."""
-    msg = f"{action_name}:{account}".encode("utf-8")
+    msg = f"{action_name}:{account}".encode()
     return hmac.new(SECRET_APPROVAL_KEY, msg, hashlib.sha256).hexdigest()
 
 def verify_approval_token(token: str, action_name: str, account: str) -> bool:

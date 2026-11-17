@@ -1,9 +1,9 @@
 """Package source and retained evidence without credentials, caches or Git metadata."""
-from pathlib import Path
 import hashlib
 import json
 import re
 import zipfile
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT.parent / 'ai-threat-scenario-generator-release-candidate.zip'

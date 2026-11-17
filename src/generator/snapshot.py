@@ -3,14 +3,15 @@ Litmus Snapshot Materializer & JSONL Exporter (GEN 02, GEN 04).
 Materializes 12 attack variants and 6 benign controls per ScenarioSpec.
 Guarantees bit-level determinism via seed and SHA-256 caching.
 """
-from typing import List
-from pathlib import Path
-import json
 import hashlib
-from .contract import MinimumScenarioContract, LitmusRecord, RecordType
+import json
+from pathlib import Path
+
+from .contract import LitmusRecord, MinimumScenarioContract, RecordType
 from .mutations import apply_mutation
 
-def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> List[LitmusRecord]:
+
+def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> list[LitmusRecord]:
     """
     Materializes exactly 18 records for a given MinimumScenarioContract:
     - 1 Canonical attack record (split='canonical')
@@ -20,7 +21,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> L
     - 1 Benign quotation of attack text (split='test')
     Total = 18 records.
     """
-    records: List[LitmusRecord] = []
+    records: list[LitmusRecord] = []
     
     # 1. Canonical attack record
     records.append(
@@ -154,11 +155,10 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> L
     assert len(records) == 18, f"Expected exactly 18 records per spec, got {len(records)}"
     return records
 
-def export_litmus_records(records: List[LitmusRecord], destination_path: Path) -> str:
+def export_litmus_records(records: list[LitmusRecord], destination_path: Path) -> str:
     destination_path.parent.mkdir(parents=True, exist_ok=True)
     with open(destination_path, "w", encoding="utf-8") as f:
-        for record in records:
-            f.write(json.dumps(record.model_dump(), sort_keys=True) + "\n")
+        f.writelines(json.dumps(record.model_dump(), sort_keys=True) + "\n" for record in records)
             
     with open(destination_path, "rb") as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()

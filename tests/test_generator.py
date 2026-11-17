@@ -2,22 +2,18 @@
 Unit tests for Scenario Compiler & Auto-Generator (GEN 01–05).
 Validates MinimumScenarioContract, 7 mutation operators, safe harness generation, and provenance diffing.
 """
-from pathlib import Path
 import pytest
-from src.generator.contract import (
-    MinimumScenarioContract,
-    LitmusRecord,
-    RecordType,
-    AttackFamily,
-    TargetSurface,
-    OriginType,
-    AttackerAccess,
-)
-from src.generator.mutations import apply_mutation, MUTATION_OPERATORS
-from src.generator.snapshot import materialize_spec_records
+
 from src.generator.auto_generator import compile_all_scenarios
+from src.generator.contract import (
+    AttackFamily,
+    RecordType,
+)
 from src.generator.harness_generator import SafeHarnessPackage
-from src.generator.provenance import classify_provenance_diff, DiffClassification
+from src.generator.mutations import MUTATION_OPERATORS, apply_mutation
+from src.generator.provenance import DiffClassification, classify_provenance_diff
+from src.generator.snapshot import materialize_spec_records
+
 
 def test_compile_all_twenty_scenarios():
     contracts = compile_all_scenarios()

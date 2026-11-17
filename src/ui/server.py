@@ -4,7 +4,6 @@ Serves the ATLAS Red-Team Console on http://localhost:8000/
 """
 import http.server
 import socketserver
-import os
 import sys
 from pathlib import Path
 
@@ -24,12 +23,12 @@ def run(port: int = DEFAULT_PORT):
     # Enable address reuse so fast restarts don't hit Address already in use
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(server_address, ConsoleRequestHandler) as httpd:
-        print(f"=======================================================")
-        print(f"  ATLAS RED-TEAM CONSOLE RUNNING")
+        print("=======================================================")
+        print("  ATLAS RED-TEAM CONSOLE RUNNING")
         print(f"  URL: http://localhost:{port}/")
         print(f"  Root: {UI_DIR}")
-        print(f"  Press Ctrl+C to terminate.")
-        print(f"=======================================================")
+        print("  Press Ctrl+C to terminate.")
+        print("=======================================================")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

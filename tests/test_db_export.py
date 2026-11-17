@@ -1,10 +1,11 @@
 """Unit tests for PostgreSQL / SQLite Prompt & Scenario database exporter."""
-from pathlib import Path
 import tempfile
-from sqlalchemy import create_engine, select, func
+
+from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import sessionmaker
 
-from scripts.db.export_to_postgres import export_data, PromptModel, ScenarioModel
+from scripts.db.export_to_postgres import PromptModel, ScenarioModel, export_data
+
 
 def test_export_data_to_sqlite():
     with tempfile.NamedTemporaryFile(suffix=".db") as tmp:

@@ -6,7 +6,7 @@ from .dispositions import classify_trial_disposition
 from .manifest import create_trial_manifest
 
 __all__ = [
-    "evaluate_primary_evidence",
     "classify_trial_disposition",
     "create_trial_manifest",
+    "evaluate_primary_evidence",
 ]

@@ -1,46 +1,15 @@
 """Adversarial validation tests; approvals below are test fixtures, not real reviews."""
-import copy
 import hashlib
 import json
-from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
 from src.generator.auto_generator import compile_all_scenarios
+from src.generator.boundary_variants import materialize_boundary_records
 from src.generator.compiler import build_package, compile_pattern
-from src.generator.boundary_variants import DIMENSIONS, materialize_boundary_records
 from src.generator.contract import BudgetsContract, LitmusRecord
 from src.generator.snapshot import materialize_spec_records
-
-
-@pytest.fixture
-def inputs(tmp_path):
-    spec = compile_all_scenarios()[0].model_dump(mode='json')
-    spec.update(workflow_stages=['retrieve', 'summarize', 'render'],
-                trust_boundary='Retrieved text cannot authorize renderer requests',
-                review={'status': 'approved', 'reviewer': 'unit-test-only', 'timestamp': '2026-11-16T00:00:00Z'},
-                origin_type='adaptation')
-    spec['attacker_access']['surface'] = 'retrieval_fixture'
-    spec['generator'] = {'id': 'boundary_carrier_v1', 'version': '1.0.0', 'parameters': {}}
-    spec['variants'] = {'dimensions': DIMENSIONS, 'selection_method': 'full_factorial', 'seed': 42}
-    (tmp_path / 'attack.txt').write_text('synthetic fixture')
-    (tmp_path / 'benign.txt').write_text('synthetic meeting at 10')
-    spec['fixtures'] = [dict(uri=name, sha256=hashlib.sha256((tmp_path / name).read_bytes()).hexdigest())
-                        for name in ('attack.txt', 'benign.txt')]
-    spec['benign_control']['fixture_ref'] = 'benign.txt'
-    (tmp_path / 'source.txt').write_text('Unit-test source, no incident support claimed.')
-    spec['source_refs'] = [dict(record_id='test-source', revision='1', locator='test:source')]
-    spec['source_facts'] = [dict(claim_id='test-claim')]
-    evidence = [dict(record_id='test-source', revision='1', locator='test:source',
-                     claim_ids=['test-claim'], snapshot_uri='source.txt',
-                     sha256=hashlib.sha256((tmp_path / 'source.txt').read_bytes()).hexdigest())]
-    profile = dict(id='R1', version='1.0.0',
-                   capabilities=['email_retrieval', 'document_retrieval', 'markdown_rendering'],
-                   surfaces={'retrieval_fixture': spec['attacker_access']['allowed_mutations']},
-                   predicates={p: True for p in spec['preconditions']},
-                   builds={'vulnerable': 'sha256:' + 'a' * 64, 'hardened': 'sha256:' + 'b' * 64})
-    return dict(scenario=spec, evidence=evidence), profile, tmp_path
 
 
 def test_compile_and_cache_exact_bytes(inputs):
@@ -130,9 +99,9 @@ def test_runtime_replays_stored_stages_and_rejects_tampering(inputs, monkeypatch
 @pytest.mark.parametrize('target,surface', [('R2','tool_response'), ('R2','chat_template'),
     ('R3','peer_agent_message'), ('R3','shared_artifact'), ('R3','memory_summary'), ('R3','chat_template')])
 def test_compiled_targets_contain_attacks_and_preserve_controls(inputs, target, surface):
-    from src.generator.harness_generator import HARNESS_TEMPLATES
     from src.generator.contract import TargetSurface
-    from src.proof.evaluator.package_runner import run_record, load_package
+    from src.generator.harness_generator import HARNESS_TEMPLATES
+    from src.proof.evaluator.package_runner import load_package, run_record
     pattern, profile, root = inputs
     spec = pattern['scenario']
     spec['target_profile']['id'] = target
@@ -162,9 +131,9 @@ def test_compiled_targets_contain_attacks_and_preserve_controls(inputs, target, 
 
 
 def test_unsupported_compiled_surface_rejected_before_proxy_call(inputs):
-    from src.proof.evaluator.package_runner import run_record
-    from src.generator.harness_generator import HARNESS_TEMPLATES
     from src.generator.contract import TargetSurface
+    from src.generator.harness_generator import HARNESS_TEMPLATES
+    from src.proof.evaluator.package_runner import run_record
     pattern, profile, root = inputs
     spec = pattern['scenario']; spec['target_profile']['id'] = 'R2'
     spec['attacker_access']['surface'] = spec['injection_surface'] = 'shared_artifact'

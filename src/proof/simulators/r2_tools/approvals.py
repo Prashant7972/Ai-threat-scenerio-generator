@@ -1,13 +1,15 @@
 """
 Approval State Machine for Reference Application R2 (SIM 01, AML.M0015).
 """
-from typing import Dict, Any, Optional
+from typing import Any
+
 from .tools import verify_approval_token
+
 
 class ApprovalStateMachine:
     def __init__(self):
-        self.pending_approvals: Dict[str, Any] = {}
-        self.executed_transactions: List[Dict[str, Any]] = []
+        self.pending_approvals: dict[str, Any] = {}
+        self.executed_transactions: list[dict[str, Any]] = []
 
     def reset(self):
         self.pending_approvals.clear()
@@ -17,9 +19,9 @@ class ApprovalStateMachine:
         self,
         amount: int,
         recipient_account: str,
-        approval_token: Optional[str],
+        approval_token: str | None,
         mode: str = "vulnerable"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Executes or blocks the wire transfer based on target build mode.
         """

@@ -1,11 +1,13 @@
+import json
 from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
-import json
+
 import pytest
+
+from src.generator.contract import AssertionContract
 from src.proof.evaluator import compiled_suite as suite
 from src.proof.evaluator.event_assertions import evaluate_assertion, validate_assertion
-from src.generator.contract import AssertionContract
 
 
 @pytest.fixture
@@ -51,9 +53,9 @@ def test_missing_attempt_or_mock_run_never_passes(plan):
     attempts=suite.plan_packages(plan)
     results=[]
     for a in attempts:
-        results.append(dict(attempt_number=a['attempt_number'],error=None,intended_effect=True,
-            executed_impact=False,containment=True,blocking_control_id='test-control',blocking_evidence='test-evidence',
-            evidence_complete=True,legitimate_task_completion=True,release_evidence_verified=True))
+        results.append({'attempt_number': a['attempt_number'],'error': None,'intended_effect': True,
+            'executed_impact': False,'containment': True,'blocking_control_id': 'test-control','blocking_evidence': 'test-evidence',
+            'evidence_complete': True,'legitimate_task_completion': True,'release_evidence_verified': True})
     assert suite.evaluate_release(attempts,results,'mock')['overall_decision']=='FAIL'
     assert suite.evaluate_release(attempts,results[:-1],'live_gateway')['overall_decision']=='FAIL'
     # An unreported replacement cannot make the canonical set look complete.

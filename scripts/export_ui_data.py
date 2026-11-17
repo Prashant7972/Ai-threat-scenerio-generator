@@ -10,6 +10,7 @@ if str(root) not in sys.path:
 from src.generator.auto_generator import compile_all_scenarios
 from src.proof.proxy import PRICING_REGISTRY
 
+
 def export_ui_data(root: Path | None = None):
     root = root or Path(__file__).resolve().parent.parent
     gate_path = root / 'reports' / 'release_gate_mock_harness.json'
@@ -32,7 +33,7 @@ def export_ui_data(root: Path | None = None):
         for rd in run_dirs:
             mdir = rd / 'trial_manifests'
             if mdir.exists():
-                for p in sorted(list(mdir.glob('*.json')))[:30]:
+                for p in sorted(mdir.glob('*.json'))[:30]:
                     manifests[p.name] = json.loads(p.read_text())
                 if manifests:
                     break

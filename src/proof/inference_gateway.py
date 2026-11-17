@@ -4,17 +4,17 @@ No arbitrary upstream URL, forwarding headers, provider tools, code execution,
 redirects, or environment HTTP proxies are accepted. Provider credentials stay
 in this process. This service must be deployed behind an internal-only network.
 """
-from datetime import datetime, timezone
-from decimal import Decimal
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
-from threading import Lock
 import hashlib
 import hmac
 import json
 import os
 import re
 import uuid
+from datetime import UTC, datetime
+from decimal import Decimal
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from threading import Lock
 
 MAX_BODY_BYTES = 1_000_000
 
@@ -44,7 +44,7 @@ class InferenceGateway:
         self.receipts.mkdir(parents=True, exist_ok=True)
         # A budget session cannot restart and forget past charges.
         if any(self.receipts.iterdir()): raise GatewayRejected('Use a fresh budget session directory; previous receipts must be reconciled')
-        self.spent = Decimal('0')
+        self.spent = Decimal(0)
         self.lock = Lock()
         self.sender = sender or self._send
 
@@ -99,7 +99,7 @@ class InferenceGateway:
             self.spent += reserve
             receipt = {'attempt_id': uuid.uuid4().hex, 'model': model, 'policy_version': self.policy['version'],
                        'policy_sha256': hashlib.sha256(json.dumps(self.policy, sort_keys=True).encode()).hexdigest(),
-                       'started_at': datetime.now(timezone.utc).isoformat(), 'request_sha256': hashlib.sha256(encoded).hexdigest(),
+                       'started_at': datetime.now(UTC).isoformat(), 'request_sha256': hashlib.sha256(encoded).hexdigest(),
                        'reserved_cost_usd': str(reserve), 'actual_cost_usd': None, 'status': 'infrastructure_error'}
             # Persist a reservation before the network call so a process crash
             # cannot restart this directory with an invisible charged attempt.
@@ -121,7 +121,7 @@ class InferenceGateway:
                                observed_model_version=body.get('modelVersion'))
                 return body, receipt
             finally:
-                receipt['finished_at'] = datetime.now(timezone.utc).isoformat()
+                receipt['finished_at'] = datetime.now(UTC).isoformat()
                 receipt['session_accounted_cost_usd'] = str(self.spent)
                 with (self.receipts / (receipt['attempt_id'] + '.json')).open('x') as stream:
                     json.dump(receipt, stream, sort_keys=True, indent=2)

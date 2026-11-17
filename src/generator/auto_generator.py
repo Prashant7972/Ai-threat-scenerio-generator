@@ -3,38 +3,37 @@ Scenario Compiler & Auto-Generator Component (GEN 01–05).
 The core engine that compiles case studies and threat patterns into
 validated MinimumScenarioContract definitions and materializes the Litmus corpus.
 """
-from typing import List, Dict, Any
 from pathlib import Path
+from typing import Any
+
 import yaml
-import hashlib
 
 from .contract import (
-    MinimumScenarioContract,
-    SourceRef,
-    SourceFact,
-    AtlasMapping,
-    TargetProfileRef,
-    AttackerAccess,
-    GeneratorRef,
-    VariantSpec,
-    FixtureRef,
     AssertionContract,
+    AtlasMapping,
+    AttackerAccess,
+    AttackFamily,
     BenignControlContract,
     BudgetsContract,
-    ReviewContract,
-    AttackFamily,
-    TargetSurface,
+    FixtureRef,
+    GeneratorRef,
     InjectionSurface,
+    LitmusRecord,
+    MinimumScenarioContract,
     OriginType,
-    LitmusRecord
+    ReviewContract,
+    SourceFact,
+    SourceRef,
+    TargetProfileRef,
+    VariantSpec,
 )
-from .snapshot import materialize_spec_records, export_litmus_records
+from .snapshot import export_litmus_records, materialize_spec_records
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent
 SPECS_DIR = WORKSPACE_ROOT / "specs"
 LITMUS_OUTPUT = WORKSPACE_ROOT / "data" / "litmus" / "litmus_360.jsonl"
 
-RAW_SCENARIO_DEFINITIONS: List[Dict[str, Any]] = [
+RAW_SCENARIO_DEFINITIONS: list[dict[str, Any]] = [
     # Family F1: Retrieved Content Injection (Target R1)
     {
         "scenario_id": "litmus.retrieval.external_email.f1_s1",
@@ -548,8 +547,8 @@ SURFACE_MAP = {
     "f5_s4": InjectionSurface.CONFIGURATION,
 }
 
-def compile_all_scenarios() -> List[MinimumScenarioContract]:
-    contracts: List[MinimumScenarioContract] = []
+def compile_all_scenarios() -> list[MinimumScenarioContract]:
+    contracts: list[MinimumScenarioContract] = []
     for raw in RAW_SCENARIO_DEFINITIONS:
         spec_id = raw["scenario_id"].split(".")[-1]
         surface = raw.get("injection_surface") or SURFACE_MAP.get(spec_id, InjectionSurface.RETRIEVAL_FIXTURE)
@@ -605,7 +604,7 @@ def export_all_scenario_yamls(specs_dir: Path = SPECS_DIR):
 
 def generate_litmus_corpus(output_path: Path = LITMUS_OUTPUT, seed: int = 42) -> str:
     contracts = compile_all_scenarios()
-    all_records: List[LitmusRecord] = []
+    all_records: list[LitmusRecord] = []
     for c in contracts:
         spec_records = materialize_spec_records(c, seed=seed)
         all_records.extend(spec_records)

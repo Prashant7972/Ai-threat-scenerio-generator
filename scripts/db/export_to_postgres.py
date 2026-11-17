@@ -2,26 +2,26 @@
 Database Exporter for Prompts & Scenarios (PostgreSQL & SQLite).
 Loads the 20 Scenario Specs and all 360 Litmus Corpus Prompts into the database.
 """
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, timezone
 
 from sqlalchemy import (
-    create_engine,
+    JSON,
     Column,
+    DateTime,
+    ForeignKey,
+    Integer,
     String,
     Text,
-    Integer,
-    DateTime,
-    JSON,
-    ForeignKey,
+    create_engine,
+    func,
     select,
-    func
 )
-from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 # Setup project path
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -49,7 +49,7 @@ class ScenarioModel(Base):
     source_refs = Column(JSON, nullable=True)
     source_facts = Column(JSON, nullable=True)
     budgets = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     prompts = relationship("PromptModel", back_populates="scenario", cascade="all, delete-orphan")
 
@@ -75,7 +75,7 @@ class PromptModel(Base):
     source_ids = Column(JSON, nullable=True)
     scenario_version = Column(String(32), nullable=False)
     generator_version = Column(String(32), nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     scenario = relationship("ScenarioModel", back_populates="prompts")
 
@@ -122,7 +122,7 @@ def export_data(db_url: str):
                 existing.budgets = spec_dict.get("budgets", {})
 
         session.commit()
-        print(f"✓ Successfully stored 20 scenarios in 'scenarios' table.")
+        print("✓ Successfully stored 20 scenarios in 'scenarios' table.")
 
         # 2. Insert/Update Prompts from Litmus Corpus
         corpus_path = ROOT / "data" / "litmus" / "litmus_360.jsonl"
@@ -183,9 +183,9 @@ def export_data(db_url: str):
         print(f"  - Benign Controls:   {benign}")
         print("--------------------------------------\n")
 
-    except Exception as e:
+    except Exception:
         session.rollback()
-        raise e
+        raise
     finally:
         session.close()
 

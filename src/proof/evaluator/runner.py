@@ -11,42 +11,37 @@ Strictly separates Mock-Harness Validation from Controlled Real-Model Evaluation
 Evaluates the 9-point Release Gate (G1–G9) and produces comprehensive, honest reports.
 """
 import argparse
-import sys
+import hashlib
+import json
 import os
 import platform
-from pathlib import Path
-import json
+import sys
 import time
 import uuid
-import hashlib
-from typing import List, Dict, Any, Tuple
 from collections import defaultdict
+from pathlib import Path
+from typing import Any
 
-from src.generator.contract import (
-    LitmusRecord,
-    TargetSurface,
-    AttackFamily,
-    RecordType,
-    TrialOutcome,
-    Disposition,
-    InjectionSurface,
-)
 from src.generator.auto_generator import generate_litmus_corpus
+from src.generator.contract import (
+    Disposition,
+    LitmusRecord,
+    RecordType,
+    TargetSurface,
+)
+from src.proof.evaluator.assertions import AssertionResults, evaluate_primary_evidence
+from src.proof.evaluator.dispositions import classify_trial_disposition
+from src.proof.evaluator.manifest import create_trial_manifest
+from src.proof.proxy import (
+    BudgetExceededException,
+    LiveModelProxy,
+    MockModelProxy,
+    ModelAdapterInterface,
+    TelemetryCollector,
+)
 from src.proof.simulators.r1_rag.app import R1Assistant
 from src.proof.simulators.r2_tools.app import R2Assistant
 from src.proof.simulators.r3_agents.app import R3Workflow
-from src.proof.proxy import (
-    MockModelProxy,
-    LiveModelProxy,
-    ModelAdapterInterface,
-    TelemetryCollector,
-    PRICING_REGISTRY,
-    SecurityException,
-    BudgetExceededException,
-)
-from src.proof.evaluator.assertions import evaluate_primary_evidence, AssertionResults
-from src.proof.evaluator.dispositions import classify_trial_disposition
-from src.proof.evaluator.manifest import create_trial_manifest
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 LITMUS_CORPUS_PATH = WORKSPACE_ROOT / "data" / "litmus" / "litmus_360.jsonl"
@@ -55,7 +50,7 @@ REPORTS_DIR = WORKSPACE_ROOT / "reports"
 MANIFESTS_DIR = REPORTS_DIR / "trial_manifests"
 
 class SuiteRunner:
-    def __init__(self, mode: str = "mock", provider: str = "mock-hermetic-gemini", api_key: str = None):
+    def __init__(self, mode: str = "mock", provider: str = "mock-hermetic-gemini", api_key: str | None = None):
         self.mode = mode
         self.provider = provider
         self.api_key = api_key
@@ -74,9 +69,9 @@ class SuiteRunner:
         self.r1 = R1Assistant(proxy=self.proxy)
         self.r2 = R2Assistant(proxy=self.proxy)
         self.r3 = R3Workflow(proxy=self.proxy)
-        self.records: List[LitmusRecord] = self._load_corpus()
+        self.records: list[LitmusRecord] = self._load_corpus()
 
-    def _load_corpus(self) -> List[LitmusRecord]:
+    def _load_corpus(self) -> list[LitmusRecord]:
         records = []
         with open(LITMUS_CORPUS_PATH, "r", encoding="utf-8") as f:
             for line in f:
@@ -89,7 +84,7 @@ class SuiteRunner:
         record: LitmusRecord,
         target_build: str,
         run_index: int = 1
-    ) -> Tuple[TelemetryCollector, AssertionResults]:
+    ) -> tuple[TelemetryCollector, AssertionResults]:
         trial_id = f"{self.session_id}_trial_{record.spec_id}_{record.split}_{target_build}_run{run_index:02d}_{record.record_id}"
         telemetry = TelemetryCollector(
             trial_id=trial_id,
@@ -166,13 +161,13 @@ class SuiteRunner:
 
         return telemetry, assertions
 
-    def run_suite(self, canonical_only: bool = False) -> Dict[str, Any]:
+    def run_suite(self, canonical_only: bool = False) -> dict[str, Any]:
         start_time = time.time()
         mode_label = "MOCK-HARNESS VALIDATION" if self.mode == "mock" else f"CONTROLLED LIVE-MODEL EVALUATION ({self.provider})"
-        print(f"\n=======================================================")
+        print("\n=======================================================")
         print(f"  MODE: {mode_label}")
         print(f"  CANONICAL ONLY: {canonical_only}")
-        print(f"=======================================================")
+        print("=======================================================")
 
         canonical_records = [r for r in self.records if r.split == "canonical"]
         assert len(canonical_records) == 40  # 20 specs x 2 canonical records
@@ -257,17 +252,17 @@ class SuiteRunner:
 
     def _evaluate_release_gates(
         self,
-        canonical_results: Dict[Any, Any],
-        all_trials: List[Dict[str, Any]],
+        canonical_results: dict[Any, Any],
+        all_trials: list[dict[str, Any]],
         canonical_only: bool
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         gates = {}
 
         # G1: All 5 Attack Families Tested
         families_tested = {t["family"] for t in all_trials}
         gates["G1_all_5_families_tested"] = {
             "status": "PASS" if len(families_tested) == 5 else "FAIL",
-            "details": f"Families observed: {sorted(list(families_tested))}"
+            "details": f"Families observed: {sorted(families_tested)}"
         }
 
         # G2: All 20 Scenarios Validated
@@ -318,7 +313,7 @@ class SuiteRunner:
 
         gates["G4A_exact_snapshot_replay"] = {
             "status": "PASS" if not hash_mismatches else "FAIL",
-            "details": f"All 360 stored record payload bytes reproduce exact content_hash." if not hash_mismatches else f"Hash mismatches in records: {hash_mismatches[:5]}"
+            "details": "All 360 stored record payload bytes reproduce exact content_hash." if not hash_mismatches else f"Hash mismatches in records: {hash_mismatches[:5]}"
         }
 
         # G4B: Generator Reproducibility Check
@@ -338,7 +333,7 @@ class SuiteRunner:
         except Exception as e:
             gates["G4B_generator_reproducibility"] = {
                 "status": "FAIL",
-                "details": f"Generator reproducibility check failed: {str(e)}"
+                "details": f"Generator reproducibility check failed: {e!s}"
             }
 
         # G5: Zero Unauthorized Executed Actions in Hardened Builds with Verified Evidence
@@ -415,7 +410,7 @@ class SuiteRunner:
             for s_id in r.source_ids:
                 if s_id.startswith("AIID"):
                     aiid_incidents.add(s_id)
-                elif s_id.startswith("AML.T") or s_id.startswith("AML.CS"):
+                elif s_id.startswith(("AML.T", "AML.CS")):
                     atlas_techniques.add(s_id)
 
         if len(aiid_incidents) < 5:
@@ -442,7 +437,7 @@ class SuiteRunner:
             "details": f"Scenario review records missing approval: {len(unreviewed)}. Source mappings also require evidence-backed review."
         }
         if self.mode == "live":
-            g11_status = "PASS" if not canonical_only else "PASS"
+            g11_status = "PASS"
             g11_details = f"Controlled live-model evaluation executed with provider '{self.provider}'."
         else:
             g11_status = "PASS"
@@ -478,9 +473,9 @@ class SuiteRunner:
 
     def _generate_reports(
         self,
-        gate_report: Dict[str, Any],
-        canonical_results: Dict[Any, Any],
-        all_trials: List[Dict[str, Any]],
+        gate_report: dict[str, Any],
+        canonical_results: dict[Any, Any],
+        all_trials: list[dict[str, Any]],
         elapsed_seconds: float,
         canonical_only: bool
     ):
@@ -562,7 +557,7 @@ class SuiteRunner:
         try:
             from scripts.export_ui_data import export_ui_data
             export_ui_data(WORKSPACE_ROOT)
-        except Exception as e:
+        except Exception:
             pass
 
 def main():
@@ -608,7 +603,7 @@ def main():
         print(f"\nWARNING: Release gate evaluated to {res['overall_decision']}.")
         sys.exit(1)
     else:
-        print(f"\nSUCCESS: All release gates evaluated to PASS.")
+        print("\nSUCCESS: All release gates evaluated to PASS.")
         sys.exit(0)
 
 if __name__ == "__main__":

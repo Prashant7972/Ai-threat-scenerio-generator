@@ -2,7 +2,7 @@
 Synthetic Document and Email Stores for Reference Application R1 (SIM 01).
 Fully isolated and resettable before each trial.
 """
-from typing import List, Dict, Any
+from typing import Any
 
 DEFAULT_EMAILS = [
     {
@@ -34,8 +34,8 @@ DEFAULT_DOCUMENTS = [
 
 class SyntheticStore:
     def __init__(self):
-        self.emails: List[Dict[str, Any]] = []
-        self.documents: List[Dict[str, Any]] = []
+        self.emails: list[dict[str, Any]] = []
+        self.documents: list[dict[str, Any]] = []
         self.reset()
 
     def reset(self):
@@ -53,10 +53,10 @@ class SyntheticStore:
         self.documents.append({"id": did, "title": title, "content": content})
         return did
 
-    def search_emails(self, query: str) -> List[Dict[str, Any]]:
+    def search_emails(self, query: str) -> list[dict[str, Any]]:
         q = query.lower()
         return [e for e in self.emails if q in e["subject"].lower() or q in e["body"].lower() or "all" in q or "urgent" in q or "recent" in q]
 
-    def search_documents(self, query: str) -> List[Dict[str, Any]]:
+    def search_documents(self, query: str) -> list[dict[str, Any]]:
         q = query.lower()
         return [d for d in self.documents if q in d["title"].lower() or q in d["content"].lower() or "all" in q or "guideline" in q or "policy" in q]

@@ -1,13 +1,15 @@
 import json
+
 import pytest
-from src.proof.proxy import TelemetryCollector, LiveModelProxy
-from src.generator.contract import ToolEvent, RecordType, Disposition, TrialOutcome
+
+from src.generator.auto_generator import compile_all_scenarios
+from src.generator.contract import Disposition, RecordType, ToolEvent, TrialOutcome
+from src.generator.provenance import plan_source_change, save_change_plan
+from src.generator.snapshot import materialize_spec_records
 from src.proof.evaluator.assertions import evaluate_primary_evidence
 from src.proof.evaluator.dispositions import classify_trial_disposition
 from src.proof.evaluator.manifest import create_trial_manifest
-from src.generator.auto_generator import compile_all_scenarios
-from src.generator.snapshot import materialize_spec_records
-from src.generator.provenance import plan_source_change, save_change_plan
+from src.proof.proxy import LiveModelProxy, TelemetryCollector
 
 
 def telemetry(): return TelemetryCollector('test', 'f2_s1', 'key', 'hardened', 42)
@@ -51,7 +53,7 @@ def test_trial_manifests_cannot_be_overwritten(tmp_path):
 def test_short_semantic_change_invalidates_and_preserves_history(tmp_path):
     old = {'id': 'AML.TTEST', 'description': 'Allow user data'}
     new = {'id': 'AML.TTEST', 'description': 'Deny user data'}
-    packages = [dict(package_id='one', scenario_id='one', source_ids=['AML.TTEST'], test_ids=['test-one'])]
+    packages = [{'package_id': 'one', 'scenario_id': 'one', 'source_ids': ['AML.TTEST'], 'test_ids': ['test-one']}]
     plan = plan_source_change(old, new, packages)
     assert plan['invalidate'] == ['one'] and plan['impacted_tests'] == ['test-one']
     assert plan['regenerate'] and plan['successor_candidates'][0]['status'] == 'candidate'

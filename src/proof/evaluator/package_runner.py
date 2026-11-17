@@ -1,21 +1,26 @@
 """Exact-byte replay for engineered R1/R2/R3 surfaces; reject unsupported hooks."""
-from pathlib import Path
-from decimal import Decimal
 import hashlib
 import json
 import os
-import platform
 import uuid
+from decimal import Decimal
+from pathlib import Path
 
 from src.generator.compiler import ScenarioSpec, TargetProfile, local_bytes
-from src.generator.contract import LitmusRecord, ToolEvent, Disposition
-from src.proof.proxy import MockModelProxy, TelemetryCollector, BudgetExceededException, CumulativeBudgetTracker
+from src.generator.contract import Disposition, LitmusRecord, ToolEvent
+from src.proof.compiled_targets import SUPPORTED_SURFACES, CompiledTarget
+from src.proof.proxy import (
+    BudgetExceededException,
+    CumulativeBudgetTracker,
+    MockModelProxy,
+    TelemetryCollector,
+)
 from src.proof.simulators.r1_rag.renderer import OutputRenderer
-from src.proof.compiled_targets import CompiledTarget, SUPPORTED_SURFACES
+
 from .assertions import evaluate_primary_evidence
 from .dispositions import classify_trial_disposition
-from .manifest import create_trial_manifest
 from .event_assertions import evaluate_assertion, validate_assertion
+from .manifest import create_trial_manifest
 
 
 def load_package(directory: Path):

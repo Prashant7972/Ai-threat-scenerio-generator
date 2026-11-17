@@ -1,13 +1,14 @@
 """
 Memory and Shared Artifact Store for Reference Application R3 (SIM 01, Families F3 & F4).
 """
-from typing import Dict, Any, List, Optional
+from typing import Any
+
 
 class AgentMemoryStore:
     def __init__(self):
         self.rolling_summary: str = ""
-        self.persistent_instructions: List[str] = []
-        self.shared_artifacts: Dict[str, Any] = {}
+        self.persistent_instructions: list[str] = []
+        self.shared_artifacts: dict[str, Any] = {}
 
     def reset(self):
         self.rolling_summary = "Initial session established with default operator role."
@@ -23,5 +24,5 @@ class AgentMemoryStore:
     def write_artifact(self, artifact_name: str, content: Any):
         self.shared_artifacts[artifact_name] = content
 
-    def read_artifact(self, artifact_name: str) -> Optional[Any]:
+    def read_artifact(self, artifact_name: str) -> Any | None:
         return self.shared_artifacts.get(artifact_name)

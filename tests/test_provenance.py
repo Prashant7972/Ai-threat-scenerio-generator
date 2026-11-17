@@ -1,10 +1,10 @@
 """
 Provenance and upstream source intelligence tests.
 """
-from pathlib import Path
-import yaml
 import json
-import pytest
+from pathlib import Path
+
+import yaml
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 

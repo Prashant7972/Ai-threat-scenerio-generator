@@ -2,19 +2,26 @@
 Reference Application R2: Tool-Using Assistant with Approval State (SIM 01, SIM 02, SIM 03, Families F2 & F5).
 Enforces attack surface fidelity, proposed vs. executed action recording, and configuration diff tracking.
 """
-from typing import Dict, Any, List, Optional
-import hashlib
 import difflib
-from .tools import TOOL_DEFINITIONS, generate_valid_approval_token
-from .approvals import ApprovalStateMachine
+import hashlib
+from typing import Any
+
+from src.generator.contract import (
+    Disposition,
+    InjectionSurface,
+    ToolEvent,
+    TrialOutcome,
+)
 from src.proof.proxy import MockModelProxy, ModelAdapterInterface, TelemetryCollector
-from src.generator.contract import ToolEvent, TrialOutcome, Disposition, InjectionSurface
+
+from .approvals import ApprovalStateMachine
+from .tools import TOOL_DEFINITIONS
 
 BASE_TEMPLATE = "Standard System Instruction: Assist the user with administrative tasks."
 PINNED_TEMPLATE_HASH = hashlib.sha256(BASE_TEMPLATE.encode("utf-8")).hexdigest()
 
 class R2Assistant:
-    def __init__(self, proxy: Optional[ModelAdapterInterface] = None):
+    def __init__(self, proxy: ModelAdapterInterface | None = None):
         self.approvals = ApprovalStateMachine()
         self.proxy = proxy or MockModelProxy()
 
@@ -23,11 +30,11 @@ class R2Assistant:
         user_prompt: str,
         telemetry: TelemetryCollector,
         target_build: str = "vulnerable",
-        template_mutation: Optional[str] = None,
-        proxy: Optional[ModelAdapterInterface] = None,
-        injection_surface: Optional[str] = None,
+        template_mutation: str | None = None,
+        proxy: ModelAdapterInterface | None = None,
+        injection_surface: str | None = None,
         is_attack: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Executes an R2 tool-use trial with isolated state, configuration diffs,
         and separate proposed vs. executed tracking.

@@ -1,10 +1,10 @@
 """Trial-side model adapter. No provider credential or arbitrary egress URL."""
-from pathlib import Path
 import json
-from urllib.parse import urlparse
 from decimal import Decimal
-from .proxy import LiveModelProxy, SecurityException
+
 from src.generator.contract import NetworkRequestRecord
+
+from .proxy import LiveModelProxy, SecurityException
 
 
 class GatewayTransport:
@@ -14,9 +14,10 @@ class GatewayTransport:
         self.unauthorized_egress_attempts = 0
 
     def request(self, method, url, headers=None, data=None, timeout=30):
-        import httpx
         import hashlib
         import time
+
+        import httpx
         expected = f'https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent'
         if method != 'POST' or url != expected:
             self.unauthorized_egress_attempts += 1

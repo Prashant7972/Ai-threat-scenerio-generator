@@ -4,8 +4,15 @@ CLI Interface for the Scenario Generator & Compiler.
 import argparse
 import json
 from pathlib import Path
-from src.generator.auto_generator import export_all_scenario_yamls, generate_litmus_corpus, LITMUS_OUTPUT, SPECS_DIR
+
+from src.generator.auto_generator import (
+    LITMUS_OUTPUT,
+    SPECS_DIR,
+    export_all_scenario_yamls,
+    generate_litmus_corpus,
+)
 from src.generator.contract import LitmusRecord, RecordType
+
 
 def verify_corpus(path: Path = LITMUS_OUTPUT) -> bool:
     if not path.exists():

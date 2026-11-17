@@ -1,8 +1,10 @@
 import copy
 import json
 from decimal import Decimal
+
 import pytest
-from src.proof.inference_gateway import InferenceGateway, GatewayRejected
+
+from src.proof.inference_gateway import GatewayRejected, InferenceGateway
 
 
 @pytest.fixture
@@ -24,7 +26,7 @@ def setup(tmp_path):
 
 def test_exact_allowlist_and_receipts(setup):
     gateway, request, calls, root = setup
-    response, receipt = gateway.generate(request, 't' * 32)
+    _response, receipt = gateway.generate(request, 't' * 32)
     assert calls == ['test-model'] and receipt['actual_cost_usd'] == '0.00003'
     assert gateway.spent == Decimal('0.00003')
     saved = next(p for p in (root / 'receipts').glob('*.json') if not p.name.endswith('.reserved.json')).read_text()
@@ -50,7 +52,7 @@ def test_rejections_happen_before_upstream(setup, change):
 
 
 def test_failed_request_keeps_reservation_and_history(setup):
-    gateway, request, calls, root = setup
+    gateway, request, _calls, root = setup
     def failed(*args): raise RuntimeError('upstream failure')
     gateway.sender = failed
     with pytest.raises(RuntimeError): gateway.generate(request, 't' * 32)
@@ -62,11 +64,11 @@ def test_failed_request_keeps_reservation_and_history(setup):
 
 
 def test_trial_client_never_forwards_provider_key_or_changes_policy(setup, monkeypatch):
-    import hashlib
     import httpx
+
     from src.proof.gateway_client import GatewayModelProxy
     from src.proof.proxy import TelemetryCollector
-    gateway, request, calls, root = setup
+    gateway, _request, _calls, _root = setup
     policy = gateway.policy
     class Client:
         def __init__(self, **kwargs):
@@ -91,6 +93,7 @@ def test_trial_client_never_forwards_provider_key_or_changes_policy(setup, monke
 
 def test_trial_deployment_has_no_provider_credential_or_egress_network():
     from pathlib import Path
+
     import yaml
     config = yaml.safe_load(Path('deployment/compose.yaml').read_text())
     trial = config['services']['trial']

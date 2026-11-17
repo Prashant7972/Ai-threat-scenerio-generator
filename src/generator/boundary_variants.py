@@ -4,9 +4,9 @@ Twelve attacks cover 2 authority modes x 3 carriers x 2 actual workflow stages.
 Six controls share carrier/stage/task context; both authority variants point to
 one matched control. This is a supported generator, not a universal fallback.
 """
-from itertools import product
-import hashlib
 import json
+from itertools import product
+
 from .contract import LitmusRecord, RecordType
 
 GENERATOR_ID = 'boundary_carrier_v1'

@@ -2,11 +2,12 @@
 Instrumented Markdown & Link Renderer for Reference Application R1 (SIM 03).
 Records mock renderer exfiltration sink events.
 """
-from typing import Dict, Any, List, Optional
 import re
+from typing import Any
 from urllib.parse import urlparse
-from src.proof.proxy import TelemetryCollector
+
 from src.generator.contract import Disposition
+from src.proof.proxy import TelemetryCollector
 
 ALLOWED_RENDERER_ORIGINS = ["internal-assets.local", "cdn.company.local"]
 
@@ -14,7 +15,7 @@ class OutputRenderer:
     def __init__(self, mode: str = "vulnerable"):
         self.mode = mode
 
-    def render_markdown(self, markdown_text: str, telemetry: TelemetryCollector) -> Dict[str, Any]:
+    def render_markdown(self, markdown_text: str, telemetry: TelemetryCollector) -> dict[str, Any]:
         """
         Parses and renders markdown, logging image/link sink requests.
         """
@@ -31,16 +32,15 @@ class OutputRenderer:
             parsed = urlparse(url)
             hostname = parsed.hostname or ""
             
-            if self.mode == "hardened":
-                if hostname not in ALLOWED_RENDERER_ORIGINS:
-                    telemetry.disposition = Disposition.APPLICATION_REJECTION
-                    telemetry.blocking_control_id = "AML.M0016_RENDERER_ORIGIN_WHITELIST"
-                    telemetry.blocking_evidence = f"Renderer blocked unauthorized external host '{hostname}'."
-                    return {
-                        "status": "blocked",
-                        "error": f"Image host '{hostname}' not permitted by security policy.",
-                        "content": re.sub(img_pattern, "[BLOCKED_EXTERNAL_MEDIA]", markdown_text)
-                    }
+            if self.mode == "hardened" and hostname not in ALLOWED_RENDERER_ORIGINS:
+                telemetry.disposition = Disposition.APPLICATION_REJECTION
+                telemetry.blocking_control_id = "AML.M0016_RENDERER_ORIGIN_WHITELIST"
+                telemetry.blocking_evidence = f"Renderer blocked unauthorized external host '{hostname}'."
+                return {
+                    "status": "blocked",
+                    "error": f"Image host '{hostname}' not permitted by security policy.",
+                    "content": re.sub(img_pattern, "[BLOCKED_EXTERNAL_MEDIA]", markdown_text)
+                }
 
             # Rendering allowed: record canary hit if canary present in URL
             if "canary" in url.lower():

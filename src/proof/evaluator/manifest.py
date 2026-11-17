@@ -2,16 +2,19 @@
 Immutable Trial Manifest Generator (EVAL 03).
 Saves complete execution receipts, tool-graphs, telemetry, and assertions.
 """
-from typing import Dict, Any
-from pathlib import Path
-import json
 import hashlib
+import json
 import os
 import platform
 import re
-from datetime import datetime, timezone
-from src.generator.contract import TelemetryRecord, LitmusRecord
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+
+from src.generator.contract import LitmusRecord
+
 from .assertions import AssertionResults
+
 
 def create_trial_manifest(
     telemetry: Any,
@@ -29,10 +32,10 @@ def create_trial_manifest(
     else:
         t_rec = telemetry
 
-    manifest_data: Dict[str, Any] = {
+    manifest_data: dict[str, Any] = {
         "trial_id": t_rec.trial_id,
         "started_at": getattr(telemetry, "started_at", None),
-        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "finished_at": datetime.now(UTC).isoformat(),
         "materialized_record": record.model_dump(mode="json"),
         "model_requests": t_rec.model_requests,
         "human_interventions": [],

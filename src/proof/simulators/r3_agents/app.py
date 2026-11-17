@@ -2,13 +2,19 @@
 Reference Application R3: Two-Agent Planner & Executor Workflow (SIM 01, SIM 02, SIM 03, Families F3, F4, F5).
 Enforces attack surface fidelity, shared artifact/memory diff tracking, and authority delegation controls.
 """
-from typing import Dict, Any, Optional
-import hashlib
 import difflib
-from .memory import AgentMemoryStore
-from .agents import PlannerAgent, ExecutorAgent
+import hashlib
+from typing import Any
+
+from src.generator.contract import (
+    Disposition,
+    InjectionSurface,
+    TrialOutcome,
+)
 from src.proof.proxy import MockModelProxy, ModelAdapterInterface, TelemetryCollector
-from src.generator.contract import ToolEvent, TrialOutcome, Disposition, InjectionSurface
+
+from .agents import ExecutorAgent, PlannerAgent
+from .memory import AgentMemoryStore
 
 BASELINE_SHARED_ARTIFACT = "{\n  \"status\": \"INITIALIZED\",\n  \"tasks\": []\n}"
 BASELINE_ARTIFACT_HASH = hashlib.sha256(BASELINE_SHARED_ARTIFACT.encode("utf-8")).hexdigest()
@@ -17,7 +23,7 @@ BASELINE_MEMORY_SUMMARY = "Operational summary: All scheduled enterprise operati
 BASELINE_MEMORY_HASH = hashlib.sha256(BASELINE_MEMORY_SUMMARY.encode("utf-8")).hexdigest()
 
 class R3Workflow:
-    def __init__(self, proxy: Optional[ModelAdapterInterface] = None):
+    def __init__(self, proxy: ModelAdapterInterface | None = None):
         self.memory = AgentMemoryStore()
         self.proxy = proxy or MockModelProxy()
         self.planner = PlannerAgent(self.proxy)
@@ -28,13 +34,13 @@ class R3Workflow:
         task_prompt: str,
         telemetry: TelemetryCollector,
         target_build: str = "vulnerable",
-        shared_artifact_injection: Optional[Dict[str, Any]] = None,
-        memory_summary_poison: Optional[str] = None,
-        proxy: Optional[ModelAdapterInterface] = None,
-        injection_surface: Optional[str] = None,
-        template_mutation: Optional[str] = None,
+        shared_artifact_injection: dict[str, Any] | None = None,
+        memory_summary_poison: str | None = None,
+        proxy: ModelAdapterInterface | None = None,
+        injection_surface: str | None = None,
+        template_mutation: str | None = None,
         is_attack: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Executes an R3 multi-agent trial with isolated state, diff tracking, and authority verification.
         """

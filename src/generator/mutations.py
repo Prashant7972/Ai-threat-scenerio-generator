@@ -3,8 +3,8 @@ The 7 Curated Mutation Operators (GEN 03).
 Deterministic, seed-based transformations without unreviewed executable code generation.
 Ensures boundary coverage and uniqueness across variant space.
 """
-from typing import Dict, Callable
 import random
+from collections.abc import Callable
 
 MUTATION_OPERATORS = [
     "authority_claims",
@@ -85,7 +85,6 @@ def mutate_context_length(base_prompt: str, seed: int) -> str:
         "Service discovery relies on Consul clusters deployed in redundant availability zones.\n"
         "Database connections use pooled TLS 1.3 connections with mutual authentication.\n"
     )
-    rng = random.Random(seed)
     multiplier = (seed % 3) + 3
     prefix_padding = padding_block * multiplier
     suffix_padding = padding_block * 2
@@ -101,7 +100,7 @@ def mutate_template_or_configuration_changes(base_prompt: str, seed: int) -> str
     rng = random.Random(seed)
     return rng.choice(tampered_templates)
 
-MUTATION_REGISTRY: Dict[str, Callable[[str, int], str]] = {
+MUTATION_REGISTRY: dict[str, Callable[[str, int], str]] = {
     "authority_claims": mutate_authority_claims,
     "benign_task_dependency_traps": mutate_benign_task_dependency_traps,
     "multi_turn_placement": mutate_multi_turn_placement,

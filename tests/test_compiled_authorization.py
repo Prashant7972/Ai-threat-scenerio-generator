@@ -1,9 +1,10 @@
 """Compiled target policy must enforce actual scope and one-use approval state."""
 import json
-from src.proof.compiled_targets import CompiledTarget
-from src.proof.proxy import MockModelProxy, TelemetryCollector
-from src.proof.evaluator.assertions import evaluate_primary_evidence
+
 from src.generator.contract import RecordType
+from src.proof.compiled_targets import CompiledTarget
+from src.proof.evaluator.assertions import evaluate_primary_evidence
+from src.proof.proxy import MockModelProxy, TelemetryCollector
 
 
 def target(tmp_path, baseline=None):

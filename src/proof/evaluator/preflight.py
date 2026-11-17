@@ -1,6 +1,6 @@
 """Development preflight; does not claim operating-system network isolation."""
 from src.generator.auto_generator import load_all_specs
-from src.generator.harness_generator import SafeHarnessPackage, HARNESS_TEMPLATES
+from src.generator.harness_generator import HARNESS_TEMPLATES, SafeHarnessPackage
 
 
 def run_preflight_checks() -> dict:

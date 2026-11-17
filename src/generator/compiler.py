@@ -3,20 +3,21 @@
 This validates bindings and stored evidence, not the truth of a source claim.
 The legacy catalog remains available only as an unverified prototype.
 """
-from datetime import datetime
-from pathlib import Path
 import hashlib
 import json
 import shutil
 import tempfile
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .contract import MinimumScenarioContract, InjectionSurface
+from .boundary_variants import PARAMETER_SCHEMA, materialize_boundary_records
+from .contract import InjectionSurface, MinimumScenarioContract
 from .harness_generator import SafeHarnessPackage
-from .boundary_variants import materialize_boundary_records, PARAMETER_SCHEMA
-from .mechanisms import materialize_mechanism_records, PARAMETER_SCHEMA as MECHANISM_SCHEMA
+from .mechanisms import PARAMETER_SCHEMA as MECHANISM_SCHEMA
+from .mechanisms import materialize_mechanism_records
 
 
 class TargetProfile(BaseModel):

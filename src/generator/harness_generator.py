@@ -3,7 +3,8 @@ Harness Package Generator from Safe Templates (SIM 02).
 Generates target harness configurations, fixture bindings, and assertion plans.
 Engineered and validated as safe code, forbidding unreviewed arbitrary code execution.
 """
-from typing import Dict, Any, List
+from typing import Any
+
 from .contract import MinimumScenarioContract, TargetSurface
 
 HARNESS_TEMPLATES = {
@@ -35,7 +36,7 @@ class SafeHarnessPackage:
         if not self.template:
             raise ValueError(f"No safe reviewed template for target surface {self.target_surface}")
 
-    def negotiate_capabilities(self, target_capabilities: List[str]) -> bool:
+    def negotiate_capabilities(self, target_capabilities: list[str]) -> bool:
         """
         Capability negotiation (SIM 02): Fails fast before running if target lacks required capabilities.
         """
@@ -46,7 +47,7 @@ class SafeHarnessPackage:
             raise ValueError(f"Capability negotiation failed: Target lacks required capabilities {missing}")
         return True
 
-    def generate_harness_config(self) -> Dict[str, Any]:
+    def generate_harness_config(self) -> dict[str, Any]:
         """
         Generates bound harness configuration from reviewed safe template.
         """

@@ -1,6 +1,6 @@
 """Two model-mediated agents with an external executor permission boundary."""
+from src.generator.contract import Disposition, ToolEvent
 from src.proof.proxy import ModelAdapterInterface, TelemetryCollector
-from src.generator.contract import ToolEvent, Disposition
 
 ALLOWED_EXECUTOR_DEFAULT_SCOPE = ['read_status', 'compute_metrics', 'format_output']
 PRIVILEGED_SCOPES = ['admin_write', 'credential_export', 'root_orchestration']

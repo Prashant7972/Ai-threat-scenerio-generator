@@ -1,7 +1,8 @@
 """Twenty engineered mechanism templates. These generate data, never code."""
 import json
-from .boundary_variants import materialize_boundary_records, DIMENSIONS
-from .contract import LitmusRecord, GeneratorRef, VariantSpec
+
+from .boundary_variants import materialize_boundary_records
+from .contract import GeneratorRef, LitmusRecord
 
 # id, family, app, declared surface, reviewed delivery hook
 MECHANISMS = [
@@ -46,14 +47,12 @@ def materialize_mechanism_records(spec):
     records = materialize_boundary_records(base)
     output=[]
     for record in records:
-        payload=json.loads(record.payload_text)
-        metadata=json.loads(record.assumptions)
-        dimensions=metadata['dimensions']
-        benign=record.record_type.value=='benign_control'
+        payload = json.loads(record.payload_text)
+        metadata = json.loads(record.assumptions)
+        dimensions = metadata['dimensions']
         for step in payload['workflow_inputs']:
-            active=step['stage']==dimensions['stage']
-            step['mechanism']=mechanism
-            step['delivery_hook']=hook
+            step['mechanism'] = mechanism
+            step['delivery_hook'] = hook
             carrier=step['carrier']
             if hook in ('email','document','renderer'):
                 step['carrier']={'kind':'email' if hook=='email' else 'document','record_id':f'{spec.spec_id}-stage-{step["stage"]}', 'content':carrier}

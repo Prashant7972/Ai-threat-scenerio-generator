@@ -3,9 +3,10 @@ import difflib
 import hashlib
 import json
 from pathlib import Path
-from src.generator.contract import ToolEvent, Disposition
+
+from src.generator.contract import Disposition, ToolEvent
 from src.proof.simulators.r2_tools.tools import TOOL_DEFINITIONS
-from src.proof.simulators.r3_agents.agents import PlannerAgent, ExecutorAgent
+from src.proof.simulators.r3_agents.agents import ExecutorAgent, PlannerAgent
 
 SUPPORTED_SURFACES = {
     'R1': {'retrieval_fixture'},

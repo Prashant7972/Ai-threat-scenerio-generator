@@ -2,14 +2,16 @@
 Trial Disposition Classifier (EVAL 02).
 Categorizes non-success outcomes into the 12 mutually distinguishable dispositions.
 """
-from typing import Optional
-from src.generator.contract import Disposition, TrialOutcome, TelemetryRecord
+
+from src.generator.contract import Disposition, TelemetryRecord
+
 from .assertions import AssertionResults
+
 
 def classify_trial_disposition(
     telemetry: TelemetryRecord,
     assertions: AssertionResults
-) -> Optional[Disposition]:
+) -> Disposition | None:
     """
     Classifies a non-success or blocked trial into one of the 12 defined dispositions.
     Returns None if trial succeeded cleanly (attack_success or benign_success).

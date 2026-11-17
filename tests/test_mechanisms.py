@@ -1,11 +1,13 @@
 """Generator boundary tests use synthetic unit-test approvals only."""
 import json
+
 import pytest
-from test_strict_compiler import inputs
+
 from src.generator.compiler import build_package
-from src.generator.mechanisms import MECHANISMS
+from src.generator.contract import LitmusRecord, TargetSurface
 from src.generator.harness_generator import HARNESS_TEMPLATES
-from src.generator.contract import TargetSurface, LitmusRecord
+from src.generator.mechanisms import MECHANISMS
+
 
 @pytest.mark.parametrize('mechanism,family,app,surface,hook', MECHANISMS)
 def test_twenty_mechanisms_materialize_integrity_and_matching(inputs, mechanism, family, app, surface, hook):

@@ -1,9 +1,10 @@
 """Conservative change classification and append-only invalidation plans (GEN 05)."""
-from typing import Optional, Literal
-from enum import Enum
-from pathlib import Path
 import hashlib
 import json
+from enum import Enum
+from pathlib import Path
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -23,7 +24,7 @@ class ProvenanceDiff(BaseModel):
     requires_respecification: bool
 
 
-def classify_provenance_diff(old_item: dict, new_item: Optional[dict]) -> ProvenanceDiff:
+def classify_provenance_diff(old_item: dict, new_item: dict | None) -> ProvenanceDiff:
     item_id = str(old_item.get('id') or old_item.get('incident_id', 'UNKNOWN'))
     kind = ('mitigation' if item_id.startswith('AML.M') else 'technique' if item_id.startswith('AML.T')
             else 'case_study' if item_id.startswith('AML.CS') else 'incident')
@@ -44,14 +45,14 @@ def classify_provenance_diff(old_item: dict, new_item: Optional[dict]) -> Proven
                           details='Changed fields: ' + ', '.join(sorted(changed)), requires_respecification=invalidates)
 
 
-def plan_source_change(old_item: dict, new_item: Optional[dict], packages: list[dict]) -> dict:
+def plan_source_change(old_item: dict, new_item: dict | None, packages: list[dict]) -> dict:
     diff = classify_provenance_diff(old_item, new_item)
     affected = [p for p in packages if diff.item_id in p['source_ids']]
     withdrawal = diff.classification == DiffClassification.WITHDRAWAL
     return {'diff': diff.model_dump(mode='json'), 'previous_source': old_item, 'new_source': new_item,
             'affected_packages': [p['package_id'] for p in affected],
             'invalidate': [p['package_id'] for p in affected] if diff.requires_respecification else [],
-            'successor_candidates': [dict(predecessor=p['package_id'], scenario_id=p['scenario_id'], status='candidate')
+            'successor_candidates': [{'predecessor': p['package_id'], 'scenario_id': p['scenario_id'], 'status': 'candidate'}
                                      for p in affected] if diff.requires_respecification and not withdrawal else [],
             'impacted_tests': sorted({t for p in affected for t in p.get('test_ids', [])}) if diff.requires_respecification else [],
             'analyst_review_required': diff.requires_respecification,

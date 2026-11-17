@@ -4,21 +4,21 @@ Strictly separates Mock-Harness Validation from Controlled Real-Model Evaluation
 Enforces cumulative trial budgets, provider host allowlisting, TLS verification,
 sanitized telemetry logging, and cost controls.
 """
-from typing import Dict, Any, List, Optional
-from abc import ABC, abstractmethod
-import time
 import json
 import os
-from datetime import datetime, timezone
 import re
+import time
 import urllib.parse
+from abc import ABC, abstractmethod
+from datetime import UTC, datetime
+from typing import Any
+
 from src.generator.contract import (
-    ToolEvent,
-    TelemetryRecord,
-    TrialOutcome,
     Disposition,
     NetworkRequestRecord,
-    InjectionSurface,
+    TelemetryRecord,
+    ToolEvent,
+    TrialOutcome,
 )
 
 # ----------------- Versioned Local Pricing Registry (EVAL 03) -----------------
@@ -63,11 +63,9 @@ PRICING_REGISTRY = {
 
 class SecurityException(Exception):
     """Raised when transport security or network isolation is violated."""
-    pass
 
 class BudgetExceededException(Exception):
     """Raised when a trial exceeds token, turn, tool call or wall-time caps."""
-    pass
 
 # ----------------- Cumulative Budget Tracker (GEN 01, EVAL 03) -----------------
 
@@ -109,7 +107,7 @@ class CumulativeBudgetTracker:
     def elapsed_seconds(self) -> float:
         return round(time.monotonic() - self.start_time, 4)
 
-    def record_model_attempt(self, in_tok: Optional[int], out_tok: Optional[int], is_failed: bool = False, is_retry: bool = False):
+    def record_model_attempt(self, in_tok: int | None, out_tok: int | None, is_failed: bool = False, is_retry: bool = False):
         self.model_request_attempts += 1
         if is_retry:
             self.retries_count += 1
@@ -142,7 +140,7 @@ class CumulativeBudgetTracker:
         if self.total_tokens > self.max_tokens:
             raise BudgetExceededException(f"Token cap exceeded ({self.total_tokens} > {self.max_tokens})")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "input_tokens": self.input_tokens,
             "output_tokens": self.output_tokens,
@@ -172,7 +170,7 @@ class SecureTransportClient:
         self.mode = mode
         self.provider = provider
         self.unauthorized_egress_attempts: int = 0
-        self.requests_logged: List[NetworkRequestRecord] = []
+        self.requests_logged: list[NetworkRequestRecord] = []
 
     def _sanitize_url(self, raw_url: str) -> str:
         parsed = urllib.parse.urlparse(raw_url)
@@ -191,10 +189,10 @@ class SecureTransportClient:
         self,
         method: str,
         url: str,
-        headers: Optional[Dict[str, str]] = None,
-        data: Optional[Any] = None,
+        headers: dict[str, str] | None = None,
+        data: Any | None = None,
         timeout: float = 30.0
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if self.mode == "mock":
             self.unauthorized_egress_attempts += 1
             raise SecurityException(f"Zero network egress violation: Mock mode forbids external HTTP calls to '{url}'.")
@@ -246,7 +244,7 @@ class SecureTransportClient:
                 )
                 self.requests_logged.append(rec)
                 return {"status_code": resp.status_code, "text": resp.text, "headers": dict(resp.headers), "record": rec}
-        except Exception as exc:
+        except Exception:
             latency = (time.time() - start_t) * 1000.0
             rec = NetworkRequestRecord(
                 destination_host=host,
@@ -259,7 +257,7 @@ class SecureTransportClient:
                 sanitized_url=sanitized_url,
             )
             self.requests_logged.append(rec)
-            raise exc
+            raise
 
 # ----------------- Telemetry Collector (SIM 03) -----------------
 
@@ -269,30 +267,30 @@ class TelemetryCollector:
     proposed vs. executed actions, and budget accounting.
     """
     def __init__(self, trial_id: str, spec_id: str, logical_variant_key: str, target_build: str, seed: int):
-        self.started_at = datetime.now(timezone.utc).isoformat()
+        self.started_at = datetime.now(UTC).isoformat()
         self.trial_id = trial_id
         self.spec_id = spec_id
         self.logical_variant_key = logical_variant_key
         self.target_build = target_build
         self.seed = seed
-        self.injection_surface: Optional[str] = None
+        self.injection_surface: str | None = None
         self.exposure_observed = None
         self.task_completion_observed = None
         self.redirection_observed = None
         self.observation_evidence = {}
         self.model_requests = []
         self.budget_tracker = CumulativeBudgetTracker()
-        self.proposed_actions: List[Dict[str, Any]] = []
-        self.executed_actions: List[Dict[str, Any]] = []
-        self.tool_events: List[ToolEvent] = []
-        self.renderer_requests: List[Dict[str, Any]] = []
-        self.canary_hits: List[str] = []
-        self.state_diffs: Dict[str, Any] = {}
-        self.network_requests: List[NetworkRequestRecord] = []
+        self.proposed_actions: list[dict[str, Any]] = []
+        self.executed_actions: list[dict[str, Any]] = []
+        self.tool_events: list[ToolEvent] = []
+        self.renderer_requests: list[dict[str, Any]] = []
+        self.canary_hits: list[str] = []
+        self.state_diffs: dict[str, Any] = {}
+        self.network_requests: list[NetworkRequestRecord] = []
         self.primary_outcome: TrialOutcome = TrialOutcome.BLOCKED_OR_FAILED
-        self.disposition: Optional[Disposition] = None
-        self.blocking_control_id: Optional[str] = None
-        self.blocking_evidence: Optional[str] = None
+        self.disposition: Disposition | None = None
+        self.blocking_control_id: str | None = None
+        self.blocking_evidence: str | None = None
 
     @property
     def model_turns(self) -> int:
@@ -306,10 +304,10 @@ class TelemetryCollector:
     def wall_time_seconds(self) -> float:
         return self.budget_tracker.elapsed_seconds
 
-    def record_proposed_action(self, action: Dict[str, Any]):
+    def record_proposed_action(self, action: dict[str, Any]):
         self.proposed_actions.append(action)
 
-    def record_executed_action(self, action: Dict[str, Any]):
+    def record_executed_action(self, action: dict[str, Any]):
         if action.get("status") not in ("BLOCKED", "DENIED"):
             self.executed_actions.append(action)
 
@@ -323,14 +321,14 @@ class TelemetryCollector:
             self.blocking_control_id = event.blocking_control_id
             self.blocking_evidence = event.error or f"Tool '{event.tool_name}' blocked with policy decision '{event.policy_decision}'."
 
-    def record_renderer_request(self, req: Dict[str, Any]):
+    def record_renderer_request(self, req: dict[str, Any]):
         self.renderer_requests.append(req)
 
     def record_canary_hit(self, canary_token: str):
         if canary_token not in self.canary_hits:
             self.canary_hits.append(canary_token)
 
-    def record_state_diff(self, key: str, before: Any, after: Any, diff_text: Optional[str] = None):
+    def record_state_diff(self, key: str, before: Any, after: Any, diff_text: str | None = None):
         diff_entry = {"before": before, "after": after}
         if diff_text is not None:
             diff_entry["unified_diff"] = diff_text
@@ -377,13 +375,13 @@ class ModelAdapterInterface(ABC):
         self,
         prompt: str,
         system_instruction: str,
-        available_tools: List[Dict[str, Any]],
+        available_tools: list[dict[str, Any]],
         telemetry: TelemetryCollector,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         pass
 
     @abstractmethod
-    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> Dict[str, Any]:
+    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> dict[str, Any]:
         pass
 
 class MockModelProxy(ModelAdapterInterface):
@@ -395,7 +393,7 @@ class MockModelProxy(ModelAdapterInterface):
         self.model_id = model_id
         self.transport = SecureTransportClient(mode="mock", provider=model_id)
 
-    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> Dict[str, Any]:
+    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> dict[str, Any]:
         return {
             "provider": self.model_id,
             "mode": "mock",
@@ -409,9 +407,9 @@ class MockModelProxy(ModelAdapterInterface):
         self,
         prompt: str,
         system_instruction: str,
-        available_tools: List[Dict[str, Any]],
+        available_tools: list[dict[str, Any]],
         telemetry: TelemetryCollector,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         prompt_tokens = max(1, len(prompt.split()) + len(system_instruction.split()))
         completion_tokens = 25
 
@@ -489,7 +487,7 @@ class LiveModelProxy(ModelAdapterInterface):
     Controlled Real-Model Proxy connecting to actual LLM APIs (e.g. Gemini, local Ollama).
     Strictly enforces host allowlists, token/turn caps, preflight pricing, and TLS.
     """
-    def __init__(self, model_id: str = "gemini-1.5-flash", api_key: Optional[str] = None):
+    def __init__(self, model_id: str = "gemini-1.5-flash", api_key: str | None = None):
         if model_id not in PRICING_REGISTRY:
             raise ValueError(f"Provider '{model_id}' is not in the allowed pricing registry: {list(PRICING_REGISTRY.keys())}")
         self.model_id = model_id
@@ -503,7 +501,7 @@ class LiveModelProxy(ModelAdapterInterface):
         else:
             self.api_model_id = model_id
 
-    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> Dict[str, Any]:
+    def estimate_cost(self, num_trials: int, avg_tokens: int = 1500) -> dict[str, Any]:
         info = self.provider_info
         total_tok = num_trials * avg_tokens
         # Estimate 75% input, 25% output
@@ -523,9 +521,9 @@ class LiveModelProxy(ModelAdapterInterface):
         self,
         prompt: str,
         system_instruction: str,
-        available_tools: List[Dict[str, Any]],
+        available_tools: list[dict[str, Any]],
         telemetry: TelemetryCollector,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if not self.api_key and "mock" not in self.model_id and "ollama" not in self.model_id:
             raise SecurityException(
                 f"Missing API key for live provider '{self.model_id}'. "

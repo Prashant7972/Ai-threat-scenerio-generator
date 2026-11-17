@@ -4,14 +4,22 @@ Enforces attack surface fidelity: retrieved-content attacks enter through retrie
 not merely direct user prompts.
 Supports vulnerable and hardened configurations.
 """
-from typing import Dict, Any, List, Optional
-from .stores import SyntheticStore
-from .renderer import OutputRenderer
+from typing import Any
+
+from src.generator.contract import (
+    Disposition,
+    InjectionSurface,
+    ToolEvent,
+    TrialOutcome,
+)
 from src.proof.proxy import MockModelProxy, ModelAdapterInterface, TelemetryCollector
-from src.generator.contract import ToolEvent, TrialOutcome, Disposition, InjectionSurface
+
+from .renderer import OutputRenderer
+from .stores import SyntheticStore
+
 
 class R1Assistant:
-    def __init__(self, proxy: Optional[ModelAdapterInterface] = None):
+    def __init__(self, proxy: ModelAdapterInterface | None = None):
         self.store = SyntheticStore()
         self.proxy = proxy or MockModelProxy()
 
@@ -20,9 +28,9 @@ class R1Assistant:
         user_prompt: str,
         telemetry: TelemetryCollector,
         target_build: str = "vulnerable",
-        proxy: Optional[ModelAdapterInterface] = None,
+        proxy: ModelAdapterInterface | None = None,
         is_attack: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Executes a complete R1 trial with fresh isolated state (SIM 01).
         Enforces attack-surface fidelity: attacks enter strictly via retrieval store fixtures.

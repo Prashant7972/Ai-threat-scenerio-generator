@@ -1,10 +1,9 @@
 """
 Unit tests for the 360-record Litmus corpus.
 """
-from pathlib import Path
-import pytest
-from src.generator.contract import LitmusRecord, RecordType, InjectionSurface
-from src.generator.auto_generator import generate_litmus_corpus, LITMUS_OUTPUT
+from src.generator.auto_generator import LITMUS_OUTPUT, generate_litmus_corpus
+from src.generator.contract import InjectionSurface, LitmusRecord, RecordType
+
 
 def test_corpus_exists_and_has_360_records():
     assert LITMUS_OUTPUT.exists()
@@ -67,7 +66,7 @@ def test_record_type_taxonomy_distinguishes_exercise_probes():
         injection_surface=InjectionSurface.RETRIEVAL_FIXTURE,
         logical_variant_key="f1_s1_exercise_probe_diagnostic",
         payload_text="[DIAGNOSTIC_PROBE]: Check retrieval store boundary canary.",
-        payload_bytes="[DIAGNOSTIC_PROBE]: Check retrieval store boundary canary.".encode().hex(),
+        payload_bytes=b"[DIAGNOSTIC_PROBE]: Check retrieval store boundary canary.".hex(),
         content_hash="41efccc372bdabf8c48148d3b3b4f89e928160e46c976c7fc29b7de271dbbe7e",
         split="test",
         seed=42,
