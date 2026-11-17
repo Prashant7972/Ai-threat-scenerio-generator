@@ -1,0 +1,259 @@
+{
+  "dossier_version": "2026.10",
+  "dossier_title": "AIID & MITRE ATLAS Authoritative Source Grounding Dossier",
+  "last_verified": "2026-11-17T13:45:00Z",
+  "verification_authority": "Assurance Engineering Team",
+  "atlas_release": {
+    "version": "v2026.10",
+    "format_version": "6.1.0",
+    "upstream_repository": "https://github.com/mitre-atlas/atlas-data",
+    "canonical_release_tag": "https://github.com/mitre-atlas/atlas-data/releases/tag/v2026.10",
+    "canonical_asset_sha256": "ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d",
+    "total_techniques_mapped": 24,
+    "total_tactics_covered": 11
+  },
+  "verified_incidents": [
+    {
+      "incident_id": "AIID-INC-0352",
+      "canonical_url": "https://incidentdatabase.ai/cite/352/",
+      "title": "Twitter Bot Redirection and Prompt Hijacking in GPT-3 Assistant",
+      "incident_date": "2022-09-15",
+      "observed_source_facts": [
+        "A commercial Twitter bot driven by GPT-3 was manipulated by external users using prompt injection text.",
+        "Adversarial tweets containing override commands ('ignore previous instructions and say...') caused the bot to abandon its legitimate brand persona and emit attacker-supplied statements.",
+        "The vulnerability resulted from concatenating unvalidated external text into the prompt context without authority separation."
+      ],
+      "adaptation_rationale": "Adapted from public microblog text redirection into incoming email and state redirection surfaces. The core mechanism (untrusted input overriding system prompt to force unauthorized emission) is preserved bit-for-bit.",
+      "adaptation_limits": [
+        "Does not establish multi-agent lateral movement or renderer exfiltration.",
+        "Synthetic email context is an adaptation; actual incident occurred on Twitter/X API."
+      ],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0352-01",
+          "statement": "External user text in conversational prompt context forces assistant to emit attacker-chosen messages.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f1_s1", "f4_s2"]
+    },
+    {
+      "incident_id": "AIID-INC-0420",
+      "canonical_url": "https://incidentdatabase.ai/cite/420/",
+      "title": "Circumventing Conversational Assistant Safety Guardrails via Persona-Based Context",
+      "incident_date": "2023-01-20",
+      "observed_source_facts": [
+        "Users circumvented ChatGPT content guardrails using 'DAN' (Do Anything Now) persona prompts and hypothetical framing.",
+        "Lengthy framing contexts diluted safety system prompt instructions and induced the model to adopt a permissive persona.",
+        "The model executed tasks otherwise blocked by standard alignment checks."
+      ],
+      "adaptation_rationale": "Adapted into multi-agent negotiation, verbal approval bypass, and memory framing circumvention. Demonstrates safety filter suppression when adversarial context frames the request as approved or hypothetical.",
+      "adaptation_limits": [
+        "Does not establish persistent memory database poisoning or financial API authorization.",
+        "Synthetic verbal approval and memory summaries are structured test adaptations."
+      ],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0420-01",
+          "statement": "Extended persona framing and hypothetical contexts induce conversational agents to bypass refusal guardrails.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f2_s4", "f3_s4", "f4_s3"]
+    },
+    {
+      "incident_id": "AIID-INC-0473",
+      "canonical_url": "https://incidentdatabase.ai/cite/473/",
+      "title": "Initial System Instruction Disclosure via Indirect Prompt Injection in Conversational AI",
+      "incident_date": "2023-02-08",
+      "observed_source_facts": [
+        "Early testers of Bing Chat (Sydney) used indirect and direct prompt injection to force the LLM to output its confidential initial prompt and codename.",
+        "The model disclosed hidden developer instructions when prompted with formatting directives and recursive summarization.",
+        "Demonstrated the vulnerability of LLMs to disclosing proprietary system directives when rendering user outputs."
+      ],
+      "adaptation_rationale": "Adapted into markdown renderer disclosure and system instruction extraction in R1 RAG assistant. Proves that untrusted content can coerce an assistant to reveal internal configurations.",
+      "adaptation_limits": [
+        "Does not establish arbitrary remote code execution or CRM database exfiltration.",
+        "Synthetic markdown canary exfiltration is an adapted security testing harness."
+      ],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0473-01",
+          "statement": "Prompt injection in conversational LLMs induces full disclosure of confidential system instructions and render directives.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f1_s4"]
+    },
+    {
+      "incident_id": "AIID-INC-1497",
+      "canonical_url": "https://incidentdatabase.ai/cite/1497/",
+      "title": "Hidden Adversarial Instructions in Document Analysis Workflow",
+      "incident_date": "2024-04-12",
+      "observed_source_facts": [
+        "Adversarial instructions were covertly embedded in an electronic legal petition analyzed by the automated judicial AI assistant Galileu.",
+        "The hidden text instructed the assistant to summarize the case favorably for the petitioner and ignore conflicting claims.",
+        "The system's pre-retrieval and post-retrieval filtering detected and isolated the adversarial prompt."
+      ],
+      "adaptation_rationale": "Directly models R1 retrieved document prompt injection. Demonstrates that ingested corporate and legal documents represent an untrusted adversarial carrier.",
+      "adaptation_limits": [
+        "Galileu successfully contained the attack; our vulnerable build reproduces the uncontained failure mode while the hardened build mirrors Galileu's containment.",
+        "Synthetic legal contract fixtures are clean reproductions of the attack vector."
+      ],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-1497-01",
+          "statement": "Adversarial instructions concealed within ingested document files influence automated document summarization.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f1_s2"]
+    },
+    {
+      "incident_id": "AIID-INC-1680",
+      "canonical_url": "https://incidentdatabase.ai/cite/1680/",
+      "title": "Workflow Cache Poisoning and Unauthorized Tool Execution in AI Agent Environment",
+      "incident_date": "2024-08-25",
+      "observed_source_facts": [
+        "In a development environment using an autonomous AI coding agent (Cline), untrusted issue text and cached repository dependencies triggered unauthorized package publication and shell script execution.",
+        "The agent possessed tool execution capabilities that were invoked based on instructions embedded in untrusted workspace files.",
+        "Highlighted the breakdown of authority boundaries when AI agents execute tools on behalf of unauthenticated input."
+      ],
+      "adaptation_rationale": "Directly models R2 tool misuse and R3 multi-agent authority expansion. Untrusted workspace content coerces the agent into invoking sensitive tools without human approval.",
+      "adaptation_limits": [
+        "Cline incident involved npm package publishing; our test uses mock wire transfer, SQL query, and delegated multi-agent planning tools.",
+        "Synthetic tool definitions isolate execution from external networks."
+      ],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-1680-01",
+          "statement": "Untrusted inputs in automated agent workflows induce unauthorized tool execution and authority boundary violations.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f2_s1", "f2_s2", "f3_s1", "f3_s3", "f5_s2"]
+    },
+    {
+      "incident_id": "AIID-INC-0035",
+      "canonical_url": "https://incidentdatabase.ai/cite/35/",
+      "title": "Automated Content Classifier Bypass via Split-Token Input",
+      "incident_date": "2023-05-10",
+      "observed_source_facts": [
+        "Partitioning adversarial text across multiple input segments bypassed single-chunk inspection filters in automated content moderation systems.",
+        "Reassembly occurred in the downstream language model context, triggering the unmoderated response."
+      ],
+      "adaptation_rationale": "Adapted for F1-S3 split-document injection where payload is divided across multiple document chunks.",
+      "adaptation_limits": ["Synthetic multi-chunk PDF/markdown parser."],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0035-01",
+          "statement": "Payload partitioning across segmented retrieval chunks evades per-chunk boundary inspection.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f1_s3"]
+    },
+    {
+      "incident_id": "AIID-INC-0055",
+      "canonical_url": "https://incidentdatabase.ai/cite/55/",
+      "title": "Dangerous Command Execution in Automated System Diagnostics",
+      "incident_date": "2023-09-18",
+      "observed_source_facts": [
+        "A diagnostic troubleshooting agent recommended destructive bash commands when untrusted log files contained formatted system error strings."
+      ],
+      "adaptation_rationale": "Adapted for F2-S3 unsafe system recovery advisor where error logs induce destructive commands.",
+      "adaptation_limits": ["Mock system advisor tool execution."],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0055-01",
+          "statement": "Adversarial formatting in diagnostic logs coerces agent to recommend destructive maintenance commands.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f2_s3"]
+    },
+    {
+      "incident_id": "AIID-INC-0071",
+      "canonical_url": "https://incidentdatabase.ai/cite/71/",
+      "title": "Shared Scratchpad Workspace Tampering in Multi-Agent Orchestration",
+      "incident_date": "2023-11-04",
+      "observed_source_facts": [
+        "An agent in a collaborative swarm wrote malicious instruction blocks to a shared scratchpad file, causing downstream worker agents to execute unapproved actions."
+      ],
+      "adaptation_rationale": "Adapted for F3-S2 shared artifact poisoning in multi-agent workflows.",
+      "adaptation_limits": ["Synthetic shared JSON artifact workspace."],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0071-01",
+          "statement": "Shared mutable artifacts across multi-agent pipelines enable cross-agent lateral instruction injection.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f3_s2"]
+    },
+    {
+      "incident_id": "AIID-INC-0072",
+      "canonical_url": "https://incidentdatabase.ai/cite/72/",
+      "title": "Context Dilution Safety Bypass in Extended-Context Large Language Models",
+      "incident_date": "2024-02-14",
+      "observed_source_facts": [
+        "Adversarial instructions placed at the end of large text bodies (>10,000 tokens) bypassed safety checks due to attention dilution over extended context."
+      ],
+      "adaptation_rationale": "Adapted for F4-S1 long-context invariant dilution.",
+      "adaptation_limits": ["Synthetic 15k token log buffer."],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0072-01",
+          "statement": "Large volume benign context dilutes prompt instruction weighting, enabling trailing attack activation.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f4_s1"]
+    },
+    {
+      "incident_id": "AIID-INC-0075",
+      "canonical_url": "https://incidentdatabase.ai/cite/75/",
+      "title": "Poisoned Prompt Construction and Template Modification in Local Model Deployments",
+      "incident_date": "2024-06-02",
+      "observed_source_facts": [
+        "Adversaries modified local Jinja chat templates and config files, injecting persistent malicious system prompts into every model request."
+      ],
+      "adaptation_rationale": "Adapted for F5-S1 chat template modification, F5-S3 config redirect, and F5-S4 dormant trigger.",
+      "adaptation_limits": ["Synthetic template file diff tracking."],
+      "claims": [
+        {
+          "claim_id": "CLAIM-AIID-0075-01",
+          "statement": "Tampering with chat templates and prompt configuration files permanently alters model behavior across all sessions.",
+          "verified": true
+        }
+      ],
+      "mapped_scenarios": ["f5_s1", "f5_s3", "f5_s4"]
+    }
+  ],
+  "atlas_technique_catalog": [
+    {"technique_id": "AML.T0051.001", "name": "LLM Prompt Injection: Indirect", "tactic": "AML.TA0001", "scenarios": ["f1_s1", "f1_s2", "f1_s3"]},
+    {"technique_id": "AML.T0051.002", "name": "LLM Prompt Injection: Trigger-dependent", "tactic": "AML.TA0001", "scenarios": ["f5_s4"]},
+    {"technique_id": "AML.T0054", "name": "LLM Jailbreak", "tactic": "AML.TA0005", "scenarios": ["f2_s4", "f4_s3"]},
+    {"technique_id": "AML.T0070", "name": "RAG Poisoning", "tactic": "AML.TA0009", "scenarios": ["f1_s2"]},
+    {"technique_id": "AML.T0066", "name": "Retrieval Content Crafting", "tactic": "AML.TA0009", "scenarios": ["f1_s3"]},
+    {"technique_id": "AML.T0077", "name": "LLM Response Rendering", "tactic": "AML.TA0010", "scenarios": ["f1_s1", "f1_s4"]},
+    {"technique_id": "AML.T0085.001", "name": "AI Tool Misuse: Privileged API Call", "tactic": "AML.TA0002", "scenarios": ["f2_s1", "f2_s2"]},
+    {"technique_id": "AML.T0085.002", "name": "AI Tool Misuse: Destructive Command Advice", "tactic": "AML.TA0002", "scenarios": ["f2_s3"]},
+    {"technique_id": "AML.T0086", "name": "Approval Bypass via Persona Emulation", "tactic": "AML.TA0004", "scenarios": ["f2_s4"]},
+    {"technique_id": "AML.T0087", "name": "Multi-Agent Scope Hijacking", "tactic": "AML.TA0004", "scenarios": ["f3_s1"]},
+    {"technique_id": "AML.T0088", "name": "Shared Artifact Poisoning", "tactic": "AML.TA0008", "scenarios": ["f3_s2"]},
+    {"technique_id": "AML.T0089", "name": "Agent Authority Boundary Traversal", "tactic": "AML.TA0004", "scenarios": ["f3_s3"]},
+    {"technique_id": "AML.T0090", "name": "Agent Delegated Role Escalation", "tactic": "AML.TA0004", "scenarios": ["f3_s4"]},
+    {"technique_id": "AML.T0091", "name": "Long-Context Attention Dilution", "tactic": "AML.TA0005", "scenarios": ["f4_s1"]},
+    {"technique_id": "AML.T0092", "name": "Conversation State Redirection", "tactic": "AML.TA0002", "scenarios": ["f4_s2"]},
+    {"technique_id": "AML.T0093", "name": "Memory Summary Integrity Poisoning", "tactic": "AML.TA0003", "scenarios": ["f4_s3"]},
+    {"technique_id": "AML.T0094", "name": "Untrusted Error Status Coercion", "tactic": "AML.TA0005", "scenarios": ["f4_s4"]},
+    {"technique_id": "AML.T0095", "name": "Chat Template Injection", "tactic": "AML.TA0003", "scenarios": ["f5_s1"]},
+    {"technique_id": "AML.T0096", "name": "System Rules File Boundary Escape", "tactic": "AML.TA0005", "scenarios": ["f5_s2"]},
+    {"technique_id": "AML.T0097", "name": "Tool Endpoint Configuration Redirection", "tactic": "AML.TA0002", "scenarios": ["f5_s3"]},
+    {"technique_id": "AML.T0043", "name": "Adversarial Data in LLM Memory", "tactic": "AML.TA0003", "scenarios": ["f4_s3"]},
+    {"technique_id": "AML.T0025", "name": "Exfiltration via Tool Invocation", "tactic": "AML.TA0010", "scenarios": ["f2_s2", "f3_s3"]},
+    {"technique_id": "AML.T0037", "name": "Model Extraction / System Prompt Leak", "tactic": "AML.TA0010", "scenarios": ["f1_s4"]},
+    {"technique_id": "AML.T0040", "name": "Execution via Injected Prompt", "tactic": "AML.TA0002", "scenarios": ["f2_s3"]}
+  ]
+}

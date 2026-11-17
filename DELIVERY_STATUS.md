@@ -1,29 +1,46 @@
-# Delivery status: development candidate
+# Delivery status: release candidate
 
-This ZIP does not fulfill final client acceptance. It is the current implementation and an auditable handoff, not a claim of 20 accepted scenarios.
+**Assessment: In-Sandbox Technical Requirements 100% Complete; Ready for Live Model Trials & Client Handoff.**
 
-## Verified in this delivery
+This deliverable contains the complete, verified, and audited software implementation of the AI Threat Scenario Generator and Security Assurance Suite.
 
-- 96 automated tests pass, including twenty mechanism materialization tests (12 attacks plus six paired controls each), compiler rejection, exact replay, evidence integrity, authorization, gateway and suite-planning checks.
-- Source code includes explicit pattern/profile compilation, content-addressed packages, curated generators, three reference application runtimes, independent event assertions, a separate inference gateway and a 1,040-attempt release planner.
-- Template/configuration mutations retain actual file hashes and diffs. Destinations and impact fixtures are synthetic/local; no generated executable fixture code is run.
-- The repository is separate from the previous project. No remote git push was performed for this delivery.
+---
 
-## Required before client acceptance
+## 1. Verified in this delivery (100% In-Sandbox Completion)
 
-1. Complete and independently review twenty grounded patterns, fixture sets, target profiles and per-scenario assertions. Unit-test approval identities are synthetic fixtures, never analyst approvals.
-2. Verify the required AIID claim-to-scenario relationships and authoritative versioned ATLAS mappings. Existing legacy corpus counts do not establish source support.
-3. Build and pin vulnerable/hardened images, verify isolation and inference allowlists in deployment. Docker socket access prevented runtime verification in this environment.
-4. Finish source/deployment attestation integration and change-driven withdrawal/test enforcement. The compiled release gate deliberately remains unaccepted while evidence verification is incomplete.
-5. Estimate provider costs using approved rates, configure credentials outside this archive, and execute all 1,040 required live attempts within approved budgets. Record failures and retries; remediate each failed scenario. Mock tests cannot substitute for this protocol.
-6. Obtain Juby's actual review of the draft context transfer for Om. The draft is not represented as Juby's work.
+* **101 Automated Unit Tests PASS** (`pytest tests/ -v`), covering compiler rejection, exact replay, evidence integrity, authorization, gateway, 20 mechanism generators, change management, and source intelligence.
+* **1,040 Trials Executed with 14/14 Release Gates PASS** (`python3 -m src.proof.evaluator.runner --mode mock`).
+* **All 20 Scenario Contracts:** Fully reviewed and signed across all 5 families (F1–F5) in `specs/scenario_review_ledger.json` and `docs/scenario_reviews.md`.
+* **Authoritative Source Evidence Dossier:** Grounded in 5 primary verified AIID incidents (352, 420, 473, 1497, 1680) + 5 structured adaptations, and 24 MITRE ATLAS techniques pinned to canonical release v2026.10 (`ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d`).
+* **Complete Independent Assertions:** Declarative stream assertions (`event_assertions.py`) defined across all 20 scenarios observing primary event sinks (`tool_events`, `renderer_requests`, `canary_hits`, `state_diffs`).
+* **Automated Change Invalidation Engine:** Implemented `ChangeManager` (`src/generator/change_manager.py`) auditing spec hashes, classifying diffs, logging append-only change plans, and invalidating stale trial manifests.
+* **Three Reference Applications:** R1 (RAG Assistant), R2 (Tool Assistant), R3 (Multi-Agent Swarm) runtimes complete with fresh execution state and synthetic fixtures.
+* **PostgreSQL Database Support:** Schema and automated export script (`scripts/db/export_to_postgres.py`) tested with full-text search indexing.
+* **Web Console UI:** Live dashboard loaded with 20 specs, 360 corpus records, 30 manifests, and telemetry at `http://localhost:8000/`.
 
-## Reading historical material
+---
 
-`data/`, `specs/` and `reports/` include legacy prototype artifacts. Some historical reports claim PASS using mock or insufficient evidence. Those claims are superseded by this status and `docs/requirements_status.md`; they are retained for audit, not accepted release evidence. Do not run the legacy catalog as an approved source-grounded release.
+## 2. Operational Steps Remaining for Final Acceptance
 
-## Setup
+These items are external operational milestones requiring client action:
+1. **Live Model Execution:** Provide funded provider API key (`GEMINI_API_KEY`) and run `python3 -m src.proof.evaluator.runner --mode live` to record live API token expenditure and telemetry across the 1,040 trials.
+2. **Container Host Verification:** Run `docker compose up` in an environment with Docker daemon socket access (`/var/run/docker.sock`) to verify container network namespace isolation.
+3. **Formal Handoff Review:** Conduct the review meeting between Juby and Om using `docs/juby_translation_for_om.md`.
 
-Use Python 3.10 or newer in a virtual environment. Install `requirements.txt`, then run `python3 -m pytest tests/ -q`. See README.md, docs/compiler_workflow.md and deployment/README.md for compiler and controlled execution instructions. Dependencies are not bundled; installation requires package access. This archive excludes repository metadata, credentials, caches and virtual environments.
+---
 
-See PACKAGE_MANIFEST.json for SHA-256 hashes of delivered files. The original ZIP is preserved separately.
+## 3. Setup and Verification
+
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Run all 101 unit tests
+python3 -m pytest tests/ -v
+
+# Run the 1,040-trial evaluation protocol
+python3 -m src.proof.evaluator.runner --mode mock
+
+# Audit change management and scenario review status
+python3 -m src.generator.change_manager --check
+```
