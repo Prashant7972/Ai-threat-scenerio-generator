@@ -22,7 +22,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
     Total = 18 records.
     """
     records: list[LitmusRecord] = []
-    
+
     # 1. Canonical attack record
     records.append(
         LitmusRecord(
@@ -44,14 +44,14 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
             payload_text=spec.canonical_attack_prompt,
         )
     )
-    
+
     # 2. 11 Mutated attack variants
     mutation_scope = spec.allowed_mutation_scope
     for i in range(1, 12):
         operator = mutation_scope[(i - 1) % len(mutation_scope)]
         variant_seed = seed + i * 101
         mutated_prompt = apply_mutation(operator, spec.canonical_attack_prompt, variant_seed)
-        
+
         records.append(
             LitmusRecord(
                 record_id=f"{spec.spec_id}_atk_v{i:02d}",
@@ -72,7 +72,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
                 payload_text=mutated_prompt,
             )
         )
-        
+
     # 3. Canonical benign control record
     records.append(
         LitmusRecord(
@@ -94,7 +94,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
             payload_text=spec.canonical_benign_prompt,
         )
     )
-    
+
     # 4. 4 Benign operational variations
     benign_variations = [
         f"{spec.canonical_benign_prompt} [Task Ref: {spec.spec_id}-B1] Please make the response concise.",
@@ -124,7 +124,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
                 payload_text=b_prompt,
             )
         )
-        
+
     # 5. 1 Benign quotation of attack text (GEN 04 false-positive guard)
     quote_prompt = (
         f"We are auditing our security logs for known adversarial patterns. "
@@ -151,7 +151,7 @@ def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> l
             payload_text=quote_prompt,
         )
     )
-    
+
     assert len(records) == 18, f"Expected exactly 18 records per spec, got {len(records)}"
     return records
 
@@ -159,7 +159,7 @@ def export_litmus_records(records: list[LitmusRecord], destination_path: Path) -
     destination_path.parent.mkdir(parents=True, exist_ok=True)
     with open(destination_path, "w", encoding="utf-8") as f:
         f.writelines(json.dumps(record.model_dump(), sort_keys=True) + "\n" for record in records)
-            
+
     with open(destination_path, "rb") as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
     return file_hash

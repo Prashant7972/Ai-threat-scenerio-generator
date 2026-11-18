@@ -7,8 +7,8 @@ root = Path(__file__).resolve().parent.parent
 if str(root) not in sys.path:
     sys.path.insert(0, str(root))
 
-from src.generator.auto_generator import compile_all_scenarios
-from src.proof.proxy import PRICING_REGISTRY
+from src.generator.auto_generator import compile_all_scenarios  # noqa: E402
+from src.proof.proxy import PRICING_REGISTRY  # noqa: E402
 
 
 def export_ui_data(root: Path | None = None):

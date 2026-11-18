@@ -27,7 +27,7 @@ class ChangeManager:
         if not self.ledger_path.exists():
             return {"status": "ERROR", "error": "Missing scenario_review_ledger.json"}
 
-        with open(self.ledger_path, "r", encoding="utf-8") as f:
+        with open(self.ledger_path, encoding="utf-8") as f:
             ledger = json.load(f)
 
         ledger_specs = {s["spec_id"]: s for s in ledger.get("scenarios", [])}

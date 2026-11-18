@@ -4,3 +4,4 @@ httpx>=0.27,<1
 pytest>=8,<10
 SQLAlchemy>=2.0
 psycopg2-binary>=2.9
+ruff>=0.8

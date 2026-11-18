@@ -17,13 +17,13 @@ def test_atlas_and_aiid_sources():
     assert atlas_file.exists()
     assert aiid_file.exists()
 
-    with open(atlas_file, "r", encoding="utf-8") as f:
+    with open(atlas_file, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     assert data["version"] == "2026.10"
     assert data["format_version"] == "6.1.0"
     assert len(data["case_studies"]) >= 20
 
-    with open(aiid_file, "r", encoding="utf-8") as f:
+    with open(aiid_file, encoding="utf-8") as f:
         incidents = json.load(f)
     assert len(incidents) >= 10
 
@@ -33,7 +33,7 @@ def test_source_evidence_dossier():
     dossier_path = WORKSPACE_ROOT / "data" / "sources" / "source_evidence_dossier.json"
     assert dossier_path.exists()
 
-    with open(dossier_path, "r", encoding="utf-8") as f:
+    with open(dossier_path, encoding="utf-8") as f:
         dossier = json.load(f)
 
     assert dossier["atlas_release"]["version"] == "v2026.10"
@@ -51,7 +51,7 @@ def test_scenario_review_ledger():
     ledger_path = WORKSPACE_ROOT / "specs" / "scenario_review_ledger.json"
     assert ledger_path.exists()
 
-    with open(ledger_path, "r", encoding="utf-8") as f:
+    with open(ledger_path, encoding="utf-8") as f:
         ledger = json.load(f)
 
     assert len(ledger["scenarios"]) == 20

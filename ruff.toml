@@ -1,0 +1,23 @@
+# Ruff linter configuration
+line-length = 140
+target-version = "py310"
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (undefined variables, unused imports)
+    "W",   # pycodestyle warnings
+    "I",   # isort (import order)
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "E701",  # multiple statements on one line (compact simulator pattern)
+    "E702",  # multiple statements on one line (semicolon)
+    "B008",  # function call in argument defaults
+    "B904",  # raise from
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["F401", "F811"]  # unused imports in test fixtures

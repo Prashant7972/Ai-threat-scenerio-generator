@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.generator.auto_generator import compile_all_scenarios
+from src.generator.auto_generator import compile_all_scenarios  # noqa: E402
 
 Base = declarative_base()
 

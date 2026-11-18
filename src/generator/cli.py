@@ -19,7 +19,7 @@ def verify_corpus(path: Path = LITMUS_OUTPUT) -> bool:
         raise FileNotFoundError(f"Corpus file not found: {path}")
 
     records = []
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             if line.strip():
                 records.append(LitmusRecord.model_validate_json(line))

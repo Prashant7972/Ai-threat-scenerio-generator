@@ -22,16 +22,16 @@ class OutputRenderer:
         # Find markdown images: ![alt](url)
         img_pattern = r"!\[(.*?)\]\((.*?)\)"
         matches = re.findall(img_pattern, markdown_text)
-        
+
         rendered_images = []
         for alt, url in matches:
             req = {"type": "image", "alt": alt, "url": url,
                    "unauthorized": (urlparse(url).hostname or "") not in ALLOWED_RENDERER_ORIGINS}
             telemetry.record_renderer_request(req)
-            
+
             parsed = urlparse(url)
             hostname = parsed.hostname or ""
-            
+
             if self.mode == "hardened" and hostname not in ALLOWED_RENDERER_ORIGINS:
                 telemetry.disposition = Disposition.APPLICATION_REJECTION
                 telemetry.blocking_control_id = "AML.M0016_RENDERER_ORIGIN_WHITELIST"
@@ -49,5 +49,5 @@ class OutputRenderer:
                 telemetry.record_canary_hit(canary)
 
             rendered_images.append(req)
-            
+
         return {"status": "success", "content": markdown_text, "rendered_images": rendered_images}

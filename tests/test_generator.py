@@ -18,7 +18,7 @@ from src.generator.snapshot import materialize_spec_records
 def test_compile_all_twenty_scenarios():
     contracts = compile_all_scenarios()
     assert len(contracts) == 20
-    
+
     families = {c.attack_family for c in contracts}
     assert families == {AttackFamily.F1, AttackFamily.F2, AttackFamily.F3, AttackFamily.F4, AttackFamily.F5}
 
@@ -67,10 +67,10 @@ def test_safe_harness_generation_and_capability_negotiation():
     contracts = compile_all_scenarios()
     # Contract 0 is R1 (RAG)
     harness = SafeHarnessPackage(contracts[0])
-    
+
     # Negotiation passes when target has required capabilities
     assert harness.negotiate_capabilities(["email_retrieval", "document_retrieval", "markdown_rendering"])
-    
+
     # Negotiation fails fast when capability is missing
     with pytest.raises(ValueError, match="Capability negotiation failed"):
         harness.negotiate_capabilities(["email_retrieval"])
@@ -82,7 +82,7 @@ def test_safe_harness_generation_and_capability_negotiation():
 
 def test_provenance_diff_classification():
     old_tech = {"id": "AML.T0051.001", "tactic": "AML.TA0001", "description": "Indirect prompt injection via untrusted content."}
-    
+
     # Editorial
     new_tech_ed = dict(old_tech)
     new_tech_ed["locator"] = "https://example.test/corrected-locator"
