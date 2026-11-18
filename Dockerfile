@@ -24,6 +24,7 @@ COPY tests/ /app/tests/
 COPY scripts/ /app/scripts/
 COPY ui/ /app/ui/
 COPY docs/ /app/docs/
+COPY guidelines/ /app/guidelines/
 COPY deployment/ /app/deployment/
 COPY config/ /app/config/
 COPY pytest.ini ruff.toml PACKAGE_MANIFEST.json DELIVERY_STATUS.md README.md /app/

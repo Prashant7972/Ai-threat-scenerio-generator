@@ -15,7 +15,7 @@ The legacy unverified mappings have been completely excised from the active scen
 
 ## Verified authoritative source grounding (GEN 01 & Source Quotas Complete)
 
-Full authoritative records, stable claim IDs, and explicit adaptation departure rationales are maintained in [data/sources/source_evidence_dossier.json](file:///home/prashant/.gemini/antigravity/scratch/ai-threat-scenario-generator/data/sources/source_evidence_dossier.json) and [docs/source_evidence_dossier.md](file:///home/prashant/.gemini/antigravity/scratch/ai-threat-scenario-generator/docs/source_evidence_dossier.md).
+Full authoritative records, stable claim IDs, and explicit adaptation departure rationales are maintained in [data/sources/source_evidence_dossier.json](../data/sources/source_evidence_dossier.json) and [docs/source_evidence_dossier.md](source_evidence_dossier.md).
 
 ### Verified AIID incident records
 1. **[AIID 352](https://incidentdatabase.ai/cite/352/)**: Twitter bot prompt injection redirection (`CLAIM-AIID-0352-01`). Mapped to F1-S1 and F4-S2.
