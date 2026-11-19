@@ -1,5 +1,7 @@
 # AI Threat Scenario Generator and Assurance Suite
 
+[![CI/CD Pipeline](https://github.com/Prashant7972/Ai-threat-scenerio-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/Prashant7972/Ai-threat-scenerio-generator/actions/workflows/ci.yml)
+
 **Status: Release Candidate (In-Sandbox Implementation 100% Complete; Operational Live Certification Pending).**
 
 The **generator is the primary product**: it ingests reviewed threat patterns and versioned target profiles, then produces concrete, reproducible threat scenario specifications and engineered test harness packages. The reference applications and evaluation engine demonstrate and verify whether those generated scenarios expose intended vulnerabilities on vulnerable builds and ensure proper containment on hardened builds while preserving normal task completion.
@@ -118,7 +120,19 @@ python3 -m src.proof.evaluator.runner --mode live --provider gemini-3.8-flash
 
 ---
 
-## 5. Summary of Acceptance Status
+## 5. CI/CD Pipeline & Automated Verification
+
+The repository includes an enterprise-grade GitHub Actions pipeline ([.github/workflows/ci.yml](.github/workflows/ci.yml)) triggered on every `push` and `pull_request` to `main`:
+
+* **Code Quality & Linting**: Executes `ruff check .` to guarantee PEP 8 adherence, clean imports, and zero dead code.
+* **Cryptographic & Scenario Audit**: Automatically audits all 20 scenario specs against `scenario_review_ledger.json` (`src.generator.change_manager --check`) and verifies simulator capabilities and cost estimation.
+* **Cross-Version Test Matrix**: Executes the 101 unit and integration tests across **Python 3.10, 3.11, and 3.12**, uploading structured JUnit test reports.
+* **Container Build & In-Container Test**: Validates `docker-compose.yml`, builds the production Docker image, and executes the complete test suite inside the container to guarantee hermetic environment parity.
+* **Automated Continuous Delivery (CD)**: Automatically bundles the clean release archive, computes SHA-256 verification checksums, and publishes workflow artifacts on successful merges to `main`.
+
+---
+
+## 6. Summary of Acceptance Status
 
 * **In-Sandbox Technical Requirements:** **100% COMPLETE.** All 20 scenarios, 360 corpus records, mechanisms, simulators, assertions, change manager, database exporter, UI console, and 101 tests are verified and operational.
 * **Out-of-Sandbox Client Milestones:**

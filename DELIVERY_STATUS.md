@@ -17,6 +17,7 @@ This deliverable contains the complete, verified, and audited software implement
 * **Three Reference Applications:** R1 (RAG Assistant), R2 (Tool Assistant), R3 (Multi-Agent Swarm) runtimes complete with fresh execution state and synthetic fixtures.
 * **PostgreSQL Database Support:** Schema and automated export script (`scripts/db/export_to_postgres.py`) tested with full-text search indexing.
 * **Web Console UI:** Live dashboard loaded with 20 specs, 360 corpus records, 30 manifests, and telemetry at `http://localhost:8000/`.
+* **Automated CI/CD Pipeline:** GitHub Actions workflow ([.github/workflows/ci.yml](.github/workflows/ci.yml)) testing code quality (Ruff), cryptographic spec integrity (GEN 05), 101 tests across Python 3.10–3.12, Docker hermetic verification, and automated release packaging.
 
 ---
 
