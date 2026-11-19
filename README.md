@@ -126,7 +126,7 @@ The repository includes an enterprise-grade GitHub Actions pipeline ([.github/wo
 
 * **Code Quality & Linting**: Executes `ruff check .` to guarantee PEP 8 adherence, clean imports, and zero dead code.
 * **Cryptographic & Scenario Audit**: Automatically audits all 20 scenario specs against `scenario_review_ledger.json` (`src.generator.change_manager --check`) and verifies simulator capabilities and cost estimation.
-* **Cross-Version Test Matrix**: Executes the 101 unit and integration tests across **Python 3.10, 3.11, and 3.12**, uploading structured JUnit test reports.
+* **Cross-Version Test Matrix**: Executes the 101 unit and integration tests across **Python 3.11 and 3.12**, uploading structured JUnit test reports.
 * **Container Build & In-Container Test**: Validates `docker-compose.yml`, builds the production Docker image, and executes the complete test suite inside the container to guarantee hermetic environment parity.
 * **Automated Continuous Delivery (CD)**: Automatically bundles the clean release archive, computes SHA-256 verification checksums, and publishes workflow artifacts on successful merges to `main`.
 
