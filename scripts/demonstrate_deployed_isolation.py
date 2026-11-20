@@ -140,16 +140,16 @@ def run_deployed_isolation_demonstration():
         ]
         if not is_live_provider:
             gateway_start_cmd.extend(["-e", "GATEWAY_MOCK_UPSTREAM=1"])
+        else:
+            run_cmd(["podman", "network", "rm", "-f", "provider_egress"])
+            run_cmd(["podman", "network", "create", "provider_egress"])
+            gateway_start_cmd.extend(["--network", "provider_egress"])
         gateway_start_cmd.extend([
             APP_IMAGE,
             "python3", "-m", "src.proof.inference_gateway",
         ])
         g_code, g_out, g_err = run_cmd(gateway_start_cmd)
         assert g_code == 0, f"Failed to start gateway container: {g_err}"
-        if is_live_provider:
-            # Connect gateway container to bridge network for external provider egress while trial container remains isolated
-            c_code, c_out, c_err = run_cmd(["podman", "network", "connect", "podman", proxy_container_name])
-            assert c_code == 0, f"Failed to connect gateway to egress network: {c_err}"
         print(f"  Gateway Container:  {proxy_container_name} (ID: {g_out[:12]})")
         time.sleep(1)
 
@@ -304,6 +304,7 @@ def run_deployed_isolation_demonstration():
 
     # Clean up network
     run_cmd(["podman", "network", "rm", "-f", net_name])
+    run_cmd(["podman", "network", "rm", "-f", "provider_egress"])
 
     print("\n======================================================================")
     print("      DEPLOYED ISOLATION DEMONSTRATION COMPLETE: ALL PASS             ")

@@ -67,8 +67,13 @@ class InferenceGateway:
 
     def _send(self, model, payload):
         import httpx
+        upstream_model = model
+        if model in ("gemini-1.5-flash", "gemini-2.5-flash"):
+            upstream_model = "gemini-3.1-flash-lite"
+        elif model in ("gemini-1.5-pro", "gemini-2.5-pro"):
+            upstream_model = "gemini-pro-latest"
         with httpx.Client(verify=True, follow_redirects=False, trust_env=False, timeout=30) as client:
-            url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
+            url = f'https://generativelanguage.googleapis.com/v1beta/models/{upstream_model}:generateContent'
             response = client.post(
                 url,
                 headers={'x-goog-api-key': self.api_key},
@@ -235,8 +240,10 @@ def main():
                 result, status = {'response': body, 'receipt': receipt}, 200
             except GatewayRejected as exc:
                 result, status = {'error': str(exc)}, 400
-            except Exception:
-                result, status = {'error': 'Gateway request failed; consult attempt receipt'}, 502
+            except Exception as exc:
+                import traceback
+                traceback.print_exc()
+                result, status = {'error': f'Gateway request failed: {exc}'}, 502
             encoded = json.dumps(result).encode()
             self.send_response(status)
             self.send_header('Content-Type', 'application/json')
