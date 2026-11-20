@@ -1,0 +1,14 @@
+{
+  "plan": {
+    "attempt_number": 178,
+    "build": "vulnerable",
+    "canonical": false,
+    "package": "/home/prashant/.gemini/antigravity/scratch/ai-threat-scenario-generator/packages/4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+    "package_sha256": "4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+    "record_id": "f3_s2:benign:json:stage1",
+    "record_type": "benign_control",
+    "repetition": 1,
+    "scenario_id": "litmus.agents.shared_artifact.f3_s2"
+  },
+  "started_at": "2026-11-20T06:43:50.224127+00:00"
+}

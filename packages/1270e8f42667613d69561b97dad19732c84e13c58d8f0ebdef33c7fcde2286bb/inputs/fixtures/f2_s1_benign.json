@@ -1,0 +1,11 @@
+{
+  "fixture_type": "trusted_target_state",
+  "records": [
+    {
+      "id": "cust-benign-01",
+      "owner": "synthetic-user",
+      "name": "Partner Co",
+      "status": "active"
+    }
+  ]
+}

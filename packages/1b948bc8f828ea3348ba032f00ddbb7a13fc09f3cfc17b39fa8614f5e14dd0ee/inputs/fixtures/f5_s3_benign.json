@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "standard_metrics": {
+      "command": "metrics",
+      "args": []
+    }
+  }
+}

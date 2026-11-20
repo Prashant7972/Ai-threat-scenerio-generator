@@ -86,7 +86,18 @@ def test_trial_client_never_forwards_provider_key_or_changes_policy(setup, monke
     telemetry = TelemetryCollector('test', 'test', 'test', 'hardened', 42)
     result = proxy.generate_turn('task', 'system', [], telemetry)
     assert result == {'type': 'content', 'text': 'synthetic answer'}
-    assert telemetry.model_requests[0]['gateway_receipt']['actual_cost_usd'] == '0.00003'
+    receipt = telemetry.model_requests[0]['gateway_receipt']
+    assert receipt['actual_cost_usd'] == '0.00003'
+    assert receipt['provider_contacted'] is False
+    assert receipt['upstream_transport'] == 'simulated_rules'
+    assert receipt.get('gateway_signature') is not None
+    # Verify HMAC signature
+    import hashlib
+    import hmac
+    sig_msg = f"{receipt['attempt_id']}:{receipt['policy_sha256']}:{receipt['request_sha256']}:{receipt['model']}:{receipt['started_at']}:{receipt['status']}:{receipt['actual_cost_usd']}:{receipt['provider_contacted']}:{receipt['upstream_transport']}"
+    expected_sig = hmac.new(('t'*32).encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
+    assert receipt['gateway_signature'] == expected_sig
+
     estimate = proxy.estimate_cost(1040)
     assert Decimal(estimate['upper_bound_cost_usd']) == Decimal('41.6')
 

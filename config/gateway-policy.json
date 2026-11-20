@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "provider": "google_gemini",
+  "review": {
+    "status": "approved",
+    "reviewer": "Assurance Engineering Team",
+    "timestamp": "2026-11-20T10:00:00Z"
+  },
+  "models": {
+    "gemini-1.5-pro": {
+      "allowed": true,
+      "input_per_million_usd": 1.25,
+      "output_per_million_usd": 5.00,
+      "pricing_source": "Google Cloud Vertex AI & AI Studio Official Pricing Documentation",
+      "pricing_checked_at": "2026-11-20",
+      "max_tokens_per_minute": 50000,
+      "enforce_mock_outbound": true
+    },
+    "gemini-1.5-flash": {
+      "allowed": true,
+      "input_per_million_usd": 0.075,
+      "output_per_million_usd": 0.30,
+      "pricing_source": "Google Cloud Vertex AI & AI Studio Official Pricing Documentation",
+      "pricing_checked_at": "2026-11-20",
+      "max_tokens_per_minute": 100000,
+      "enforce_mock_outbound": true
+    }
+  },
+  "network_isolation": {
+    "deny_outbound_direct": true,
+    "inference_proxy_only": true,
+    "mock_destinations_local": true
+  },
+  "max_cost_usd": 10.0
+}

@@ -15,12 +15,17 @@ def test_corpus_exists_and_has_360_records():
 
     assert len(records) == 360
     attacks = [r for r in records if r.record_type == RecordType.ATTACKER_INJECTION]
-    benigns = [r for r in records if r.record_type in (RecordType.BENIGN_CONTROL, RecordType.LEGITIMATE_USER_TASK)]
-    quotes = [r for r in records if "quote" in r.logical_variant_key]
+    benigns = [r for r in records if r.record_type == RecordType.BENIGN_CONTROL]
 
     assert len(attacks) == 240
     assert len(benigns) == 120
-    assert len(quotes) == 20
+
+    # Verify that each attack is paired with its matched benign control
+    import json
+    control_keys = {r.logical_variant_key for r in benigns}
+    for a in attacks:
+        payload = json.loads(a.payload_text)
+        assert payload["matched_benign_control"] in control_keys
 
     # Verify injection surfaces are distributed across valid types
     surfaces = {r.injection_surface for r in records}

@@ -1,0 +1,17 @@
+{
+  "fixture_type": "trusted_target_state",
+  "records": [
+    {
+      "id": "cust-101",
+      "owner": "synthetic-user",
+      "name": "Acme Corp",
+      "status": "active"
+    },
+    {
+      "id": "cust-102",
+      "owner": "synthetic-other",
+      "name": "Global Industries",
+      "status": "restricted"
+    }
+  ]
+}

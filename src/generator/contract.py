@@ -76,6 +76,8 @@ class SourceRef(BaseModel):
 
 class SourceFact(BaseModel):
     claim_id: str
+    source_ref: str = ""
+    passage: str = ""
 
 class AtlasMapping(BaseModel):
     id: str
@@ -163,6 +165,8 @@ class MinimumScenarioContract(BaseModel):
     benign_control: BenignControlContract
     budgets: BudgetsContract = Field(default_factory=BudgetsContract)
     review: ReviewContract = Field(default_factory=ReviewContract)
+    workflow_stages: list[str] = Field(default_factory=list)
+    trust_boundary: str = ""
 
     # Operational prompt fields for concrete test materialization
     attack_family: AttackFamily

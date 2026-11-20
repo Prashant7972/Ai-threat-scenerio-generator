@@ -14,13 +14,12 @@ from .mutations import apply_mutation
 def materialize_spec_records(spec: MinimumScenarioContract, seed: int = 42) -> list[LitmusRecord]:
     """
     Materializes exactly 18 records for a given MinimumScenarioContract:
-    - 1 Canonical attack record (split='canonical')
-    - 11 Mutated attack variants (split='test')
-    - 1 Canonical benign control (split='canonical')
-    - 4 Benign operational tasks (split='test')
-    - 1 Benign quotation of attack text (split='test')
-    Total = 18 records.
+    12 attacks and 6 matched benign controls with identical context and placement.
     """
+    if spec.generator.id == "reviewed_mechanism_v1":
+        from .mechanisms import materialize_mechanism_records
+        return materialize_mechanism_records(spec)
+
     records: list[LitmusRecord] = []
 
     # 1. Canonical attack record

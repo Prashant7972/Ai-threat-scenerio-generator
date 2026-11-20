@@ -1,0 +1,11 @@
+{
+  "tool_results": [
+    {
+      "tool": "metric_service",
+      "status": "success",
+      "output": {
+        "metric_value": 100
+      }
+    }
+  ]
+}

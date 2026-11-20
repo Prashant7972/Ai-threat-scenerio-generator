@@ -1,0 +1,21 @@
+{
+  "corpus.jsonl": "478e7c2a6b95ac177a056c20769fe6adabd681bffb0be4592e1389651e271e36",
+  "generator.parameters.schema.json": "36c478f33291697519821d52ed5cff734955bc857dc0902fcbecbb65c06b922b",
+  "generator/boundary_variants.py": "f6879159a179cd9f16a5d8161760aa9c49429091b362cf00ba794355b4b21c5d",
+  "generator/compiler.py": "ae4a96dad488dd5175f2a68ca9a5368e58456dde40f5ba7410260fecf0004f1c",
+  "generator/contract.py": "f0b1fda1b62959825a21f358ad31a310c64de9ac23050ee8392b8a414717a93e",
+  "generator/harness_generator.py": "1525f9e3da6b0c98b764dfd11c03e6db9c1667e9ffdc8626f91560088bf6edfc",
+  "generator/mechanisms.py": "41dd88227e5f9ed6b3599aed038d4bbc8784d75b37bbd9163acfd0b03bab1c7c",
+  "generator/mutations.py": "b5e2cb2048db4d5c2f5a42a093afe24f22abca615bd5ed628951a00d760ccb04",
+  "generator/snapshot.py": "529e4502047604d84cfbd31a38b0d5d7986c04f40b8887841ef7d18f3f2599d5",
+  "harness.json": "647952211c4a4d53304d79a04f976c3ef671aab65aac03de16869b498509b0f6",
+  "inputs/data/sources/ATLAS-2026.10.yaml": "4d08692d2881e7ba4ff4725113e25cbcd5f7f0dedad0cdd2999b34a2f61fb4ba",
+  "inputs/data/sources/aiid_incidents.json": "4b6da94409e9f8ac15e37222d91696a697cd90c72eea483827ffb3ce0323b43a",
+  "inputs/fixtures/f5_s2_benign.json": "9f428e4990d7271b053b3a27a1ed10826e60359718f84e1c57ec56fbfb16da32",
+  "inputs/fixtures/f5_s2_rules.md": "6d5a94a735f1923cebd247c360f69af12d44e2ea43820c105aeea18a95f1958d",
+  "pattern.json": "80e2288782432e151320750159748864fd3fca45d305b36c0d2aaef0e3f16074",
+  "scenario.json": "5e55b885a19426ef3ccff2bcce394b71a8243077de5b21b843f0f7575d295432",
+  "scenario.schema.json": "52617cf2bc7a184854f89deeade191be9cd6f96ba151b8c1abf27719ee05e4f2",
+  "target_profile.json": "ab08275f16f77601e5286d219865d2cfd9936ce65b50ec6e3aa41a1919802bc9",
+  "target_profile.schema.json": "ecdcc7085f40c79afbe1ddd529e26c362fef14b086f63cdc7cfa6b12ee2ae0d6"
+}

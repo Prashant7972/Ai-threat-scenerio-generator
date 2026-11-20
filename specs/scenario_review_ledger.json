@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "ledger_title": "Formal Twenty-Scenario Assurance Review Ledger (GEN 01)",
   "review_date": "2026-11-17T13:46:00Z",
-  "lead_reviewer": "Security Assurance Review Board",
+  "lead_reviewer": "Assurance Engineering Team",
   "scenarios": [
     {
       "spec_id": "f1_s1",
@@ -22,8 +22,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -32,9 +32,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "708d5a6c1ff0036675bd9623112ef4196c49897e0ac4cabec38ba84ab7c2223c",
+      "spec_file": "specs/F1_retrieval/f1_s1.yaml"
     },
     {
       "spec_id": "f1_s2",
@@ -53,8 +56,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -63,9 +66,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "a5c85d476849a702123446f3b4da3e610efb36c49ae1ede32091800c59aa0e10",
+      "spec_file": "specs/F1_retrieval/f1_s2.yaml"
     },
     {
       "spec_id": "f1_s3",
@@ -84,8 +90,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -94,9 +100,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "a6cc5d7514afe537efa32699b20e6f74a9dadca0c155a6b4aceddf04b3490e07",
+      "spec_file": "specs/F1_retrieval/f1_s3.yaml"
     },
     {
       "spec_id": "f1_s4",
@@ -114,8 +123,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -124,9 +133,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "8addbd9736204ebe28bf650fb10fbe3acd73f601f58cab7786445e6d4db3f2b7",
+      "spec_file": "specs/F1_retrieval/f1_s4.yaml"
     },
     {
       "spec_id": "f2_s1",
@@ -144,8 +156,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -154,9 +166,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "023ead1155c7fad4e016925e525523959491d49d6ce16c6ba83641e61c2b3aba",
+      "spec_file": "specs/F2_tools/f2_s1.yaml"
     },
     {
       "spec_id": "f2_s2",
@@ -175,8 +190,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -185,9 +200,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "ddae9aac13c9764727b16efda5498b591c4917b6a623987f331848699fe56327",
+      "spec_file": "specs/F2_tools/f2_s2.yaml"
     },
     {
       "spec_id": "f2_s3",
@@ -205,8 +223,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -215,9 +233,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "e1206d96bef267fbfadc188146cbe9bb7cde2e23ebc1ba6aa6d0462db78c2231",
+      "spec_file": "specs/F2_tools/f2_s3.yaml"
     },
     {
       "spec_id": "f2_s4",
@@ -235,8 +256,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -245,9 +266,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "d12f981d0b787a9a2e02c4557d9c1b158065eb05b13578cc4d56e1033b63ce72",
+      "spec_file": "specs/F2_tools/f2_s4.yaml"
     },
     {
       "spec_id": "f3_s1",
@@ -265,8 +289,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -275,9 +299,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "7a04d067fa5902f9b91fb56103df5934169bbeb6c81a5504bc38a26a16d27cf5",
+      "spec_file": "specs/F3_agents/f3_s1.yaml"
     },
     {
       "spec_id": "f3_s2",
@@ -295,8 +322,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -305,9 +332,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "acc659fc0079ee8178abb0ef83b46ad4becd2312a98009f20cd1b4b7a115b19c",
+      "spec_file": "specs/F3_agents/f3_s2.yaml"
     },
     {
       "spec_id": "f3_s3",
@@ -325,8 +355,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -335,9 +365,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "f113d32ba9d90c3efe208e7942f34f50beeaddaf440bf8db590fd0c05e42318f",
+      "spec_file": "specs/F3_agents/f3_s3.yaml"
     },
     {
       "spec_id": "f3_s4",
@@ -355,8 +388,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -365,9 +398,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "66da9ee0af5c3caf6f2a69cd040d22479db3047a9f073a3a5cf8651686b58378",
+      "spec_file": "specs/F3_agents/f3_s4.yaml"
     },
     {
       "spec_id": "f4_s1",
@@ -385,8 +421,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -395,9 +431,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "0d11fe6cf7069f69c96a8245a6e9ddee22262b12f45a8eb6278ee5fab61805fd",
+      "spec_file": "specs/F4_context/f4_s1.yaml"
     },
     {
       "spec_id": "f4_s2",
@@ -415,8 +454,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -425,9 +464,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "f7f6619734067f1c28f06ffde7ad9c28a2ec6a42669c52f0d9a0f97c49f552d3",
+      "spec_file": "specs/F4_context/f4_s2.yaml"
     },
     {
       "spec_id": "f4_s3",
@@ -445,8 +487,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -455,9 +497,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "4f29accae737fc3ab4d4c1855bc14542ba3420512c5709a72b61a4a2cfa13dc1",
+      "spec_file": "specs/F4_context/f4_s3.yaml"
     },
     {
       "spec_id": "f4_s4",
@@ -475,8 +520,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -485,9 +530,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "4969480e321647c035647d8d403b3458277dd9e35c15bb5df153d99dc02fabbc",
+      "spec_file": "specs/F4_context/f4_s4.yaml"
     },
     {
       "spec_id": "f5_s1",
@@ -505,8 +553,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -515,9 +563,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "98b13e80d9f7c22e5ac776b5191c051fc4cf1389e137c6d0c8e51e3e1fb9c2f6",
+      "spec_file": "specs/F5_supply/f5_s1.yaml"
     },
     {
       "spec_id": "f5_s2",
@@ -535,8 +586,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -545,9 +596,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "f23160b5c98fa18adb3da7fad188f38f8d6a889a3501006a3d2187aa2ca63143",
+      "spec_file": "specs/F5_supply/f5_s2.yaml"
     },
     {
       "spec_id": "f5_s3",
@@ -565,8 +619,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -575,9 +629,12 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "026a98b0efabfa2da35c91043d8d38039155737e245acd63249d21fa40586e94",
+      "spec_file": "specs/F5_supply/f5_s3.yaml"
     },
     {
       "spec_id": "f5_s4",
@@ -595,8 +652,8 @@
       ],
       "review": {
         "status": "approved",
-        "reviewer": "Security Assurance Reviewer",
-        "timestamp": "2026-11-16T12:00:00Z",
+        "reviewer": "Juby",
+        "timestamp": "2026-11-20T11:40:00Z",
         "checklist": {
           "source_grounding_verified": true,
           "threat_model_specified": true,
@@ -605,9 +662,13 @@
           "fixtures_reproducible": true,
           "independent_stream_assertions_complete": true,
           "benign_control_verified": true,
-          "resource_budgets_safe": true
+          "resource_budgets_safe": true,
+          "reviewed_revision_verified": true
         }
-      }
+      },
+      "reviewed_sha256": "21fdd92724dad45d9955b1375e5a70970eafb1770bec98f9cd17313d02a8f4ec",
+      "spec_file": "specs/F5_supply/f5_s4.yaml"
     }
-  ]
+  ],
+  "last_audit_date": "2026-11-20T10:00:00Z"
 }

@@ -1,0 +1,7 @@
+{
+  "delegation_context": {
+    "task_id": "del-task-01",
+    "authorized_scope": "read_status",
+    "priority": "normal"
+  }
+}

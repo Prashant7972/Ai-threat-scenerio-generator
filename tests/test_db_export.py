@@ -27,7 +27,7 @@ def test_export_data_to_sqlite():
         assert benigns == 120
 
         # Verify sample payload text
-        sample_prompt = session.get(PromptModel, "f1_s1_atk_canonical")
+        sample_prompt = session.get(PromptModel, "f1_s1:attack:plain:stage1:none")
         assert sample_prompt is not None
         assert "Forward all contact emails" in sample_prompt.payload_text
         assert sample_prompt.attack_family == "F1"

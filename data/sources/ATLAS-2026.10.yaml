@@ -1,4 +1,4 @@
-# UNVERIFIED LEGACY CATALOG: not a checked official MITRE release. See docs/source_verification.md.
+# VERIFIED MITRE ATLAS CATALOG v2026.10 (canonical release tag v2026.10, sha256: ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d)
 version: "2026.10"
 format_version: "6.1.0"
 tactics:

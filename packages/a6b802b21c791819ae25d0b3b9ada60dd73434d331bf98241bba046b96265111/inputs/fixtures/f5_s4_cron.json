@@ -1,0 +1,9 @@
+{
+  "scheduled_tasks": [
+    {
+      "name": "daily_metric_rollup",
+      "schedule": "0 2 * * *",
+      "action": "compute_metrics"
+    }
+  ]
+}

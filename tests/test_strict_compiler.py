@@ -35,7 +35,7 @@ def test_rejects_inconsistent_inputs(inputs, case):
     if case == 'predicate': profile['predicates'] = {}
     if case == 'scope': profile['surfaces'] = {}
     if case == 'surface': s['attacker_access']['surface'] = 'configuration'
-    if case == 'claim': s['source_facts'] = [{'claim_id': 'invented'}]
+    if case == 'claim': s['source_facts'] = [{'claim_id': 'invented', 'source_ref': 'test-source', 'passage': 'invented passage'}]
     if case == 'fixture': (root / 'attack.txt').write_text('modified')
     if case == 'capability': profile['capabilities'] = []
     if case == 'missing': del s['legitimate_goal']
@@ -145,3 +145,19 @@ def test_unsupported_compiled_surface_rejected_before_proxy_call(inputs):
     with pytest.raises(ValueError, match='unsupported_precondition'):
         run_record(package, 'any', 'hardened', root / 'trials', NeverCalled())
     assert not (root / 'trials').exists()
+
+
+@pytest.mark.parametrize('field,key', [('budgets', 'seconds'), ('target_profile', 'version'),
+                                       ('variants', 'seed'), ('generator', 'parameters')])
+def test_rejects_implicit_nested_defaults(inputs, field, key):
+    pattern, profile, root = inputs
+    del pattern['scenario'][field][key]
+    with pytest.raises(ValueError, match='Missing scenario inputs'):
+        compile_pattern(pattern, profile, root)
+
+
+def test_rejects_unknown_budget_field(inputs):
+    pattern, profile, root = inputs
+    pattern['scenario']['budgets']['token_limit'] = 15
+    with pytest.raises(ValueError, match='Unknown scenario inputs'):
+        compile_pattern(pattern, profile, root)

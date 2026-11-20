@@ -54,6 +54,23 @@ def local_bytes(root: Path, uri: str) -> bytes:
     return path.read_bytes()
 
 
+def require_explicit_fields(model: BaseModel, raw: dict, location: str) -> None:
+    """Reject silently defaulted or ignored contract fields at the compiler boundary."""
+    fields = set(type(model).model_fields)
+    if missing := fields - raw.keys():
+        raise ValueError(f"Missing scenario inputs at {location}: {sorted(missing)}")
+    if unknown := raw.keys() - fields:
+        raise ValueError(f"Unknown scenario inputs at {location}: {sorted(unknown)}")
+    for name in fields:
+        value = getattr(model, name)
+        if isinstance(value, BaseModel):
+            require_explicit_fields(value, raw[name], f"{location}.{name}")
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                if isinstance(item, BaseModel):
+                    require_explicit_fields(item, raw[name][index], f"{location}.{name}[{index}]")
+
+
 def compile_pattern(pattern: dict, profile_data: dict, root: Path) -> tuple[ScenarioSpec, dict]:
     """Compile {scenario, evidence} against one exact versioned target profile.
 
@@ -68,6 +85,7 @@ def compile_pattern(pattern: dict, profile_data: dict, root: Path) -> tuple[Scen
     if missing:
         raise ValueError(f"Missing scenario inputs: {sorted(missing)}")
     spec = ScenarioSpec.model_validate(raw)
+    require_explicit_fields(spec, raw, "scenario")
     profile = TargetProfile.model_validate(profile_data)
     if spec.target_profile.model_dump() != {"id": profile.id, "version": profile.version}:
         raise ValueError("TargetProfile id/version mismatch")
@@ -173,3 +191,83 @@ def build_package(pattern: dict, profile: dict, root: Path, output: Path) -> Pat
         if staging.exists():
             shutil.rmtree(staging)
     return destination
+
+
+class UnapprovedScenarioError(ValueError):
+    """Raised when an unreviewed, unapproved, or modified pattern is submitted for compilation."""
+
+
+def compile_reviewed_spec(
+    spec_path: Path,
+    profile_data: dict,
+    root: Path,
+    output: Path,
+    ledger_path: Path | None = None,
+) -> tuple[Path, ScenarioSpec]:
+    """Compile a reviewed YAML scenario specification and versioned profile into a content-addressed package.
+
+    Enforces that the input bytes match the reviewed revision hash in scenario_review_ledger.json
+    and that reviewer approval is explicitly verified before compilation.
+    """
+    raw_bytes = spec_path.read_bytes()
+    current_sha256 = digest(raw_bytes)
+    ledger_file = ledger_path or (root / "specs" / "scenario_review_ledger.json")
+
+    if not ledger_file.exists():
+        raise UnapprovedScenarioError(f"Scenario review ledger missing at {ledger_file}")
+
+    ledger = json.loads(ledger_file.read_text(encoding="utf-8"))
+    ledger_specs = {s["spec_id"]: s for s in ledger.get("scenarios", [])}
+    spec_id = spec_path.stem
+    entry = ledger_specs.get(spec_id)
+
+    if not entry:
+        raise UnapprovedScenarioError(
+            f"Scenario '{spec_id}' has not been recorded in review ledger. Review required."
+        )
+
+    if entry.get("review", {}).get("status") != "approved":
+        raise UnapprovedScenarioError(
+            f"Scenario '{spec_id}' review status is '{entry.get('review', {}).get('status')}'. Explicit 'approved' status required."
+        )
+
+    reviewed_hash = entry.get("reviewed_sha256")
+    if not reviewed_hash or current_sha256 != reviewed_hash:
+        raise UnapprovedScenarioError(
+            f"Scenario '{spec_id}' input bytes have been modified since review (current: {current_sha256[:8]}, reviewed: {str(reviewed_hash)[:8]}). Re-review required."
+        )
+
+    import yaml
+    raw = yaml.safe_load(raw_bytes)
+
+    # Bind specific claims to supporting source references
+    atlas_snap = "data/sources/ATLAS-2026.10.yaml"
+    atlas_hash = digest(local_bytes(root, atlas_snap))
+    aiid_snap = "data/sources/aiid_incidents.json"
+    aiid_hash = digest(local_bytes(root, aiid_snap))
+
+    refs = raw.get("source_refs", [])
+
+    evidence = []
+    for ref in refs:
+        is_aiid = ref["record_id"].startswith("AIID")
+        bound_claims = [
+            f["claim_id"]
+            for f in raw.get("source_facts", [])
+            if f.get("source_ref") == ref["record_id"]
+        ]
+
+        evidence.append({
+            "record_id": ref["record_id"],
+            "revision": ref["revision"],
+            "locator": ref["locator"],
+            "claim_ids": bound_claims,
+            "snapshot_uri": aiid_snap if is_aiid else atlas_snap,
+            "sha256": aiid_hash if is_aiid else atlas_hash,
+        })
+
+    pattern = {"scenario": raw, "evidence": evidence}
+    pkg_path = build_package(pattern, profile_data, root, output)
+    spec = ScenarioSpec.model_validate(raw)
+    return pkg_path, spec
+

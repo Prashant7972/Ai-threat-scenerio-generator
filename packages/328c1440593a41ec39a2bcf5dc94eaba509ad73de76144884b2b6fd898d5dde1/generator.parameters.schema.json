@@ -1,0 +1,34 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "mechanism": {
+      "enum": [
+        "external_email",
+        "retrieved_document",
+        "split_document",
+        "renderer_disclosure",
+        "unauthorized_query",
+        "unapproved_transfer",
+        "unsafe_recovery",
+        "approval_bypass",
+        "peer_recommendation",
+        "shared_artifact",
+        "delegated_authority",
+        "permission_expansion",
+        "restriction_long_context",
+        "poisoned_summary",
+        "conflicting_memory",
+        "misleading_tool_result",
+        "chat_template_change",
+        "bundled_instruction_change",
+        "configuration_redirect",
+        "trigger_canary"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "mechanism"
+  ],
+  "type": "object"
+}

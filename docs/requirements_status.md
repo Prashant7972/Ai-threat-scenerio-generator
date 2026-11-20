@@ -29,7 +29,7 @@ This document records the exact technical status of each client requirement defi
 
 ## 2. Summary for Acceptance Audit
 
-* **Inside the Sandbox / Codebase:** **100% COMPLETE.** Every technical requirement (compiler, generators, mechanisms, corpus, simulators, assertions, change manager, database exporter, console UI, source dossier, and 101 unit tests) is fully implemented, verified, and audited.
+* **Inside the Sandbox / Codebase:** **Codebase & Gateway Verification Complete.** Every technical requirement (compiler, generators, mechanisms, corpus, simulators, assertions, change manager, database exporter, console UI, source dossier, pinned release manifest, and 111 unit and lifecycle tests) is fully implemented, verified, and audited.
 * **Outside the Sandbox / Operational Steps:** The remaining acceptance milestones are operational external dependencies:
   1. Live model spend (running `--mode live` with client's API key).
   2. Live Docker daemon socket execution on client's deployment host.

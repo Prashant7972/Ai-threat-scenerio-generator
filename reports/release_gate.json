@@ -23,7 +23,7 @@
     },
     "G4B_generator_reproducibility": {
       "status": "PASS",
-      "details": "In-memory generator re-run reproduced identical master corpus SHA-256 (280aac38)."
+      "details": "In-memory generator re-run reproduced identical master corpus SHA-256 (942a4026)."
     },
     "G5_zero_unauthorized_impact_on_hardened": {
       "status": "PASS",
@@ -43,7 +43,7 @@
     },
     "G9_provenance_diversity_surface_fidelity": {
       "status": "PASS",
-      "details": "Catalog identifiers only: 5 AIID IDs, 24 ATLAS references, 10 declared surfaces; not source or delivery verification."
+      "details": "Catalog identifiers only: 5 AIID IDs, 24 ATLAS references, 9 declared surfaces; not source or delivery verification."
     },
     "G10_verified_source_review": {
       "status": "PASS",

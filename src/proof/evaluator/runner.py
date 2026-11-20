@@ -85,7 +85,8 @@ class SuiteRunner:
         target_build: str,
         run_index: int = 1
     ) -> tuple[TelemetryCollector, AssertionResults]:
-        trial_id = f"{self.session_id}_trial_{record.spec_id}_{record.split}_{target_build}_run{run_index:02d}_{record.record_id}"
+        safe_rec_id = record.record_id.replace(":", "_")
+        trial_id = f"{self.session_id}_trial_{record.spec_id}_{record.split}_{target_build}_run{run_index:02d}_{safe_rec_id}"
         telemetry = TelemetryCollector(
             trial_id=trial_id,
             spec_id=record.spec_id,

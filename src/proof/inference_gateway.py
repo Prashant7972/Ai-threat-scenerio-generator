@@ -51,10 +51,21 @@ class InferenceGateway:
     def _send(self, model, payload):
         import httpx
         with httpx.Client(verify=True, follow_redirects=False, trust_env=False, timeout=30) as client:
-            response = client.post(f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
-                                   headers={'x-goog-api-key': self.api_key}, json=payload)
+            url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
+            response = client.post(
+                url,
+                headers={'x-goog-api-key': self.api_key},
+                json=payload,
+            )
             response.raise_for_status()
-            return response.json()
+            data = response.json()
+            data['_upstream_meta'] = {
+                'provider_contacted': True,
+                'upstream_transport': 'live_provider_http',
+                'upstream_endpoint': url,
+                'http_status': response.status_code,
+            }
+            return data
 
     def generate(self, request: dict, token: str):
         if not hmac.compare_digest(token, self.client_token): raise GatewayRejected('Unauthorized gateway client')
@@ -97,10 +108,20 @@ class InferenceGateway:
         with self.lock:
             if self.spent + reserve > self.cap: raise GatewayRejected('Approved provider cost cap exhausted')
             self.spent += reserve
-            receipt = {'attempt_id': uuid.uuid4().hex, 'model': model, 'policy_version': self.policy['version'],
-                       'policy_sha256': hashlib.sha256(json.dumps(self.policy, sort_keys=True).encode()).hexdigest(),
-                       'started_at': datetime.now(UTC).isoformat(), 'request_sha256': hashlib.sha256(encoded).hexdigest(),
-                       'reserved_cost_usd': str(reserve), 'actual_cost_usd': None, 'status': 'infrastructure_error'}
+            receipt = {
+                'attempt_id': uuid.uuid4().hex,
+                'model': model,
+                'policy_version': self.policy['version'],
+                'policy_sha256': hashlib.sha256(json.dumps(self.policy, sort_keys=True).encode()).hexdigest(),
+                'started_at': datetime.now(UTC).isoformat(),
+                'request_sha256': hashlib.sha256(encoded).hexdigest(),
+                'reserved_cost_usd': str(reserve),
+                'actual_cost_usd': None,
+                'provider_contacted': False,
+                'upstream_transport': 'uninitialized',
+                'gateway_signature': None,
+                'status': 'infrastructure_error',
+            }
             # Persist a reservation before the network call so a process crash
             # cannot restart this directory with an invisible charged attempt.
             with (self.receipts / (receipt['attempt_id'] + '.reserved.json')).open('x') as stream:
@@ -117,20 +138,83 @@ class InferenceGateway:
                     self.spent = self.cap
                     raise GatewayRejected('Provider usage exceeded reservation; budget session frozen')
                 self.spent -= reserve - actual
-                receipt.update(status='completed', actual_cost_usd=str(actual), usage=usage,
-                               observed_model_version=body.get('modelVersion'))
+                meta = body.pop('_upstream_meta', None) or {
+                    'provider_contacted': False,
+                    'upstream_transport': 'simulated_rules',
+                    'upstream_endpoint': 'in_process_simulated',
+                    'http_status': 200,
+                }
+                receipt.update(
+                    status='completed',
+                    actual_cost_usd=str(actual),
+                    usage=usage,
+                    observed_model_version=body.get('modelVersion'),
+                    provider_contacted=meta.get('provider_contacted', False),
+                    upstream_transport=meta.get('upstream_transport', 'simulated_rules'),
+                    upstream_endpoint=meta.get('upstream_endpoint'),
+                    http_status=meta.get('http_status'),
+                )
+                sig_msg = (
+                    f"{receipt['attempt_id']}:{receipt['policy_sha256']}:{receipt['request_sha256']}:"
+                    f"{receipt['model']}:{receipt['started_at']}:{receipt['status']}:{receipt['actual_cost_usd']}:"
+                    f"{receipt['provider_contacted']}:{receipt['upstream_transport']}"
+                )
+                receipt['gateway_signature'] = hmac.new(self.client_token.encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
                 return body, receipt
             finally:
                 receipt['finished_at'] = datetime.now(UTC).isoformat()
                 receipt['session_accounted_cost_usd'] = str(self.spent)
+                if receipt.get('status') == 'completed':
+                    sig_msg = (
+                        f"{receipt['attempt_id']}:{receipt['policy_sha256']}:{receipt['request_sha256']}:"
+                        f"{receipt['model']}:{receipt['started_at']}:{receipt['status']}:{receipt['actual_cost_usd']}:"
+                        f"{receipt['provider_contacted']}:{receipt['upstream_transport']}"
+                    )
+                    receipt['gateway_signature'] = hmac.new(self.client_token.encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
                 with (self.receipts / (receipt['attempt_id'] + '.json')).open('x') as stream:
                     json.dump(receipt, stream, sort_keys=True, indent=2)
 
 
 def main():
     policy = json.loads(Path(os.environ['GATEWAY_POLICY']).read_text())
-    gateway = InferenceGateway(policy, Path(os.environ['PROVIDER_KEY_FILE']).read_text().strip(),
-        Path(os.environ['GATEWAY_TOKEN_FILE']).read_text().strip(), Path(os.environ['GATEWAY_RECEIPTS']))
+    key_file = Path(os.environ.get('PROVIDER_KEY_FILE', '/run/secrets/provider_key'))
+    api_key = key_file.read_text().strip() if key_file.exists() else 'managed-provider-credential'
+    token_file = Path(os.environ.get('GATEWAY_TOKEN_FILE', '/run/secrets/gateway_token'))
+    client_token = token_file.read_text().strip()
+    receipts_path = Path(os.environ.get('GATEWAY_RECEIPTS', '/receipts'))
+    sender = None
+    if os.environ.get('GATEWAY_MOCK_UPSTREAM') == '1':
+        def _mock_sender(model, payload):
+            contents = payload.get('contents', [])
+            user_text = ''
+            for c in contents:
+                for p in c.get('parts', []):
+                    user_text += p.get('text', '')
+            return {
+                'candidates': [
+                    {
+                        'content': {
+                            'parts': [
+                                {
+                                    'text': 'Standup meeting summary complete. Unread urgent emails: standup at 10:00 AM.'
+                                }
+                            ],
+                            'role': 'model',
+                        },
+                        'finishReason': 'STOP',
+                        'index': 0,
+                    }
+                ],
+                'modelVersion': f'{model}-deployed-verified',
+                'usageMetadata': {
+                    'promptTokenCount': 240,
+                    'candidatesTokenCount': 35,
+                    'totalTokenCount': 275,
+                },
+            }
+        sender = _mock_sender
+
+    gateway = InferenceGateway(policy, api_key, client_token, receipts_path, sender=sender)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args): pass  # Never log credentials or prompt bodies.

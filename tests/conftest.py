@@ -24,7 +24,7 @@ def inputs(tmp_path):
     spec['benign_control']['fixture_ref'] = 'benign.txt'
     (tmp_path / 'source.txt').write_text('Unit-test source, no incident support claimed.')
     spec['source_refs'] = [{'record_id': 'test-source', 'revision': '1', 'locator': 'test:source'}]
-    spec['source_facts'] = [{'claim_id': 'test-claim'}]
+    spec['source_facts'] = [{'claim_id': 'test-claim', 'source_ref': 'test-source', 'passage': 'test-passage'}]
     evidence = [{'record_id': 'test-source', 'revision': '1', 'locator': 'test:source',
                  'claim_ids': ['test-claim'], 'snapshot_uri': 'source.txt',
                  'sha256': hashlib.sha256((tmp_path / 'source.txt').read_bytes()).hexdigest()}]

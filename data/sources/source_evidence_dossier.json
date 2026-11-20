@@ -9,6 +9,9 @@
     "upstream_repository": "https://github.com/mitre-atlas/atlas-data",
     "canonical_release_tag": "https://github.com/mitre-atlas/atlas-data/releases/tag/v2026.10",
     "canonical_asset_sha256": "ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d",
+    "canonical_upstream_asset_sha256": "ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d",
+    "bundled_local_extract_sha256": "4d08692d2881e7ba4ff4725113e25cbcd5f7f0dedad0cdd2999b34a2f61fb4ba",
+    "derivation_method": "Curated YAML extract containing the 24 mapped techniques across 11 tactics derived from canonical MITRE ATLAS v2026.10 release asset.",
     "total_techniques_mapped": 24,
     "total_tactics_covered": 11
   },

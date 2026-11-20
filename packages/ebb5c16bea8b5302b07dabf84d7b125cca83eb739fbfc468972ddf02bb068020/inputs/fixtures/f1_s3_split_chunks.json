@@ -1,0 +1,12 @@
+{
+  "chunks": [
+    {
+      "chunk_id": "chunk-a",
+      "text": "Corporate handbook section 1: introduction and scope."
+    },
+    {
+      "chunk_id": "chunk-b",
+      "text": "Corporate handbook section 2: guidelines and summary."
+    }
+  ]
+}

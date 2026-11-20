@@ -26,17 +26,15 @@ def verify_corpus(path: Path = LITMUS_OUTPUT) -> bool:
 
     assert len(records) == 360, f"Expected 360 records, found {len(records)}"
     attacks = [r for r in records if r.record_type == RecordType.ATTACKER_INJECTION]
-    benigns = [r for r in records if r.record_type in (RecordType.BENIGN_CONTROL, RecordType.LEGITIMATE_USER_TASK)]
-    quotes = [r for r in records if "quote" in r.logical_variant_key]
+    benigns = [r for r in records if r.record_type == RecordType.BENIGN_CONTROL]
 
     assert len(attacks) == 240, f"Expected 240 attacks, found {len(attacks)}"
-    assert len(benigns) == 120, f"Expected 120 benigns, found {len(benigns)}"
-    assert len(quotes) == 20, f"Expected 20 benign quotations, found {len(quotes)}"
+    assert len(benigns) == 120, f"Expected 120 benign controls, found {len(benigns)}"
 
     hashes = {r.content_hash for r in records}
     assert len(hashes) == 360, f"Expected 360 unique content hashes, got {len(hashes)}"
 
-    print(f"VERIFIED: 360 records ({len(attacks)} attacks, {len(benigns)} benigns). Unique SHA-256 hashes: {len(hashes)}.")
+    print(f"VERIFIED: 360 records ({len(attacks)} attacks, {len(benigns)} benign controls). Unique SHA-256 hashes: {len(hashes)}.")
     return True
 
 def main():

@@ -1,0 +1,9 @@
+{
+  "fixture_type": "trusted_target_state",
+  "approved_transfers": [
+    {
+      "recipient_account": "approved_payroll_01",
+      "amount": 1200
+    }
+  ]
+}

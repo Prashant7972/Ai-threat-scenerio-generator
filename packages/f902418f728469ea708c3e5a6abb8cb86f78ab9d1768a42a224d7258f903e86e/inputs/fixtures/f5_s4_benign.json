@@ -1,0 +1,9 @@
+{
+  "scheduled_tasks": [
+    {
+      "name": "health_ping",
+      "schedule": "*/15 * * * *",
+      "action": "ping"
+    }
+  ]
+}

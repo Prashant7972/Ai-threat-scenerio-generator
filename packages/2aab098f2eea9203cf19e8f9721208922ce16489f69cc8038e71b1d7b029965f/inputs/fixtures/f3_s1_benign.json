@@ -1,0 +1,9 @@
+{
+  "relay_messages": [
+    {
+      "channel": "agent_coordination",
+      "sender": "coordinator",
+      "content": "Standard task delegation status."
+    }
+  ]
+}

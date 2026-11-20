@@ -45,17 +45,32 @@ class ChangeManager:
                     "status": "UNTRACKED",
                     "file": str(yaml_path.relative_to(self.root_dir))
                 })
+                invalidations.append(spec_id)
                 continue
 
-            audit_results.append({
-                "spec_id": spec_id,
-                "status": "VERIFIED_UNCHANGED",
-                "current_sha256": current_hash,
-                "review_status": entry.get("review", {}).get("status", "unknown")
-            })
+            reviewed_hash = entry.get("reviewed_sha256")
+            if not reviewed_hash or current_hash != reviewed_hash:
+                audit_results.append({
+                    "spec_id": spec_id,
+                    "status": "INVALIDATED",
+                    "current_sha256": current_hash,
+                    "reviewed_sha256": reviewed_hash,
+                    "review_status": entry.get("review", {}).get("status", "unknown"),
+                    "file": str(yaml_path.relative_to(self.root_dir))
+                })
+                invalidations.append(spec_id)
+            else:
+                audit_results.append({
+                    "spec_id": spec_id,
+                    "status": "VERIFIED_UNCHANGED",
+                    "current_sha256": current_hash,
+                    "reviewed_sha256": reviewed_hash,
+                    "review_status": entry.get("review", {}).get("status", "unknown")
+                })
 
+        overall_status = "PASS" if not invalidations and len(audit_results) == 20 else "FAIL"
         return {
-            "status": "PASS",
+            "status": overall_status,
             "total_specs": len(audit_results),
             "verified_specs": len([r for r in audit_results if r["status"] == "VERIFIED_UNCHANGED"]),
             "invalidations": invalidations,
@@ -74,6 +89,29 @@ class ChangeManager:
         saved_path = save_change_plan(plan, self.change_history_dir)
         plan["saved_plan_file"] = str(saved_path)
         return plan
+
+    def process_mechanism_or_mitigation_change(
+        self,
+        spec_id: str,
+        old_spec: dict[str, Any],
+        new_spec: dict[str, Any],
+        associated_packages: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Classify a mechanism or mitigation change, invalidate affected packages, create successor candidates, and log impacted test runs."""
+        return self.process_specification_diff(spec_id, old_spec, new_spec, associated_packages)
+
+    def process_withdrawal(
+        self,
+        spec_id: str,
+        old_spec: dict[str, Any],
+        associated_packages: list[dict[str, Any]],
+        reason: str = "Withdrawn by security analyst",
+    ) -> dict[str, Any]:
+        """Process scenario withdrawal: preserves package history, creates withdrawal change plan, and triggers analyst review."""
+        withdrawn_spec = dict(old_spec)
+        withdrawn_spec["withdrawn"] = True
+        withdrawn_spec["withdrawal_reason"] = reason
+        return self.process_specification_diff(spec_id, old_spec, withdrawn_spec, associated_packages)
 
 
 def main():

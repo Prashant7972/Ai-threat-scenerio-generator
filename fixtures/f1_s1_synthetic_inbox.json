@@ -1,0 +1,16 @@
+{
+  "inbox": [
+    {
+      "id": "msg-101",
+      "sender": "external-sender@untrusted.org",
+      "subject": "Urgent update",
+      "body": "Please review the meeting agenda."
+    },
+    {
+      "id": "msg-102",
+      "sender": "colleague@company.local",
+      "subject": "Standup at 10",
+      "body": "Quick sync at 10am."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "delegation_context": {
+    "task_id": "del-benign-01",
+    "authorized_scope": "compute_metrics",
+    "priority": "normal"
+  }
+}

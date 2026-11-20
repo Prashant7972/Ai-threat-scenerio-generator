@@ -1,0 +1,20 @@
+{
+  "corpus.jsonl": "b8fda730fa46e4c29f736e34abadeeeb6804d242357c9fadecda15ae70ae9ff5",
+  "generator.parameters.schema.json": "36c478f33291697519821d52ed5cff734955bc857dc0902fcbecbb65c06b922b",
+  "generator/boundary_variants.py": "f6879159a179cd9f16a5d8161760aa9c49429091b362cf00ba794355b4b21c5d",
+  "generator/compiler.py": "ae4a96dad488dd5175f2a68ca9a5368e58456dde40f5ba7410260fecf0004f1c",
+  "generator/contract.py": "f0b1fda1b62959825a21f358ad31a310c64de9ac23050ee8392b8a414717a93e",
+  "generator/harness_generator.py": "1525f9e3da6b0c98b764dfd11c03e6db9c1667e9ffdc8626f91560088bf6edfc",
+  "generator/mechanisms.py": "41dd88227e5f9ed6b3599aed038d4bbc8784d75b37bbd9163acfd0b03bab1c7c",
+  "generator/mutations.py": "b5e2cb2048db4d5c2f5a42a093afe24f22abca615bd5ed628951a00d760ccb04",
+  "generator/snapshot.py": "529e4502047604d84cfbd31a38b0d5d7986c04f40b8887841ef7d18f3f2599d5",
+  "harness.json": "969ed9d70644f1b379fc7a28dd06369cf94ff79311b3f0b9c6f8e2048bb00eeb",
+  "inputs/data/sources/ATLAS-2026.10.yaml": "4d08692d2881e7ba4ff4725113e25cbcd5f7f0dedad0cdd2999b34a2f61fb4ba",
+  "inputs/fixtures/f3_s2_benign.json": "11252b22b86bd0bb6baf22f08527568fc87f771d3e68c0dbf6c8d4d18d8279cc",
+  "inputs/fixtures/f3_s2_scratchpad.json": "cbf109615a95ba3556759d271ab6c348e50e22918afd0f35cc15fb7579305850",
+  "pattern.json": "e6f549ed63c4ff7ffa7dc6877c022a5f77990b657614ad7583c938c276a56d13",
+  "scenario.json": "6bc3f7eb6d29d6a2fbfb57b1e60d8ae933ca4b59995e05b930aaff782e5677e0",
+  "scenario.schema.json": "52617cf2bc7a184854f89deeade191be9cd6f96ba151b8c1abf27719ee05e4f2",
+  "target_profile.json": "ab08275f16f77601e5286d219865d2cfd9936ce65b50ec6e3aa41a1919802bc9",
+  "target_profile.schema.json": "ecdcc7085f40c79afbe1ddd529e26c362fef14b086f63cdc7cfa6b12ee2ae0d6"
+}

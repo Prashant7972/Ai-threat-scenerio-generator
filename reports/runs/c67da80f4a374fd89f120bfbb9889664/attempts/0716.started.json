@@ -1,0 +1,14 @@
+{
+  "plan": {
+    "attempt_number": 716,
+    "build": "hardened",
+    "canonical": false,
+    "package": "/home/prashant/.gemini/antigravity/scratch/ai-threat-scenario-generator/packages/f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e",
+    "package_sha256": "f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e",
+    "record_id": "f5_s4:attack:json:stage0:none",
+    "record_type": "attacker_injection",
+    "repetition": 1,
+    "scenario_id": "litmus.supply.trigger_canary_behavior.f5_s4"
+  },
+  "started_at": "2026-11-20T06:44:40.636178+00:00"
+}

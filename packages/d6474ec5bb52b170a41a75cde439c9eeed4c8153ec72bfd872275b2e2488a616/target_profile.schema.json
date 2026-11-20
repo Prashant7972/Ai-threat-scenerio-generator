@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "InjectionSurface": {
+      "enum": [
+        "retrieval_fixture",
+        "tool_arguments",
+        "tool_response",
+        "approval_state",
+        "peer_agent_message",
+        "shared_artifact",
+        "memory_summary",
+        "long_context",
+        "chat_template",
+        "configuration"
+      ],
+      "title": "InjectionSurface",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "builds": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Builds",
+      "type": "object"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "predicates": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Predicates",
+      "type": "object"
+    },
+    "surfaces": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/InjectionSurface"
+      },
+      "title": "Surfaces",
+      "type": "object"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "capabilities",
+    "surfaces",
+    "predicates",
+    "builds"
+  ],
+  "title": "TargetProfile",
+  "type": "object"
+}

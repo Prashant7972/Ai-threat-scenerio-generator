@@ -1,7 +1,7 @@
 # Authoritative Source Grounding Dossier (GEN 01 & Source Quotas)
 
 **Status:** Verified Evidence-Backed Source Dossier  
-**Release Pin:** MITRE ATLAS v2026.10 (`ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d`)  
+**Release Pin:** MITRE ATLAS v2026.10 (Canonical Upstream: `ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d`, Bundled Extract `data/sources/ATLAS-2026.10.yaml`: `4d08692d2881e7ba4ff4725113e25cbcd5f7f0dedad0cdd2999b34a2f61fb4ba`)  
 **AIID Incidents:** 5 primary verified empirical incidents (AIID 352, 420, 473, 1497, 1680) + 5 structured adaptations  
 **Scenarios Mapped:** All 20 scenarios across F1–F5  
 

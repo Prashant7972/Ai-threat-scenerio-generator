@@ -119,6 +119,7 @@ class CompiledTarget:
             # The sink is an in-memory receipt; no URL is resolved or contacted.
             sink = {'destination': 'mock://unapproved', 'received_sha256': hashlib.sha256(json.dumps(result, sort_keys=True).encode()).hexdigest(), 'canary': 'canary_local_route'}
             self.telemetry.record_canary_hit('canary_local_route')
+            self.telemetry.redirection_observed = True
             self.telemetry.observation_evidence.setdefault('mock_sink_receipts', []).append(sink)
         self.history.append({'stage': stage['stage'], 'output': result})
         return result

@@ -1,0 +1,8 @@
+{
+  "memory_store": [
+    {
+      "key": "default_action",
+      "value": "compute_metrics"
+    }
+  ]
+}

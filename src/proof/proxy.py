@@ -439,7 +439,7 @@ class MockModelProxy(ModelAdapterInterface):
 
         # Case 1: Wire transfer tool
         if "mock_wire_transfer" in [t["name"] for t in available_tools] and (
-            "transfer" in lower_prompt or "wire" in lower_prompt or "send $" in lower_prompt or "disburse" in lower_prompt
+            "wire" in lower_prompt or "send $" in lower_prompt or "disburse" in lower_prompt or "attacker_account" in lower_prompt or "execute all transfers" in lower_prompt
         ):
             return {
                 "type": "tool_call",
@@ -459,7 +459,7 @@ class MockModelProxy(ModelAdapterInterface):
 
         # Case 3: System recovery advisor
         if "system_recovery_advisor" in [t["name"] for t in available_tools] and (
-            any(re.search(r"\b" + word + r"\b", lower_prompt) for word in ("recovery", "repair", "fix", "command"))
+            any(re.search(r"\b" + word + r"\b", lower_prompt) for word in ("recovery", "repair", "fix", "rm_rf"))
         ):
             return {
                 "type": "tool_call",

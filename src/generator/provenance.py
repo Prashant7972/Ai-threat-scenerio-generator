@@ -18,16 +18,16 @@ class DiffClassification(str, Enum):
 
 class ProvenanceDiff(BaseModel):
     item_id: str
-    item_type: Literal['technique', 'case_study', 'mitigation', 'incident']
+    item_type: Literal['technique', 'case_study', 'mitigation', 'incident', 'scenario']
     classification: DiffClassification
     details: str
     requires_respecification: bool
 
 
 def classify_provenance_diff(old_item: dict, new_item: dict | None) -> ProvenanceDiff:
-    item_id = str(old_item.get('id') or old_item.get('incident_id', 'UNKNOWN'))
+    item_id = str(old_item.get('id') or old_item.get('incident_id') or old_item.get('scenario_id') or old_item.get('spec_id', 'UNKNOWN'))
     kind = ('mitigation' if item_id.startswith('AML.M') else 'technique' if item_id.startswith('AML.T')
-            else 'case_study' if item_id.startswith('AML.CS') else 'incident')
+            else 'case_study' if item_id.startswith('AML.CS') else 'scenario' if ('scenario_id' in old_item or 'spec_id' in old_item) else 'incident')
     changed = {k for k in set(old_item) | set(new_item or {}) if old_item.get(k) != (new_item or {}).get(k)}
     if new_item is None or new_item.get('withdrawn') is True:
         classification = DiffClassification.WITHDRAWAL
@@ -47,7 +47,7 @@ def classify_provenance_diff(old_item: dict, new_item: dict | None) -> Provenanc
 
 def plan_source_change(old_item: dict, new_item: dict | None, packages: list[dict]) -> dict:
     diff = classify_provenance_diff(old_item, new_item)
-    affected = [p for p in packages if diff.item_id in p['source_ids']]
+    affected = [p for p in packages if diff.item_id in p.get('source_ids', []) or diff.item_id == p.get('scenario_id') or diff.item_id == p.get('spec_id')]
     withdrawal = diff.classification == DiffClassification.WITHDRAWAL
     return {'diff': diff.model_dump(mode='json'), 'previous_source': old_item, 'new_source': new_item,
             'affected_packages': [p['package_id'] for p in affected],

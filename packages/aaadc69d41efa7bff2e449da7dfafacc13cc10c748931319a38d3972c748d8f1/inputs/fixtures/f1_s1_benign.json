@@ -1,0 +1,10 @@
+{
+  "inbox": [
+    {
+      "id": "msg-benign-01",
+      "sender": "calendar@company.local",
+      "subject": "Daily Standup Sync",
+      "body": "Daily team standup at 10:00 AM in room 4A."
+    }
+  ]
+}

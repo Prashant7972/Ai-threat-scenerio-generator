@@ -1,0 +1,231 @@
+{
+  "release_version": "1.0.0",
+  "approved_date": "2026-11-20",
+  "reviewer": "Juby",
+  "review_status": "APPROVED_FOR_RELEASE",
+  "total_scenarios": 20,
+  "approved_package_hashes": [
+    "aaadc69d41efa7bff2e449da7dfafacc13cc10c748931319a38d3972c748d8f1",
+    "4eb82d76bac630c640043a87fe6240ea95375b281dbe708c614c081424640e37",
+    "ebb5c16bea8b5302b07dabf84d7b125cca83eb739fbfc468972ddf02bb068020",
+    "2a3daa62af434f013d9dda92cd3caed7504b3715c1a38a1740e43fc922aa0add",
+    "533ad510c0f3b378bae1eeff2411f998ba046366263d2e9e48ad364bdcd2d898",
+    "9279cdd62c0e6bc7a8b314d512eb34868fa4a4ab005ec40f09dceb43e3015973",
+    "bfbe31738ddb7a61be7fef93eb48b325a1e189bb451d39ca0a2141803c974169",
+    "695e76180f2b3e0d23022dcfd709a252936c89c8c62376843efb6cf816aeabaf",
+    "2aab098f2eea9203cf19e8f9721208922ce16489f69cc8038e71b1d7b029965f",
+    "4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+    "57b554c0263cb98218145ef1faa09e97f2fd9e8006fa3a3d6a1de6d68dcc14f2",
+    "4472a06ccca0c6ca2442be4cb06f292d945a14545a8068624cb3275a0f403f28",
+    "00ee0e9456fd7a59bbd10ba43873a2fff649002c2fe2be2710dac9a389b9b235",
+    "078fbf9047cb9d827dce304a2c2dd29a215ce7da19cb48f6b6d3a56e9aa27b3a",
+    "d7baed4b58f70bb16b44b754fd857dd0863f509dec9b2ab936c59e4c079ebca7",
+    "5a9c76208a8019bcacffbb2a2e17ec7424dfd22db50f39d8b22ff1c3c8ddb971",
+    "0f6f234a68974568fd5ea9fb51ba18986e284c299660e055c689b8fa92ecaf70",
+    "96e0daa454ab905690bec7188a27734f03b4605245c5ba4917ed0148353c921c",
+    "08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+    "f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e"
+  ],
+  "packages": [
+    {
+      "spec_id": "f1_s1",
+      "scenario_id": "litmus.retrieval.external_email.f1_s1",
+      "target_profile": "R1",
+      "package_hash": "aaadc69d41efa7bff2e449da7dfafacc13cc10c748931319a38d3972c748d8f1",
+      "package_path": "packages/aaadc69d41efa7bff2e449da7dfafacc13cc10c748931319a38d3972c748d8f1",
+      "manifest_sha256": "aaadc69d41efa7bff2e449da7dfafacc13cc10c748931319a38d3972c748d8f1",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f1_s2",
+      "scenario_id": "litmus.retrieval.document_injection.f1_s2",
+      "target_profile": "R1",
+      "package_hash": "4eb82d76bac630c640043a87fe6240ea95375b281dbe708c614c081424640e37",
+      "package_path": "packages/4eb82d76bac630c640043a87fe6240ea95375b281dbe708c614c081424640e37",
+      "manifest_sha256": "4eb82d76bac630c640043a87fe6240ea95375b281dbe708c614c081424640e37",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f1_s3",
+      "scenario_id": "litmus.retrieval.split_document.f1_s3",
+      "target_profile": "R1",
+      "package_hash": "ebb5c16bea8b5302b07dabf84d7b125cca83eb739fbfc468972ddf02bb068020",
+      "package_path": "packages/ebb5c16bea8b5302b07dabf84d7b125cca83eb739fbfc468972ddf02bb068020",
+      "manifest_sha256": "ebb5c16bea8b5302b07dabf84d7b125cca83eb739fbfc468972ddf02bb068020",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f1_s4",
+      "scenario_id": "litmus.retrieval.renderer_disclosure.f1_s4",
+      "target_profile": "R1",
+      "package_hash": "2a3daa62af434f013d9dda92cd3caed7504b3715c1a38a1740e43fc922aa0add",
+      "package_path": "packages/2a3daa62af434f013d9dda92cd3caed7504b3715c1a38a1740e43fc922aa0add",
+      "manifest_sha256": "2a3daa62af434f013d9dda92cd3caed7504b3715c1a38a1740e43fc922aa0add",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f2_s1",
+      "scenario_id": "litmus.tools.unauthorized_data_query.f2_s1",
+      "target_profile": "R2",
+      "package_hash": "533ad510c0f3b378bae1eeff2411f998ba046366263d2e9e48ad364bdcd2d898",
+      "package_path": "packages/533ad510c0f3b378bae1eeff2411f998ba046366263d2e9e48ad364bdcd2d898",
+      "manifest_sha256": "533ad510c0f3b378bae1eeff2411f998ba046366263d2e9e48ad364bdcd2d898",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f2_s2",
+      "scenario_id": "litmus.tools.unapproved_transfer.f2_s2",
+      "target_profile": "R2",
+      "package_hash": "9279cdd62c0e6bc7a8b314d512eb34868fa4a4ab005ec40f09dceb43e3015973",
+      "package_path": "packages/9279cdd62c0e6bc7a8b314d512eb34868fa4a4ab005ec40f09dceb43e3015973",
+      "manifest_sha256": "9279cdd62c0e6bc7a8b314d512eb34868fa4a4ab005ec40f09dceb43e3015973",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f2_s3",
+      "scenario_id": "litmus.tools.unsafe_recovery.f2_s3",
+      "target_profile": "R2",
+      "package_hash": "bfbe31738ddb7a61be7fef93eb48b325a1e189bb451d39ca0a2141803c974169",
+      "package_path": "packages/bfbe31738ddb7a61be7fef93eb48b325a1e189bb451d39ca0a2141803c974169",
+      "manifest_sha256": "bfbe31738ddb7a61be7fef93eb48b325a1e189bb451d39ca0a2141803c974169",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f2_s4",
+      "scenario_id": "litmus.tools.approval_bypass.f2_s4",
+      "target_profile": "R2",
+      "package_hash": "695e76180f2b3e0d23022dcfd709a252936c89c8c62376843efb6cf816aeabaf",
+      "package_path": "packages/695e76180f2b3e0d23022dcfd709a252936c89c8c62376843efb6cf816aeabaf",
+      "manifest_sha256": "695e76180f2b3e0d23022dcfd709a252936c89c8c62376843efb6cf816aeabaf",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f3_s1",
+      "scenario_id": "litmus.agents.peer_relay.f3_s1",
+      "target_profile": "R3",
+      "package_hash": "2aab098f2eea9203cf19e8f9721208922ce16489f69cc8038e71b1d7b029965f",
+      "package_path": "packages/2aab098f2eea9203cf19e8f9721208922ce16489f69cc8038e71b1d7b029965f",
+      "manifest_sha256": "2aab098f2eea9203cf19e8f9721208922ce16489f69cc8038e71b1d7b029965f",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f3_s2",
+      "scenario_id": "litmus.agents.shared_artifact.f3_s2",
+      "target_profile": "R3",
+      "package_hash": "4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+      "package_path": "packages/4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+      "manifest_sha256": "4346f340a3157898130ec41de94c5e1e659088749cb0970867ccefa9227c492f",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f3_s3",
+      "scenario_id": "litmus.agents.authority_claim.f3_s3",
+      "target_profile": "R3",
+      "package_hash": "57b554c0263cb98218145ef1faa09e97f2fd9e8006fa3a3d6a1de6d68dcc14f2",
+      "package_path": "packages/57b554c0263cb98218145ef1faa09e97f2fd9e8006fa3a3d6a1de6d68dcc14f2",
+      "manifest_sha256": "57b554c0263cb98218145ef1faa09e97f2fd9e8006fa3a3d6a1de6d68dcc14f2",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f3_s4",
+      "scenario_id": "litmus.agents.permission_expansion.f3_s4",
+      "target_profile": "R3",
+      "package_hash": "4472a06ccca0c6ca2442be4cb06f292d945a14545a8068624cb3275a0f403f28",
+      "package_path": "packages/4472a06ccca0c6ca2442be4cb06f292d945a14545a8068624cb3275a0f403f28",
+      "manifest_sha256": "4472a06ccca0c6ca2442be4cb06f292d945a14545a8068624cb3275a0f403f28",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f4_s1",
+      "scenario_id": "litmus.context.long_dilution.f4_s1",
+      "target_profile": "R3",
+      "package_hash": "00ee0e9456fd7a59bbd10ba43873a2fff649002c2fe2be2710dac9a389b9b235",
+      "package_path": "packages/00ee0e9456fd7a59bbd10ba43873a2fff649002c2fe2be2710dac9a389b9b235",
+      "manifest_sha256": "00ee0e9456fd7a59bbd10ba43873a2fff649002c2fe2be2710dac9a389b9b235",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f4_s2",
+      "scenario_id": "litmus.context.poisoned_summary.f4_s2",
+      "target_profile": "R3",
+      "package_hash": "078fbf9047cb9d827dce304a2c2dd29a215ce7da19cb48f6b6d3a56e9aa27b3a",
+      "package_path": "packages/078fbf9047cb9d827dce304a2c2dd29a215ce7da19cb48f6b6d3a56e9aa27b3a",
+      "manifest_sha256": "078fbf9047cb9d827dce304a2c2dd29a215ce7da19cb48f6b6d3a56e9aa27b3a",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f4_s3",
+      "scenario_id": "litmus.context.conflicting_memory.f4_s3",
+      "target_profile": "R3",
+      "package_hash": "d7baed4b58f70bb16b44b754fd857dd0863f509dec9b2ab936c59e4c079ebca7",
+      "package_path": "packages/d7baed4b58f70bb16b44b754fd857dd0863f509dec9b2ab936c59e4c079ebca7",
+      "manifest_sha256": "d7baed4b58f70bb16b44b754fd857dd0863f509dec9b2ab936c59e4c079ebca7",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f4_s4",
+      "scenario_id": "litmus.context.misleading_tool_status.f4_s4",
+      "target_profile": "R3",
+      "package_hash": "5a9c76208a8019bcacffbb2a2e17ec7424dfd22db50f39d8b22ff1c3c8ddb971",
+      "package_path": "packages/5a9c76208a8019bcacffbb2a2e17ec7424dfd22db50f39d8b22ff1c3c8ddb971",
+      "manifest_sha256": "5a9c76208a8019bcacffbb2a2e17ec7424dfd22db50f39d8b22ff1c3c8ddb971",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f5_s1",
+      "scenario_id": "litmus.supply.chat_template_change.f5_s1",
+      "target_profile": "R2",
+      "package_hash": "0f6f234a68974568fd5ea9fb51ba18986e284c299660e055c689b8fa92ecaf70",
+      "package_path": "packages/0f6f234a68974568fd5ea9fb51ba18986e284c299660e055c689b8fa92ecaf70",
+      "manifest_sha256": "0f6f234a68974568fd5ea9fb51ba18986e284c299660e055c689b8fa92ecaf70",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f5_s2",
+      "scenario_id": "litmus.supply.bundled_instruction_change.f5_s2",
+      "target_profile": "R3",
+      "package_hash": "96e0daa454ab905690bec7188a27734f03b4605245c5ba4917ed0148353c921c",
+      "package_path": "packages/96e0daa454ab905690bec7188a27734f03b4605245c5ba4917ed0148353c921c",
+      "manifest_sha256": "96e0daa454ab905690bec7188a27734f03b4605245c5ba4917ed0148353c921c",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f5_s3",
+      "scenario_id": "litmus.supply.config_redirect_mock_tool.f5_s3",
+      "target_profile": "R2",
+      "package_hash": "08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+      "package_path": "packages/08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+      "manifest_sha256": "08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    },
+    {
+      "spec_id": "f5_s4",
+      "scenario_id": "litmus.supply.trigger_canary_behavior.f5_s4",
+      "target_profile": "R3",
+      "package_hash": "f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e",
+      "package_path": "packages/f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e",
+      "manifest_sha256": "f902418f728469ea708c3e5a6abb8cb86f78ab9d1768a42a224d7258f903e86e",
+      "records_count": 18,
+      "status": "APPROVED_FOR_RELEASE"
+    }
+  ]
+}

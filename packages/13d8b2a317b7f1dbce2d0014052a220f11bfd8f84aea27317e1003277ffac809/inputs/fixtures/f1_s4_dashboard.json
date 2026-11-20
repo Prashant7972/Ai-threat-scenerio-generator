@@ -1,0 +1,9 @@
+{
+  "dashboards": [
+    {
+      "id": "dash-1",
+      "title": "System Telemetry",
+      "notes": "Synthetic dashboard note with system status summary."
+    }
+  ]
+}

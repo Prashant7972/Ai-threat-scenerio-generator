@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "user": "synthetic-user",
+    "roles": [
+      "standard_analyst"
+    ],
+    "allowed_tools": [
+      "compute_metrics"
+    ]
+  }
+}

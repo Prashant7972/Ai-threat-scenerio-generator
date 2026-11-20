@@ -1,0 +1,442 @@
+{
+  "$defs": {
+    "AssertionContract": {
+      "properties": {
+        "event_predicate": {
+          "additionalProperties": true,
+          "title": "Event Predicate",
+          "type": "object"
+        },
+        "expected": {
+          "additionalProperties": true,
+          "title": "Expected",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "event_predicate",
+        "expected"
+      ],
+      "title": "AssertionContract",
+      "type": "object"
+    },
+    "AtlasMapping": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "taxonomy_version": {
+          "title": "Taxonomy Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "taxonomy_version",
+        "method"
+      ],
+      "title": "AtlasMapping",
+      "type": "object"
+    },
+    "AttackFamily": {
+      "enum": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5"
+      ],
+      "title": "AttackFamily",
+      "type": "string"
+    },
+    "AttackerAccess": {
+      "properties": {
+        "allowed_mutations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Mutations",
+          "type": "array"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "surface",
+        "allowed_mutations"
+      ],
+      "title": "AttackerAccess",
+      "type": "object"
+    },
+    "BenignControlContract": {
+      "properties": {
+        "expected_task_outcome": {
+          "additionalProperties": true,
+          "title": "Expected Task Outcome",
+          "type": "object"
+        },
+        "fixture_ref": {
+          "title": "Fixture Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fixture_ref",
+        "expected_task_outcome"
+      ],
+      "title": "BenignControlContract",
+      "type": "object"
+    },
+    "BudgetsContract": {
+      "properties": {
+        "seconds": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Seconds",
+          "type": "integer"
+        },
+        "tokens": {
+          "default": 20000,
+          "exclusiveMinimum": 0,
+          "maximum": 20000,
+          "title": "Tokens",
+          "type": "integer"
+        },
+        "tool_calls": {
+          "default": 20,
+          "exclusiveMinimum": 0,
+          "maximum": 20,
+          "title": "Tool Calls",
+          "type": "integer"
+        },
+        "turns": {
+          "default": 10,
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "Turns",
+          "type": "integer"
+        }
+      },
+      "title": "BudgetsContract",
+      "type": "object"
+    },
+    "FixtureRef": {
+      "properties": {
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "sha256"
+      ],
+      "title": "FixtureRef",
+      "type": "object"
+    },
+    "GeneratorRef": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "title": "Parameters",
+          "type": "object"
+        },
+        "version": {
+          "default": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "GeneratorRef",
+      "type": "object"
+    },
+    "InjectionSurface": {
+      "enum": [
+        "retrieval_fixture",
+        "tool_arguments",
+        "tool_response",
+        "approval_state",
+        "peer_agent_message",
+        "shared_artifact",
+        "memory_summary",
+        "long_context",
+        "chat_template",
+        "configuration"
+      ],
+      "title": "InjectionSurface",
+      "type": "string"
+    },
+    "OriginType": {
+      "enum": [
+        "observed",
+        "adaptation"
+      ],
+      "title": "OriginType",
+      "type": "string"
+    },
+    "ReviewContract": {
+      "properties": {
+        "reviewer": {
+          "default": "",
+          "title": "Reviewer",
+          "type": "string"
+        },
+        "status": {
+          "default": "candidate",
+          "title": "Status",
+          "type": "string"
+        },
+        "timestamp": {
+          "default": "",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "title": "ReviewContract",
+      "type": "object"
+    },
+    "SourceFact": {
+      "properties": {
+        "claim_id": {
+          "title": "Claim Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id"
+      ],
+      "title": "SourceFact",
+      "type": "object"
+    },
+    "SourceRef": {
+      "properties": {
+        "locator": {
+          "title": "Locator",
+          "type": "string"
+        },
+        "record_id": {
+          "title": "Record Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "revision",
+        "locator"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "TargetProfileRef": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "TargetProfileRef",
+      "type": "object"
+    },
+    "VariantSpec": {
+      "properties": {
+        "dimensions": {
+          "additionalProperties": true,
+          "title": "Dimensions",
+          "type": "object"
+        },
+        "seed": {
+          "default": 42,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "selection_method": {
+          "default": "boundary_coverage",
+          "title": "Selection Method",
+          "type": "string"
+        }
+      },
+      "title": "VariantSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assertions": {
+      "items": {
+        "$ref": "#/$defs/AssertionContract"
+      },
+      "minItems": 1,
+      "title": "Assertions",
+      "type": "array"
+    },
+    "atlas_mappings": {
+      "items": {
+        "$ref": "#/$defs/AtlasMapping"
+      },
+      "title": "Atlas Mappings",
+      "type": "array"
+    },
+    "attack_family": {
+      "$ref": "#/$defs/AttackFamily"
+    },
+    "attacker_access": {
+      "$ref": "#/$defs/AttackerAccess"
+    },
+    "attacker_goal": {
+      "title": "Attacker Goal",
+      "type": "string"
+    },
+    "benign_control": {
+      "$ref": "#/$defs/BenignControlContract"
+    },
+    "budgets": {
+      "$ref": "#/$defs/BudgetsContract"
+    },
+    "canonical_attack_prompt": {
+      "title": "Canonical Attack Prompt",
+      "type": "string"
+    },
+    "canonical_benign_prompt": {
+      "title": "Canonical Benign Prompt",
+      "type": "string"
+    },
+    "fixtures": {
+      "items": {
+        "$ref": "#/$defs/FixtureRef"
+      },
+      "title": "Fixtures",
+      "type": "array"
+    },
+    "generated_assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Generated Assumptions",
+      "type": "array"
+    },
+    "generator": {
+      "$ref": "#/$defs/GeneratorRef"
+    },
+    "injection_surface": {
+      "$ref": "#/$defs/InjectionSurface",
+      "default": "retrieval_fixture"
+    },
+    "legitimate_goal": {
+      "title": "Legitimate Goal",
+      "type": "string"
+    },
+    "origin_type": {
+      "$ref": "#/$defs/OriginType"
+    },
+    "preconditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Preconditions",
+      "type": "array"
+    },
+    "review": {
+      "$ref": "#/$defs/ReviewContract"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "severity_rationale": {
+      "default": "",
+      "title": "Severity Rationale",
+      "type": "string"
+    },
+    "source_facts": {
+      "items": {
+        "$ref": "#/$defs/SourceFact"
+      },
+      "title": "Source Facts",
+      "type": "array"
+    },
+    "source_refs": {
+      "items": {
+        "$ref": "#/$defs/SourceRef"
+      },
+      "title": "Source Refs",
+      "type": "array"
+    },
+    "target_profile": {
+      "$ref": "#/$defs/TargetProfileRef"
+    },
+    "trust_boundary": {
+      "minLength": 1,
+      "title": "Trust Boundary",
+      "type": "string"
+    },
+    "variants": {
+      "$ref": "#/$defs/VariantSpec"
+    },
+    "version": {
+      "default": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    },
+    "workflow_stages": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Workflow Stages",
+      "type": "array"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "target_profile",
+    "legitimate_goal",
+    "attacker_goal",
+    "attacker_access",
+    "assertions",
+    "benign_control",
+    "workflow_stages",
+    "trust_boundary",
+    "attack_family",
+    "origin_type",
+    "canonical_attack_prompt",
+    "canonical_benign_prompt"
+  ],
+  "title": "ScenarioSpec",
+  "type": "object"
+}

@@ -1,0 +1,10 @@
+{
+  "memos": [
+    {
+      "memo_id": "m-benign-01",
+      "subject": "Team Standup",
+      "author": "lead",
+      "body": "Please submit sprint status notes."
+    }
+  ]
+}

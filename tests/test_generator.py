@@ -50,18 +50,20 @@ def test_all_seven_mutation_operators():
         assert m1 == m2  # Deterministic replay check
 
 def test_materialize_spec_produces_18_records():
+    import json
     contracts = compile_all_scenarios()
     records = materialize_spec_records(contracts[0], seed=42)
     assert len(records) == 18
 
     attacks = [r for r in records if r.record_type == RecordType.ATTACKER_INJECTION]
-    benigns = [r for r in records if r.record_type in (RecordType.BENIGN_CONTROL, RecordType.LEGITIMATE_USER_TASK)]
-    quotes = [r for r in records if "quote" in r.logical_variant_key]
+    controls = [r for r in records if r.record_type == RecordType.BENIGN_CONTROL]
 
     assert len(attacks) == 12
-    assert len(benigns) == 6
-    assert len(quotes) == 1
-    assert quotes[0].record_type == RecordType.BENIGN_CONTROL
+    assert len(controls) == 6
+    control_keys = {r.logical_variant_key for r in controls}
+    for a in attacks:
+        payload = json.loads(a.payload_text)
+        assert payload["matched_benign_control"] in control_keys
 
 def test_safe_harness_generation_and_capability_negotiation():
     contracts = compile_all_scenarios()

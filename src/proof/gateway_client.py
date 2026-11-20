@@ -58,7 +58,19 @@ class GatewayModelProxy(LiveModelProxy):
     def estimate_cost(self, num_trials, avg_tokens=1500):
         rates = self.provider_info
         bound = Decimal(str(max(rates['input_per_million'], rates['output_per_million']))) * 20000 * num_trials / 1_000_000
-        return {'provider': self.model_id, 'mode': 'live_gateway', 'trials': num_trials,
-                'upper_bound_cost_usd': str(bound), 'max_trial_tokens': 20000,
-                'approved_session_cap_usd': self.policy['max_cost_usd'],
-                'pricing_checked_at': rates['verified_date']}
+        total_tok = num_trials * avg_tokens
+        in_tok = total_tok * 0.75
+        out_tok = total_tok * 0.25
+        expected = (Decimal(str(in_tok)) / 1_000_000 * Decimal(str(rates['input_per_million']))) + (
+            Decimal(str(out_tok)) / 1_000_000 * Decimal(str(rates['output_per_million']))
+        )
+        return {
+            'provider': self.model_id,
+            'mode': 'live_gateway',
+            'trials': num_trials,
+            'upper_bound_cost_usd': str(bound),
+            'expected_cost_usd': str(round(expected, 4)),
+            'max_trial_tokens': 20000,
+            'approved_session_cap_usd': self.policy['max_cost_usd'],
+            'pricing_checked_at': rates['verified_date'],
+        }

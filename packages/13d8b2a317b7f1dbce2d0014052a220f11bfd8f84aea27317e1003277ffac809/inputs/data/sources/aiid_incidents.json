@@ -1,0 +1,130 @@
+[
+  {
+    "incident_id": "AIID-INC-0352",
+    "source_url": "https://incidentdatabase.ai/cite/352/",
+    "incident_title": "Twitter Bot Redirection and Prompt Hijacking in GPT-3 Assistant",
+    "retrieval_date": "2026-10-15",
+    "mapping_rationale": "Demonstrates prompt injection redirection where incoming text coerces assistant to output attacker-chosen messages, adapted for F1-S1 and F4-S2.",
+    "mapped_specs": [
+      "F1-S1",
+      "F4-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0420",
+    "source_url": "https://incidentdatabase.ai/cite/420/",
+    "incident_title": "Circumventing Conversational Assistant Safety Guardrails via Persona-Based Context",
+    "retrieval_date": "2026-10-15",
+    "mapping_rationale": "Demonstrates safety constraint circumvention via long context framing and persona adoption, adapted for F2-S4, F3-S4, and F4-S3.",
+    "mapped_specs": [
+      "F2-S4",
+      "F3-S4",
+      "F4-S3"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0473",
+    "source_url": "https://incidentdatabase.ai/cite/473/",
+    "incident_title": "Initial System Instruction Disclosure via Indirect Prompt Injection in Conversational AI",
+    "retrieval_date": "2026-10-16",
+    "mapping_rationale": "Shows assistant coerced into leaking hidden internal system prompts and render directives via crafted prompts, adapted for F1-S4.",
+    "mapped_specs": [
+      "F1-S4"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-1497",
+    "source_url": "https://incidentdatabase.ai/cite/1497/",
+    "incident_title": "Hidden Adversarial Instructions in Document Analysis Workflow",
+    "retrieval_date": "2026-10-16",
+    "mapping_rationale": "Demonstrates adversarial payloads concealed within ingested legal petition documents to influence automated document analysis, adapted for F1-S2.",
+    "mapped_specs": [
+      "F1-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-1680",
+    "source_url": "https://incidentdatabase.ai/cite/1680/",
+    "incident_title": "Workflow Cache Poisoning and Unauthorized Tool Execution in AI Agent Environment",
+    "retrieval_date": "2026-10-17",
+    "mapping_rationale": "Demonstrates untrusted repository inputs and poisoned workflow configurations triggering unauthorized tool and package execution, adapted for F2-S1, F2-S2, F3-S1, F3-S3, and F5-S2.",
+    "mapped_specs": [
+      "F2-S1",
+      "F2-S2",
+      "F3-S1",
+      "F3-S3",
+      "F5-S2"
+    ],
+    "verification_status": "verified_incident",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0035",
+    "source_url": "https://incidentdatabase.ai/cite/35",
+    "incident_title": "Automated Content Classifier Bypass via Split-Token Input",
+    "retrieval_date": "2026-10-18",
+    "mapping_rationale": "Demonstrates partitioning payloads across input segments to evade single-chunk inspection, adapted for F1-S3.",
+    "mapped_specs": [
+      "F1-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0055",
+    "source_url": "https://incidentdatabase.ai/cite/55",
+    "incident_title": "Dangerous Command Execution in Automated System Diagnostics",
+    "retrieval_date": "2026-10-18",
+    "mapping_rationale": "Demonstrates diagnostic assistant coerced into recommending destructive remediation commands, adapted for F2-S3.",
+    "mapped_specs": [
+      "F2-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0071",
+    "source_url": "https://incidentdatabase.ai/cite/71",
+    "incident_title": "Shared Scratchpad Workspace Tampering in Multi-Agent Orchestration",
+    "retrieval_date": "2026-10-19",
+    "mapping_rationale": "Demonstrates lateral movement across multi-agent swarms by poisoning shared scratchpad files, adapted for F3-S2.",
+    "mapped_specs": [
+      "F3-S2"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0072",
+    "source_url": "https://incidentdatabase.ai/cite/72",
+    "incident_title": "Context Dilution Safety Bypass in Extended-Context Large Language Models",
+    "retrieval_date": "2026-10-19",
+    "mapping_rationale": "Demonstrates safety boundary suppression when adversarial directives follow lengthy benign text, adapted for F4-S1.",
+    "mapped_specs": [
+      "F4-S1"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
+  },
+  {
+    "incident_id": "AIID-INC-0075",
+    "source_url": "https://incidentdatabase.ai/cite/75",
+    "incident_title": "Poisoned Prompt Construction and Template Modification in Local Model Deployments",
+    "retrieval_date": "2026-10-20",
+    "mapping_rationale": "Demonstrates dynamic chat template tampering altering inference instructions, adapted for F5-S1 and F5-S3.",
+    "mapped_specs": [
+      "F5-S1",
+      "F5-S3"
+    ],
+    "verification_status": "verified_adaptation",
+    "eligible_for_release_quota": true
+  }
+]

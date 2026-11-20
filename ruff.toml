@@ -1,6 +1,13 @@
 # Ruff linter configuration
 line-length = 140
 target-version = "py310"
+exclude = [
+    "packages",
+    "venv",
+    ".venv",
+    "build",
+    "dist",
+]
 
 [lint]
 select = [

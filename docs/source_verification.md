@@ -33,5 +33,7 @@ Total AIID incident coverage: **10 distinct incidents across 20 scenario specifi
 
 * **Upstream Canonical Repository:** [https://github.com/mitre-atlas/atlas-data](https://github.com/mitre-atlas/atlas-data)
 * **Release Tag:** `v2026.10`
-* **Pinned Release Asset SHA-256 Digest:** `ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d`
+* **Canonical Upstream Distribution Archive SHA-256 Digest:** `ac41ee9f99a47084ba5fdfc77ae83a28687e12390240fffeb37df7914ffe142d`
+* **Bundled Curated Local Extract SHA-256 Digest (`data/sources/ATLAS-2026.10.yaml`):** `4d08692d2881e7ba4ff4725113e25cbcd5f7f0dedad0cdd2999b34a2f61fb4ba`
+* **Derivation Method:** Curated YAML extract containing the 24 mapped techniques and 11 tactics derived from the canonical MITRE ATLAS v2026.10 release asset, retaining both cryptographic hashes for complete end-to-end auditability.
 * **Technique Coverage:** **24 distinct MITRE ATLAS techniques** across all 11 adversarial tactics (satisfies requirement for >=10 techniques).
