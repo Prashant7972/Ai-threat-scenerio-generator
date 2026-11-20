@@ -124,6 +124,7 @@ def test_gateway_transport_rejects_altered_signature_and_mismatched_hash(tmp_pat
     proxy = GatewayModelProxy(policy, selected_model, client_token)
 
     import json as json_mod
+
     import pytest
 
     from src.proof.inference_gateway import compute_gateway_signature

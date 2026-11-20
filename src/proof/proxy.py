@@ -46,13 +46,6 @@ PRICING_REGISTRY = {
         "default_host": "generativelanguage.googleapis.com",
         "default_port": 443,
     },
-    "local-ollama": {
-        "input_per_million": 0.0,
-        "output_per_million": 0.0,
-        "verified_date": "UNVERIFIED",
-        "default_host": "127.0.0.1",
-        "default_port": 11434,
-    },
     "mock-hermetic-gemini": {
         "input_per_million": 0.0,
         "output_per_million": 0.0,
@@ -485,7 +478,7 @@ class MockModelProxy(ModelAdapterInterface):
 
 class LiveModelProxy(ModelAdapterInterface):
     """
-    Controlled Real-Model Proxy connecting to actual LLM APIs (e.g. Gemini, local Ollama).
+    Controlled Real-Model Proxy connecting to actual LLM APIs (e.g. Gemini).
     Strictly enforces host allowlists, token/turn caps, preflight pricing, and TLS.
     """
     def __init__(self, model_id: str = "gemini-1.5-flash", api_key: str | None = None):
@@ -525,7 +518,7 @@ class LiveModelProxy(ModelAdapterInterface):
         available_tools: list[dict[str, Any]],
         telemetry: TelemetryCollector,
     ) -> dict[str, Any]:
-        if not self.api_key and "mock" not in self.model_id and "ollama" not in self.model_id:
+        if not self.api_key and "mock" not in self.model_id:
             raise SecurityException(
                 f"Missing API key for live provider '{self.model_id}'. "
                 "Set GEMINI_API_KEY environment variable. Never silently falling back to mock mode."

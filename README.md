@@ -52,11 +52,7 @@ The **generator is the primary product**: it ingests reviewed threat patterns an
 * Automated validator (`src/generator/change_manager.py`) auditing scenario spec hashes against `scenario_review_ledger.json`.
 * Classifies diffs, produces append-only change plans, and automatically invalidates stale trial manifests on modification.
 
-### G. PostgreSQL Prompt & Scenario Database
-* Full relational schema (`scripts/db/schema.sql`) and export script (`scripts/db/export_to_postgres.py`).
-* Stores all 20 scenario contracts, 360 corpus records, and telemetry with PostgreSQL GIN full-text search indexes.
-
-### H. ATLAS Red-Team Web Console UI
+### G. ATLAS Red-Team Web Console UI
 * Standalone web console (`ui/index.html` and `ui/data.js`) visualizing release gates, scenario specs, the 360-record corpus explorer, and trial evidence.
 
 ---
@@ -91,14 +87,7 @@ Executes all 1,040 trials (720 baseline + 320 canonical repetitions) across vuln
 python3 -m src.generator.change_manager --check
 ```
 
-### 4. Export Prompts & Scenarios to PostgreSQL
-```bash
-# Initialize schema and export data to PostgreSQL
-psql -U postgres -d threat_scenarios -f scripts/db/schema.sql
-python3 scripts/db/export_to_postgres.py --host localhost --user postgres --password secret --db threat_scenarios
-```
-
-### 5. Launch the Web Console UI
+### 4. Launch the Web Console UI
 ```bash
 # Serve the console locally
 python3 -m http.server 8000 --directory ui
