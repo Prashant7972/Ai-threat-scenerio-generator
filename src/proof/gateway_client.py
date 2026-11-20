@@ -15,29 +15,44 @@ class GatewayTransport:
 
     def request(self, method, url, headers=None, data=None, timeout=30):
         import hashlib
+        import os
         import time
 
         import httpx
+
+        from .inference_gateway import verify_gateway_signature
+
         expected = f'https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent'
         if method != 'POST' or url != expected:
             self.unauthorized_egress_attempts += 1
             raise SecurityException('Gateway adapter rejected unsupported upstream operation')
         start = time.monotonic()
-        endpoint = 'http://inference-proxy:8080/generate'
+        endpoint = os.environ.get('GATEWAY_ENDPOINT') or os.environ.get('GATEWAY_URL') or 'http://inference-proxy:8080/generate'
+        encoded_data = json.dumps(data, ensure_ascii=False).encode()
+        expected_req_sha = hashlib.sha256(encoded_data).hexdigest()
+
         with httpx.Client(follow_redirects=False, trust_env=False, timeout=timeout) as client:
             response = client.post(endpoint, headers={'Authorization': 'Bearer ' + self.token},
                                    json={'model': self.model, 'payload': data})
         record = NetworkRequestRecord(destination_host='inference-proxy', destination_port=8080,
             method='POST', status_code=response.status_code, latency_ms=(time.monotonic()-start)*1000,
-            request_bytes=len(json.dumps(data).encode()), response_bytes=len(response.content), sanitized_url=endpoint)
+            request_bytes=len(encoded_data), response_bytes=len(response.content), sanitized_url=endpoint)
         self.requests_logged.append(record)
         if response.status_code != 200:
             return {'status_code': response.status_code, 'text': '{}', 'record': record}
         body = response.json()
-        receipt = body['receipt']
+        receipt = body.get('receipt')
+        if not receipt:
+            raise SecurityException('Gateway response missing receipt')
         policy_hash = hashlib.sha256(json.dumps(self.policy, sort_keys=True).encode()).hexdigest()
         if receipt.get('policy_sha256') != policy_hash or receipt.get('model') != self.model:
             raise SecurityException('Gateway policy or model differs from preflight policy')
+        if receipt.get('request_sha256') != expected_req_sha:
+            raise SecurityException(
+                f"Gateway receipt request hash mismatch: expected {expected_req_sha}, got {receipt.get('request_sha256')}"
+            )
+        if not verify_gateway_signature(self.token, receipt):
+            raise SecurityException('Gateway receipt HMAC signature verification failed: signature altered or forged')
         return {'status_code': 200, 'text': json.dumps(body['response']), 'record': record, 'gateway_receipt': receipt}
 
 

@@ -114,3 +114,78 @@ def test_controlled_gateway_benign_trial(tmp_path):
         assert receipt.get("actual_cost_usd") is not None
     finally:
         httpx.Client = orig_client
+
+
+def test_gateway_transport_rejects_altered_signature_and_mismatched_hash(tmp_path):
+    policy_file = WORKSPACE_ROOT / "config" / "gateway-policy.json"
+    policy = json.loads(policy_file.read_text())
+    client_token = "valid_token_" + "f" * 32
+    selected_model = "gemini-1.5-flash"
+    proxy = GatewayModelProxy(policy, selected_model, client_token)
+
+    import json as json_mod
+    import pytest
+
+    from src.proof.inference_gateway import compute_gateway_signature
+
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{selected_model}:generateContent"
+    payload = {"contents": [{"role": "user", "parts": [{"text": "hello"}]}]}
+    encoded_payload = json_mod.dumps(payload, ensure_ascii=False).encode()
+    req_sha = hashlib.sha256(encoded_payload).hexdigest()
+
+    # Case 1: Altered Signature
+    class AlteredSigClient:
+        def __init__(self, **kwargs): pass
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def post(self, url, headers=None, json=None, timeout=30):
+            receipt = {
+                'attempt_id': 'att_001',
+                'policy_sha256': hashlib.sha256(json_mod.dumps(policy, sort_keys=True).encode()).hexdigest(),
+                'request_sha256': req_sha,
+                'model': selected_model,
+                'started_at': '2026-11-20T00:00:00Z',
+                'status': 'completed',
+                'actual_cost_usd': '0.00003',
+                'provider_contacted': False,
+                'upstream_transport': 'simulated_rules',
+                'gateway_signature': '0' * 64,  # Altered / invalid signature
+            }
+            body = {'response': {'candidates': [{'content': {'parts': [{'text': 'ok'}]}}]}, 'receipt': receipt}
+            return httpx.Response(200, json=body, request=httpx.Request("POST", url))
+
+    orig_client = httpx.Client
+    try:
+        httpx.Client = AlteredSigClient
+        with pytest.raises(SecurityException, match="HMAC signature verification failed"):
+            proxy.transport.request("POST", endpoint, data=payload)
+    finally:
+        httpx.Client = orig_client
+
+    # Case 2: Mismatched Request Hash
+    class MismatchedHashClient:
+        def __init__(self, **kwargs): pass
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def post(self, url, headers=None, json=None, timeout=30):
+            receipt = {
+                'attempt_id': 'att_002',
+                'policy_sha256': hashlib.sha256(json_mod.dumps(policy, sort_keys=True).encode()).hexdigest(),
+                'request_sha256': 'wrong_hash_' + '0' * 53,  # Mismatched!
+                'model': selected_model,
+                'started_at': '2026-11-20T00:00:00Z',
+                'status': 'completed',
+                'actual_cost_usd': '0.00003',
+                'provider_contacted': False,
+                'upstream_transport': 'simulated_rules',
+            }
+            receipt['gateway_signature'] = compute_gateway_signature(client_token, receipt)
+            body = {'response': {'candidates': [{'content': {'parts': [{'text': 'ok'}]}}]}, 'receipt': receipt}
+            return httpx.Response(200, json=body, request=httpx.Request("POST", url))
+
+    try:
+        httpx.Client = MismatchedHashClient
+        with pytest.raises(SecurityException, match="receipt request hash mismatch"):
+            proxy.transport.request("POST", endpoint, data=payload)
+    finally:
+        httpx.Client = orig_client

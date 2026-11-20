@@ -108,7 +108,18 @@ def run_deployed_isolation_demonstration():
 
         client_token = "deploy_tok_" + secrets.token_hex(16)
         (secrets_dir / "gateway_token").write_text(client_token)
-        (secrets_dir / "provider_key").write_text("managed-provider-credential")
+
+        import os
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        is_live_provider = bool(gemini_api_key)
+        if is_live_provider:
+            print("  Provider Credential: GEMINI_API_KEY detected in environment (LIVE PROVIDER INFERENCE)")
+            (secrets_dir / "provider_key").write_text(gemini_api_key)
+        else:
+            print("  Provider Credential: Not provided (OFFLINE SIMULATED RULES INFERENCE)")
+            print("  [NOTICE] To execute with real provider: export GEMINI_API_KEY=<key> && python3 scripts/demonstrate_deployed_isolation.py")
+            (secrets_dir / "provider_key").write_text("managed-provider-credential")
+
         selected_model = "gemini-1.5-flash"
 
         # Start separate gateway service container
@@ -123,15 +134,22 @@ def run_deployed_isolation_demonstration():
             "-e", "PROVIDER_KEY_FILE=/run/secrets/provider_key",
             "-e", "GATEWAY_TOKEN_FILE=/run/secrets/gateway_token",
             "-e", "GATEWAY_RECEIPTS=/receipts",
-            "-e", "GATEWAY_MOCK_UPSTREAM=1",
             "-v", f"{policy_file}:/config/gateway-policy.json:ro,z",
             "-v", f"{secrets_dir}:/run/secrets:ro,z",
             "-v", f"{receipts_dir}:/receipts:rw,z",
+        ]
+        if not is_live_provider:
+            gateway_start_cmd.extend(["-e", "GATEWAY_MOCK_UPSTREAM=1"])
+        gateway_start_cmd.extend([
             APP_IMAGE,
             "python3", "-m", "src.proof.inference_gateway",
-        ]
+        ])
         g_code, g_out, g_err = run_cmd(gateway_start_cmd)
         assert g_code == 0, f"Failed to start gateway container: {g_err}"
+        if is_live_provider:
+            # Connect gateway container to bridge network for external provider egress while trial container remains isolated
+            c_code, c_out, c_err = run_cmd(["podman", "network", "connect", "podman", proxy_container_name])
+            assert c_code == 0, f"Failed to connect gateway to egress network: {c_err}"
         print(f"  Gateway Container:  {proxy_container_name} (ID: {g_out[:12]})")
         time.sleep(1)
 
@@ -198,8 +216,16 @@ def run_deployed_isolation_demonstration():
             assert receipt["model"] == selected_model, "Receipt model must match requested model"
             assert receipt["status"] == "completed"
             assert receipt.get("gateway_signature") is not None, "Gateway HMAC signature must be present"
+            from src.proof.inference_gateway import verify_gateway_signature
+            assert verify_gateway_signature(client_token, receipt) is True, "Gateway HMAC signature verification failed"
             assert "provider_contacted" in receipt, "Receipt must record provider_contacted flag"
             assert "upstream_transport" in receipt, "Receipt must record upstream_transport"
+            if is_live_provider:
+                assert receipt.get("provider_contacted") is True, "Live provider trial must record provider_contacted=True"
+                assert receipt.get("upstream_transport") == "live_provider_http", "Live provider trial must record upstream_transport='live_provider_http'"
+            else:
+                assert receipt.get("provider_contacted") is False
+                assert receipt.get("upstream_transport") == "simulated_rules"
 
             print(f"  Task Completed:     {legitimate_completed}")
             print(f"  Gateway Receipt ID: {receipt['attempt_id']}")

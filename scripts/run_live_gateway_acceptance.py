@@ -233,7 +233,7 @@ def run_live_gateway_suite():
             proxy = GatewayModelProxy(policy, selected_model, client_token)
 
             print("\n>>> Executing 1,040 Planned Attempts via Controlled Gateway...")
-            session_dir, report = run_suite(packages, session_output, proxy=proxy, mode="offline_gateway_integration")
+            session_dir, report = run_suite(packages, session_output, proxy=proxy, mode="offline_gateway_integration", gateway_token=client_token)
 
             print(f"  Session ID:               {session_dir.name}")
             print(f"  Integration Decision:     {'PASS' if report['offline_integration_passed'] else 'FAIL'}")

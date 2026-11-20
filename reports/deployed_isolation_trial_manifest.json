@@ -7,7 +7,7 @@
     "image_repo_digest": "sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84f7a7b535",
     "image_id_sha256": "sha256:896edfbcbf0c29ad15681617a8886cb9871b7f24c5fde4606114c8ee6bfe4c70",
     "application_image": "ai-threat-scenario-trial:latest",
-    "application_image_id_sha256": "sha256:28c7b2a75a6fbbaf6141a6e7a4e4e9a7b5210f0f16d076a447eda59e8b1b26af",
+    "application_image_id_sha256": "sha256:f508bb60aecbcd19d41792940abd0373f24389f5b77bb716dc0c82a3190d7888",
     "policy_canonical_sha256": "e5982089fb3c9fe6f5910a5d8b0b8b60a570c631bfc7cd8876b8334998caf43f",
     "policy_file_sha256": "881d76896d4d809df40c6487cb28088243a33a1f11372e96eb4cc64d24787e53",
     "policy_version": "1.0.0",
@@ -34,12 +34,12 @@
     },
     "provider_contacted": false,
     "upstream_transport": "simulated_rules",
-    "gateway_signature": "ac08a22e90e89064b9f4fd9a96d92cf381966522c7476f54b05fcfdfdee13d47",
+    "gateway_signature": "9c39e5e192e0e45636530fad30b68db0c9fc6e14210d9724ebabefe01f6bc8ce",
     "gateway_receipt": {
       "actual_cost_usd": "0.0000285",
-      "attempt_id": "b1609569ddf74f2683a73cc12c12416b",
-      "finished_at": "2026-11-20T07:32:41.475589+00:00",
-      "gateway_signature": "ac08a22e90e89064b9f4fd9a96d92cf381966522c7476f54b05fcfdfdee13d47",
+      "attempt_id": "0bbb637d89bf4983a90eb7ac1cb99f7d",
+      "finished_at": "2026-11-20T07:51:06.726437+00:00",
+      "gateway_signature": "9c39e5e192e0e45636530fad30b68db0c9fc6e14210d9724ebabefe01f6bc8ce",
       "http_status": 200,
       "model": "gemini-1.5-flash",
       "observed_model_version": "gemini-1.5-flash-deployed-verified",
@@ -49,7 +49,7 @@
       "request_sha256": "8a8018e8ffd0b9f659c17454ff83deb4889748ba1ac0927bfd844e568c1d9c3b",
       "reserved_cost_usd": "0.0002124",
       "session_accounted_cost_usd": "0.00005700",
-      "started_at": "2026-11-20T07:32:41.475440+00:00",
+      "started_at": "2026-11-20T07:51:06.726297+00:00",
       "status": "completed",
       "upstream_endpoint": "in_process_simulated",
       "upstream_transport": "simulated_rules",
@@ -60,5 +60,5 @@
       }
     }
   },
-  "manifest_file": "16c0081472b24a7693d5fc43d15388ab.json"
+  "manifest_file": "4943d13609a94612b06940e37304077b.json"
 }

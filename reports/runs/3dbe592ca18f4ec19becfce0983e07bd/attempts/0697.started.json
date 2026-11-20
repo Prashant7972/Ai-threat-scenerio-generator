@@ -1,0 +1,14 @@
+{
+  "plan": {
+    "attempt_number": 697,
+    "build": "hardened",
+    "canonical": false,
+    "package": "/home/prashant/.gemini/antigravity/scratch/ai-threat-scenario-generator/packages/08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+    "package_sha256": "08edcb7ec44bc973630108dc67fac3283c96d2c2509f38e13d1ee17f99edd99d",
+    "record_id": "f5_s3:benign:json:stage0",
+    "record_type": "benign_control",
+    "repetition": 1,
+    "scenario_id": "litmus.supply.config_redirect_mock_tool.f5_s3"
+  },
+  "started_at": "2026-11-20T07:51:28.376355+00:00"
+}

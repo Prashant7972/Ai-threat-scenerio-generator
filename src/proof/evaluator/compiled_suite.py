@@ -5,6 +5,7 @@ previous plan, journal and manifests. Mock sessions can never be accepted.
 """
 import hashlib
 import json
+import os
 import uuid
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
@@ -111,14 +112,19 @@ def evaluate_release(plan, results, mode):
         blockers.append(
             'Simulated upstream inference detected: trials were executed with local rules rather than live external provider. Eligible for offline gateway integration benchmark, but ineligible for live release acceptance.'
         )
-    if mode == 'live_gateway':
+    if mode in ('live_gateway', 'offline_gateway_integration'):
         unreconciled = [r for r in results if not r.get('all_model_calls_reconciled', True)]
         if unreconciled:
             blockers.append(
                 f'Model call reconciliation failed: {len(unreconciled)} attempts had model requests without matching completed gateway receipts.'
             )
+        reconcil_errs = [r for r in results if r.get('reconciliation_errors')]
+        if reconcil_errs:
+            blockers.append(
+                f'Receipt integrity verification failed: {len(reconcil_errs)} attempts had altered, duplicated, or misbound receipts.'
+            )
         uncontacted = [r for r in results if not r.get('all_model_calls_contacted_provider', False)]
-        if uncontacted and not is_simulated_upstream:
+        if uncontacted and not is_simulated_upstream and mode == 'live_gateway':
             blockers.append(
                 f'Missing live provider evidence: {len(uncontacted)} attempts lacked verified provider contact (provider_contacted=True, upstream_transport="live_provider_http").'
             )
@@ -161,9 +167,12 @@ def evaluate_release(plan, results, mode):
     }
 
 
-def run_suite(packages, output, proxy=None, mode=None):
+def run_suite(packages, output, proxy=None, mode=None, gateway_token=None):
     plan = plan_packages(packages)  # All packages must pass preconditions before the first model call.
     proxy = proxy or MockModelProxy()
+
+    if gateway_token is None:
+        gateway_token = getattr(getattr(proxy, 'transport', None), 'token', None) or os.environ.get('GATEWAY_TOKEN')
 
     if mode is None:
         if isinstance(proxy, GatewayModelProxy):
@@ -184,6 +193,7 @@ def run_suite(packages, output, proxy=None, mode=None):
     session = Path(output) / uuid.uuid4().hex
     write_new(session/'plan.json', {'mode': mode, 'transport': transport, 'attempts': plan})
     results = []
+    session_seen_receipt_attempt_ids = set()
     for item in plan:
         number = item['attempt_number']
         write_new(session/f'attempts/{number:04d}.started.json', {'plan': item, 'started_at': datetime.now(UTC).isoformat()})
@@ -208,7 +218,54 @@ def run_suite(packages, output, proxy=None, mode=None):
                 for req in model_requests
                 if req.get('gateway_receipt')
             ]
-            reconciled_all_model_calls = (len(model_requests) > 0 and len(receipts) == len(model_requests))
+            reconciliation_errors = []
+            trial_attempt_ids = set()
+
+            for idx, req in enumerate(model_requests):
+                rcpt = req.get('gateway_receipt')
+                if not rcpt:
+                    if mode in ('live_gateway', 'offline_gateway_integration'):
+                        reconciliation_errors.append(f"Call {idx}: missing gateway receipt")
+                    continue
+
+                # 1. Check request hash binding
+                req_sha = req.get('request_sha256')
+                rcpt_req_sha = rcpt.get('request_sha256')
+                if req_sha and rcpt_req_sha and req_sha != rcpt_req_sha:
+                    reconciliation_errors.append(
+                        f"Call {idx}: receipt request_sha256 ({rcpt_req_sha}) does not match call request_sha256 ({req_sha})"
+                    )
+
+                # 2. Check attempt_id uniqueness within trial
+                att_id = rcpt.get('attempt_id')
+                if not att_id:
+                    reconciliation_errors.append(f"Call {idx}: receipt missing attempt_id")
+                elif att_id in trial_attempt_ids:
+                    reconciliation_errors.append(f"Call {idx}: duplicate attempt_id within trial ({att_id})")
+                else:
+                    trial_attempt_ids.add(att_id)
+
+                # 3. Check attempt_id uniqueness across session (replay prevention)
+                if att_id:
+                    if att_id in session_seen_receipt_attempt_ids:
+                        reconciliation_errors.append(f"Call {idx}: replayed attempt_id across session ({att_id})")
+                    else:
+                        session_seen_receipt_attempt_ids.add(att_id)
+
+                # 4. Check gateway signature
+                sig = rcpt.get('gateway_signature')
+                if not sig or not isinstance(sig, str) or len(sig) != 64:
+                    reconciliation_errors.append(f"Call {idx}: missing or invalid gateway_signature")
+                elif gateway_token:
+                    from ..inference_gateway import verify_gateway_signature
+                    if not verify_gateway_signature(gateway_token, rcpt):
+                        reconciliation_errors.append(f"Call {idx}: gateway_signature verification failed (altered or forged)")
+
+            reconciled_all_model_calls = (
+                len(model_requests) > 0
+                and len(receipts) == len(model_requests)
+                and len(reconciliation_errors) == 0
+            )
             all_receipts_valid = False
             all_contacted_provider = False
 
@@ -234,6 +291,7 @@ def run_suite(packages, output, proxy=None, mode=None):
 
             result['total_model_calls'] = len(model_requests)
             result['reconciled_receipt_count'] = len(receipts)
+            result['reconciliation_errors'] = reconciliation_errors
             result['all_model_calls_reconciled'] = reconciled_all_model_calls
             result['all_model_calls_contacted_provider'] = (reconciled_all_model_calls and all_contacted_provider)
 
@@ -407,6 +465,6 @@ if __name__ == '__main__':
     else:
         proxy = MockModelProxy()
 
-    session, report = run_suite(packages, args.output, proxy=proxy)
+    session, report = run_suite(packages, args.output, proxy=proxy, gateway_token=token if args.mode == 'live_gateway' else None)
     print(json.dumps({'session': str(session), 'report': report}, indent=2))
     raise SystemExit(0 if report['overall_decision'] == 'PASS' else 1)

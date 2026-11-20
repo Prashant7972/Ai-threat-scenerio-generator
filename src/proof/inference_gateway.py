@@ -19,6 +19,23 @@ from threading import Lock
 MAX_BODY_BYTES = 1_000_000
 
 
+def compute_gateway_signature(client_token: str, receipt: dict) -> str:
+    sig_msg = (
+        f"{receipt.get('attempt_id')}:{receipt.get('policy_sha256')}:{receipt.get('request_sha256')}:"
+        f"{receipt.get('model')}:{receipt.get('started_at')}:{receipt.get('status')}:{receipt.get('actual_cost_usd')}:"
+        f"{receipt.get('provider_contacted')}:{receipt.get('upstream_transport')}"
+    )
+    return hmac.new(client_token.encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
+
+
+def verify_gateway_signature(client_token: str, receipt: dict) -> bool:
+    sig = receipt.get('gateway_signature')
+    if not sig or not isinstance(sig, str) or len(sig) != 64:
+        return False
+    expected = compute_gateway_signature(client_token, receipt)
+    return hmac.compare_digest(sig, expected)
+
+
 class GatewayRejected(ValueError): pass
 
 
@@ -154,23 +171,13 @@ class InferenceGateway:
                     upstream_endpoint=meta.get('upstream_endpoint'),
                     http_status=meta.get('http_status'),
                 )
-                sig_msg = (
-                    f"{receipt['attempt_id']}:{receipt['policy_sha256']}:{receipt['request_sha256']}:"
-                    f"{receipt['model']}:{receipt['started_at']}:{receipt['status']}:{receipt['actual_cost_usd']}:"
-                    f"{receipt['provider_contacted']}:{receipt['upstream_transport']}"
-                )
-                receipt['gateway_signature'] = hmac.new(self.client_token.encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
+                receipt['gateway_signature'] = compute_gateway_signature(self.client_token, receipt)
                 return body, receipt
             finally:
                 receipt['finished_at'] = datetime.now(UTC).isoformat()
                 receipt['session_accounted_cost_usd'] = str(self.spent)
                 if receipt.get('status') == 'completed':
-                    sig_msg = (
-                        f"{receipt['attempt_id']}:{receipt['policy_sha256']}:{receipt['request_sha256']}:"
-                        f"{receipt['model']}:{receipt['started_at']}:{receipt['status']}:{receipt['actual_cost_usd']}:"
-                        f"{receipt['provider_contacted']}:{receipt['upstream_transport']}"
-                    )
-                    receipt['gateway_signature'] = hmac.new(self.client_token.encode(), sig_msg.encode(), hashlib.sha256).hexdigest()
+                    receipt['gateway_signature'] = compute_gateway_signature(self.client_token, receipt)
                 with (self.receipts / (receipt['attempt_id'] + '.json')).open('x') as stream:
                     json.dump(receipt, stream, sort_keys=True, indent=2)
 

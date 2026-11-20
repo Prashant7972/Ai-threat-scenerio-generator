@@ -4,6 +4,7 @@ Strictly separates Mock-Harness Validation from Controlled Real-Model Evaluation
 Enforces cumulative trial budgets, provider host allowlisting, TLS verification,
 sanitized telemetry logging, and cost controls.
 """
+import hashlib
 import json
 import os
 import re
@@ -564,6 +565,8 @@ class LiveModelProxy(ModelAdapterInterface):
                         parameters = {"type": "object", "properties": parameters}
                     declarations.append({"name": tool["name"], "description": tool.get("description", ""), "parameters": parameters})
                 payload["tools"] = [{"functionDeclarations": declarations}]
+            encoded_payload = json.dumps(payload, ensure_ascii=False).encode()
+            request_observation["request_sha256"] = hashlib.sha256(encoded_payload).hexdigest()
             resp = self.transport.request("POST", endpoint,
                 headers={"Content-Type": "application/json", "x-goog-api-key": self.api_key},
                 data=payload, timeout=min(30, max(0.001, tracker.max_wall_time_seconds - tracker.elapsed_seconds)))

@@ -282,4 +282,247 @@ def test_multi_turn_trial_reconciles_every_model_call(plan, tmp_path, monkeypatc
     assert any('Model call reconciliation failed' in b for b in report['blockers'])
 
 
+def test_trial_ineligible_when_receipt_signature_altered(plan, tmp_path, monkeypatch):
+    from src.proof.gateway_client import GatewayModelProxy
+    from src.proof.inference_gateway import compute_gateway_signature
+    client_token = 'tok_' + 'c' * 32
+    policy_sha = 'a' * 64
+    policy = {
+        'version': 'test-pol-1',
+        'provider': 'google_gemini',
+        'review': {'status': 'approved', 'reviewer': 'test-reviewer'},
+        'max_cost_usd': 10.0,
+        'models': {
+            'gemini-1.5-flash': {
+                'input_per_million_usd': 0.075,
+                'output_per_million_usd': 0.30,
+                'pricing_source': 'test',
+                'pricing_checked_at': '2026-11-16',
+            }
+        },
+    }
+    proxy = GatewayModelProxy(policy, 'gemini-1.5-flash', client_token)
+
+    def mock_altered_sig_run(package, record_id, build, output, proxy):
+        manifest_file = output / f"{record_id}.json"
+        req_sha = 'reqsha_' + '1' * 57
+        receipt = {
+            'attempt_id': f'rec_{record_id}',
+            'policy_sha256': policy_sha,
+            'request_sha256': req_sha,
+            'model': 'gemini-1.5-flash',
+            'started_at': '2026-11-20T00:00:00Z',
+            'status': 'completed',
+            'actual_cost_usd': '0.00003',
+            'provider_contacted': True,
+            'upstream_transport': 'live_provider_http',
+        }
+        # Compute valid signature, then alter it!
+        compute_gateway_signature(client_token, receipt)
+        receipt['gateway_signature'] = 'f' * 64  # Altered / forged signature
+
+        manifest_data = {
+            'trial_id': f'trial_{record_id}',
+            'execution_context': {
+                'package_sha256': Path(package).name,
+                'target_build_pin': 'sha256:pin123',
+                'gateway_policy_sha256': policy_sha,
+            },
+            'model_requests': [
+                {
+                    'model': 'gemini-1.5-flash',
+                    'request_sha256': req_sha,
+                    'gateway_receipt': receipt,
+                }
+            ],
+            'event_assertions': [{'id': 'intended_attack_effect', 'passed': True}],
+            'disposition': None,
+        }
+        manifest_data['manifest_sha256'] = suite.hashlib.sha256(json.dumps(manifest_data, indent=2, sort_keys=True).encode()).hexdigest()
+        manifest_file.parent.mkdir(parents=True, exist_ok=True)
+        manifest_file.write_text(json.dumps(manifest_data, indent=2))
+        assertions = SimpleNamespace(
+            exposure=True, attempted_redirection=False, attempted_unauthorized_action=False,
+            executed_impact=False, containment=True, legitimate_task_completion=True,
+            to_dict=lambda: {'exposure': True, 'attempted_redirection': False, 'attempted_unauthorized_action': False,
+                             'executed_impact': False, 'containment': True, 'legitimate_task_completion': True},
+        )
+        return manifest_file, assertions
+
+    monkeypatch.setattr(suite, 'run_record', mock_altered_sig_run)
+    session, report = suite.run_suite(plan, tmp_path / 'altered_sig_results', proxy=proxy, mode='live_gateway', gateway_token=client_token)
+
+    result_files = list((session / 'attempts').glob('*.result.json'))
+    sample_res = json.loads(result_files[0].read_text())
+    assert sample_res['all_model_calls_reconciled'] is False
+    assert sample_res['release_evidence_verified'] is False
+    assert any('gateway_signature verification failed' in err for err in sample_res['reconciliation_errors'])
+    assert report['overall_decision'] == 'FAIL'
+    assert any('Receipt integrity verification failed' in b for b in report['blockers'])
+
+
+def test_trial_ineligible_when_receipt_attempt_id_duplicated(plan, tmp_path, monkeypatch):
+    from src.proof.gateway_client import GatewayModelProxy
+    from src.proof.inference_gateway import compute_gateway_signature
+    client_token = 'tok_' + 'd' * 32
+    policy_sha = 'b' * 64
+    policy = {
+        'version': 'test-pol-2',
+        'provider': 'google_gemini',
+        'review': {'status': 'approved', 'reviewer': 'test-reviewer'},
+        'max_cost_usd': 10.0,
+        'models': {
+            'gemini-1.5-flash': {
+                'input_per_million_usd': 0.075,
+                'output_per_million_usd': 0.30,
+                'pricing_source': 'test',
+                'pricing_checked_at': '2026-11-16',
+            }
+        },
+    }
+    proxy = GatewayModelProxy(policy, 'gemini-1.5-flash', client_token)
+
+    def mock_duplicate_attempt_run(package, record_id, build, output, proxy):
+        manifest_file = output / f"{record_id}.json"
+        req_sha1 = 'reqsha1_' + '1' * 56
+        req_sha2 = 'reqsha2_' + '2' * 56
+        shared_att_id = 'duplicate_att_id_12345'
+        rcpt1 = {
+            'attempt_id': shared_att_id,
+            'policy_sha256': policy_sha,
+            'request_sha256': req_sha1,
+            'model': 'gemini-1.5-flash',
+            'started_at': '2026-11-20T00:00:00Z',
+            'status': 'completed',
+            'actual_cost_usd': '0.00003',
+            'provider_contacted': True,
+            'upstream_transport': 'live_provider_http',
+        }
+        rcpt1['gateway_signature'] = compute_gateway_signature(client_token, rcpt1)
+        rcpt2 = {
+            'attempt_id': shared_att_id,  # DUPLICATE!
+            'policy_sha256': policy_sha,
+            'request_sha256': req_sha2,
+            'model': 'gemini-1.5-flash',
+            'started_at': '2026-11-20T00:00:01Z',
+            'status': 'completed',
+            'actual_cost_usd': '0.00003',
+            'provider_contacted': True,
+            'upstream_transport': 'live_provider_http',
+        }
+        rcpt2['gateway_signature'] = compute_gateway_signature(client_token, rcpt2)
+
+        manifest_data = {
+            'trial_id': f'trial_{record_id}',
+            'execution_context': {
+                'package_sha256': Path(package).name,
+                'target_build_pin': 'sha256:pin123',
+                'gateway_policy_sha256': policy_sha,
+            },
+            'model_requests': [
+                {'model': 'gemini-1.5-flash', 'request_sha256': req_sha1, 'gateway_receipt': rcpt1},
+                {'model': 'gemini-1.5-flash', 'request_sha256': req_sha2, 'gateway_receipt': rcpt2},
+            ],
+            'event_assertions': [{'id': 'intended_attack_effect', 'passed': True}],
+            'disposition': None,
+        }
+        manifest_data['manifest_sha256'] = suite.hashlib.sha256(json.dumps(manifest_data, indent=2, sort_keys=True).encode()).hexdigest()
+        manifest_file.parent.mkdir(parents=True, exist_ok=True)
+        manifest_file.write_text(json.dumps(manifest_data, indent=2))
+        assertions = SimpleNamespace(
+            exposure=True, attempted_redirection=False, attempted_unauthorized_action=False,
+            executed_impact=False, containment=True, legitimate_task_completion=True,
+            to_dict=lambda: {'exposure': True, 'attempted_redirection': False, 'attempted_unauthorized_action': False,
+                             'executed_impact': False, 'containment': True, 'legitimate_task_completion': True},
+        )
+        return manifest_file, assertions
+
+    monkeypatch.setattr(suite, 'run_record', mock_duplicate_attempt_run)
+    session, report = suite.run_suite(plan, tmp_path / 'duplicate_att_results', proxy=proxy, mode='live_gateway', gateway_token=client_token)
+
+    result_files = list((session / 'attempts').glob('*.result.json'))
+    sample_res = json.loads(result_files[0].read_text())
+    assert sample_res['all_model_calls_reconciled'] is False
+    assert sample_res['release_evidence_verified'] is False
+    assert any('duplicate attempt_id' in err for err in sample_res['reconciliation_errors'])
+    assert report['overall_decision'] == 'FAIL'
+
+
+def test_trial_ineligible_when_receipt_attached_to_wrong_call(plan, tmp_path, monkeypatch):
+    from src.proof.gateway_client import GatewayModelProxy
+    from src.proof.inference_gateway import compute_gateway_signature
+    client_token = 'tok_' + 'e' * 32
+    policy_sha = 'c' * 64
+    policy = {
+        'version': 'test-pol-3',
+        'provider': 'google_gemini',
+        'review': {'status': 'approved', 'reviewer': 'test-reviewer'},
+        'max_cost_usd': 10.0,
+        'models': {
+            'gemini-1.5-flash': {
+                'input_per_million_usd': 0.075,
+                'output_per_million_usd': 0.30,
+                'pricing_source': 'test',
+                'pricing_checked_at': '2026-11-16',
+            }
+        },
+    }
+    proxy = GatewayModelProxy(policy, 'gemini-1.5-flash', client_token)
+
+    def mock_mismatched_call_run(package, record_id, build, output, proxy):
+        manifest_file = output / f"{record_id}.json"
+        actual_req_sha = 'actual_reqsha_' + '1' * 50
+        different_rcpt_req_sha = 'different_reqsha_' + '2' * 47
+        rcpt = {
+            'attempt_id': f'rec_{record_id}',
+            'policy_sha256': policy_sha,
+            'request_sha256': different_rcpt_req_sha,  # Mismatched!
+            'model': 'gemini-1.5-flash',
+            'started_at': '2026-11-20T00:00:00Z',
+            'status': 'completed',
+            'actual_cost_usd': '0.00003',
+            'provider_contacted': True,
+            'upstream_transport': 'live_provider_http',
+        }
+        rcpt['gateway_signature'] = compute_gateway_signature(client_token, rcpt)
+
+        manifest_data = {
+            'trial_id': f'trial_{record_id}',
+            'execution_context': {
+                'package_sha256': Path(package).name,
+                'target_build_pin': 'sha256:pin123',
+                'gateway_policy_sha256': policy_sha,
+            },
+            'model_requests': [
+                {
+                    'model': 'gemini-1.5-flash',
+                    'request_sha256': actual_req_sha,  # Different from receipt!
+                    'gateway_receipt': rcpt,
+                }
+            ],
+            'event_assertions': [{'id': 'intended_attack_effect', 'passed': True}],
+            'disposition': None,
+        }
+        manifest_data['manifest_sha256'] = suite.hashlib.sha256(json.dumps(manifest_data, indent=2, sort_keys=True).encode()).hexdigest()
+        manifest_file.parent.mkdir(parents=True, exist_ok=True)
+        manifest_file.write_text(json.dumps(manifest_data, indent=2))
+        assertions = SimpleNamespace(
+            exposure=True, attempted_redirection=False, attempted_unauthorized_action=False,
+            executed_impact=False, containment=True, legitimate_task_completion=True,
+            to_dict=lambda: {'exposure': True, 'attempted_redirection': False, 'attempted_unauthorized_action': False,
+                             'executed_impact': False, 'containment': True, 'legitimate_task_completion': True},
+        )
+        return manifest_file, assertions
+
+    monkeypatch.setattr(suite, 'run_record', mock_mismatched_call_run)
+    session, report = suite.run_suite(plan, tmp_path / 'mismatched_call_results', proxy=proxy, mode='live_gateway', gateway_token=client_token)
+
+    result_files = list((session / 'attempts').glob('*.result.json'))
+    sample_res = json.loads(result_files[0].read_text())
+    assert sample_res['all_model_calls_reconciled'] is False
+    assert sample_res['release_evidence_verified'] is False
+    assert any('does not match call request_sha256' in err for err in sample_res['reconciliation_errors'])
+    assert report['overall_decision'] == 'FAIL'
+
+
 
